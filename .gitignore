@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.egg-info/
+.venv/
+.mypy_cache/
+.pytest_cache/
+
+# OS
+.DS_Store
+
+# Local
+CLAUDE.md
