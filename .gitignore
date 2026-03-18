@@ -8,5 +8,10 @@ __pycache__/
 # OS
 .DS_Store
 
+# Experiment artifacts
+experiments/results/
+experiments/.venv/
+experiments/.env
+
 # Local
 CLAUDE.md
