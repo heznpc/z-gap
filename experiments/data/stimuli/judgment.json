@@ -1,0 +1,795 @@
+[
+  {
+    "id": "judg_01_prioritize",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Prioritize the tasks by importance",
+      "ko": "중요도에 따라 작업의 우선순위를 정하라",
+      "zh": "按重要性对任务进行优先排序",
+      "ar": "رتّب المهام حسب الأهمية",
+      "es": "Prioriza las tareas por importancia"
+    },
+    "tags": [
+      "tasks",
+      "prioritize"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_02_evaluate",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Evaluate the quality of each candidate",
+      "ko": "각 후보의 품질을 평가하라",
+      "zh": "评估每位候选人的质量",
+      "ar": "قيّم جودة كل مرشح",
+      "es": "Evalúa la calidad de cada candidato"
+    },
+    "tags": [
+      "evaluation",
+      "quality"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_03_summarize",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Summarize the document in a few sentences",
+      "ko": "문서를 몇 문장으로 요약하라",
+      "zh": "用几句话概括这篇文档",
+      "ar": "لخّص المستند في بضع جمل",
+      "es": "Resume el documento en unas pocas oraciones"
+    },
+    "tags": [
+      "text",
+      "summarize"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_04_recommend",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Recommend the best option from the list",
+      "ko": "목록에서 가장 좋은 선택지를 추천하라",
+      "zh": "从列表中推荐最佳选项",
+      "ar": "أوصِ بأفضل خيار من القائمة",
+      "es": "Recomienda la mejor opción de la lista"
+    },
+    "tags": [
+      "recommendation"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_05_risk",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Assess the risk level of each item",
+      "ko": "각 항목의 위험 수준을 평가하라",
+      "zh": "评估每个项目的风险级别",
+      "ar": "قيّم مستوى المخاطر لكل عنصر",
+      "es": "Evalúa el nivel de riesgo de cada elemento"
+    },
+    "tags": [
+      "risk",
+      "assessment"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_06_categorize",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Categorize the items into appropriate groups",
+      "ko": "항목들을 적절한 그룹으로 분류하라",
+      "zh": "将项目分类到适当的组中",
+      "ar": "صنّف العناصر إلى مجموعات مناسبة",
+      "es": "Clasifica los elementos en grupos apropiados"
+    },
+    "tags": [
+      "categorize"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_07_select_key",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Select the key customers from the database",
+      "ko": "데이터베이스에서 주요 고객을 선별하라",
+      "zh": "从数据库中选出关键客户",
+      "ar": "اختر العملاء الرئيسيين من قاعدة البيانات",
+      "es": "Selecciona los clientes clave de la base de datos"
+    },
+    "tags": [
+      "selection",
+      "customer"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_08_rank",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Rank the articles by relevance",
+      "ko": "관련성에 따라 기사를 순위 매겨라",
+      "zh": "按相关性对文章进行排名",
+      "ar": "رتّب المقالات حسب الصلة",
+      "es": "Clasifica los artículos por relevancia"
+    },
+    "tags": [
+      "ranking",
+      "relevance"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_09_flag",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Flag potentially problematic entries",
+      "ko": "잠재적으로 문제가 있는 항목을 표시하라",
+      "zh": "标记可能有问题的条目",
+      "ar": "ضع علامة على الإدخالات التي قد تكون مشكلة",
+      "es": "Marca las entradas potencialmente problemáticas"
+    },
+    "tags": [
+      "flag",
+      "quality"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_10_tone",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Adjust the tone of the message to be more professional",
+      "ko": "메시지의 어조를 더 전문적으로 조정하라",
+      "zh": "调整消息的语气使其更加专业",
+      "ar": "عدّل نبرة الرسالة لتكون أكثر احترافية",
+      "es": "Ajusta el tono del mensaje para que sea más profesional"
+    },
+    "tags": [
+      "text",
+      "tone"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_11_sentiment",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Determine the overall sentiment of the text",
+      "ko": "텍스트의 전반적인 감정을 판단하라",
+      "zh": "判断文本的整体情感",
+      "ar": "حدد المشاعر العامة للنص",
+      "es": "Determina el sentimiento general del texto"
+    },
+    "tags": [
+      "text",
+      "sentiment"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_12_appropriate",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Decide whether the content is appropriate for the audience",
+      "ko": "콘텐츠가 대상 독자에게 적절한지 판단하라",
+      "zh": "判断内容是否适合目标受众",
+      "ar": "قرر ما إذا كان المحتوى مناسبًا للجمهور",
+      "es": "Decide si el contenido es apropiado para la audiencia"
+    },
+    "tags": [
+      "content",
+      "moderation"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_13_urgency",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Classify the tickets by urgency level",
+      "ko": "티켓을 긴급도에 따라 분류하라",
+      "zh": "按紧急程度对工单进行分类",
+      "ar": "صنّف التذاكر حسب مستوى الاستعجال",
+      "es": "Clasifica los tickets por nivel de urgencia"
+    },
+    "tags": [
+      "classification",
+      "urgency"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_14_credibility",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Assess the credibility of each source",
+      "ko": "각 출처의 신뢰도를 평가하라",
+      "zh": "评估每个来源的可信度",
+      "ar": "قيّم مصداقية كل مصدر",
+      "es": "Evalúa la credibilidad de cada fuente"
+    },
+    "tags": [
+      "evaluation",
+      "credibility"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_15_simplify",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Simplify the explanation for a general audience",
+      "ko": "일반 독자를 위해 설명을 쉽게 풀어라",
+      "zh": "为普通读者简化解释",
+      "ar": "بسّط الشرح لجمهور عام",
+      "es": "Simplifica la explicación para una audiencia general"
+    },
+    "tags": [
+      "text",
+      "simplify"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_16_compare",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Compare the two proposals and choose the better one",
+      "ko": "두 제안을 비교하여 더 나은 것을 선택하라",
+      "zh": "比较两个提案并选择更好的一个",
+      "ar": "قارن بين الاقتراحين واختر الأفضل",
+      "es": "Compara las dos propuestas y elige la mejor"
+    },
+    "tags": [
+      "comparison",
+      "decision"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_17_negotiate",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Suggest a fair compromise between the two parties",
+      "ko": "양쪽 당사자 간의 공정한 타협안을 제시하라",
+      "zh": "为双方提出公平的折中方案",
+      "ar": "اقترح حلاً وسطًا عادلاً بين الطرفين",
+      "es": "Sugiere un compromiso justo entre las dos partes"
+    },
+    "tags": [
+      "negotiation"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_18_ethical",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Evaluate whether the action is ethically acceptable",
+      "ko": "해당 행동이 윤리적으로 허용 가능한지 평가하라",
+      "zh": "评估该行为在伦理上是否可接受",
+      "ar": "قيّم ما إذا كان الفعل مقبولاً أخلاقيًا",
+      "es": "Evalúa si la acción es éticamente aceptable"
+    },
+    "tags": [
+      "ethics"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_19_creative",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Generate a creative title for the article",
+      "ko": "기사에 어울리는 창의적인 제목을 만들어라",
+      "zh": "为文章生成一个有创意的标题",
+      "ar": "أنشئ عنوانًا إبداعيًا للمقال",
+      "es": "Genera un título creativo para el artículo"
+    },
+    "tags": [
+      "text",
+      "creative"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_20_delegate",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Assign each task to the most suitable team member",
+      "ko": "각 작업을 가장 적합한 팀원에게 배정하라",
+      "zh": "将每项任务分配给最合适的团队成员",
+      "ar": "وزّع كل مهمة على عضو الفريق الأنسب",
+      "es": "Asigna cada tarea al miembro del equipo más adecuado"
+    },
+    "tags": [
+      "delegation"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_21_budget",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Allocate the budget across the departments fairly",
+      "ko": "예산을 부서 간에 공정하게 배분하라",
+      "zh": "在各部门之间公平分配预算",
+      "ar": "وزّع الميزانية بين الأقسام بإنصاف",
+      "es": "Distribuye el presupuesto entre los departamentos de forma justa"
+    },
+    "tags": [
+      "allocation",
+      "budget"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_22_hire",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Select the best candidate for the position",
+      "ko": "해당 직위에 가장 적합한 후보를 선발하라",
+      "zh": "为该职位选出最佳候选人",
+      "ar": "اختر أفضل مرشح للمنصب",
+      "es": "Selecciona al mejor candidato para el puesto"
+    },
+    "tags": [
+      "selection",
+      "hiring"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_23_feedback",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Write constructive feedback for the employee",
+      "ko": "직원에게 건설적인 피드백을 작성하라",
+      "zh": "为员工撰写建设性反馈",
+      "ar": "اكتب ملاحظات بنّاءة للموظف",
+      "es": "Escribe retroalimentación constructiva para el empleado"
+    },
+    "tags": [
+      "text",
+      "feedback"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_24_trustworthy",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Rate the trustworthiness of each review",
+      "ko": "각 리뷰의 신뢰성을 평가하라",
+      "zh": "评估每条评论的可信度",
+      "ar": "قيّم مصداقية كل مراجعة",
+      "es": "Califica la confiabilidad de cada reseña"
+    },
+    "tags": [
+      "evaluation",
+      "trust"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_25_context",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Determine the most relevant context for the query",
+      "ko": "질의에 가장 관련 있는 맥락을 결정하라",
+      "zh": "确定与查询最相关的上下文",
+      "ar": "حدد السياق الأكثر صلة بالاستعلام",
+      "es": "Determina el contexto más relevante para la consulta"
+    },
+    "tags": [
+      "retrieval",
+      "context"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_26_harmful",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Identify potentially harmful content in the text",
+      "ko": "텍스트에서 잠재적으로 해로운 내용을 식별하라",
+      "zh": "识别文本中可能有害的内容",
+      "ar": "حدد المحتوى الذي قد يكون ضارًا في النص",
+      "es": "Identifica contenido potencialmente dañino en el texto"
+    },
+    "tags": [
+      "safety",
+      "content"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_27_success",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Predict the likelihood of success for the project",
+      "ko": "프로젝트의 성공 가능성을 예측하라",
+      "zh": "预测项目成功的可能性",
+      "ar": "توقّع احتمالية نجاح المشروع",
+      "es": "Predice la probabilidad de éxito del proyecto"
+    },
+    "tags": [
+      "prediction",
+      "success"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_28_translate_nuance",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Translate the idiom while preserving its cultural nuance",
+      "ko": "관용구의 문화적 뉘앙스를 살려 번역하라",
+      "zh": "在保留文化内涵的同时翻译这个习语",
+      "ar": "ترجم التعبير الاصطلاحي مع الحفاظ على فارقه الثقافي",
+      "es": "Traduce el modismo preservando su matiz cultural"
+    },
+    "tags": [
+      "translation",
+      "culture"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_29_scope",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Decide which features to include in the first release",
+      "ko": "첫 번째 릴리스에 어떤 기능을 포함할지 결정하라",
+      "zh": "决定第一个版本中应包含哪些功能",
+      "ar": "قرر الميزات التي يجب تضمينها في الإصدار الأول",
+      "es": "Decide qué funciones incluir en la primera versión"
+    },
+    "tags": [
+      "product",
+      "scoping"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_30_apologize",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Draft an appropriate apology message to the customer",
+      "ko": "고객에게 적절한 사과 메시지를 작성하라",
+      "zh": "为客户起草适当的道歉信息",
+      "ar": "صِغ رسالة اعتذار مناسبة للعميل",
+      "es": "Redacta un mensaje de disculpa apropiado para el cliente"
+    },
+    "tags": [
+      "text",
+      "communication"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_31_bias",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Detect potential biases in the dataset",
+      "ko": "데이터셋에서 잠재적 편향을 감지하라",
+      "zh": "检测数据集中的潜在偏差",
+      "ar": "اكتشف التحيزات المحتملة في مجموعة البيانات",
+      "es": "Detecta posibles sesgos en el conjunto de datos"
+    },
+    "tags": [
+      "data",
+      "bias"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_32_motivate",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Write a motivational message for the team",
+      "ko": "팀을 위한 동기 부여 메시지를 작성하라",
+      "zh": "为团队写一条激励信息",
+      "ar": "اكتب رسالة تحفيزية للفريق",
+      "es": "Escribe un mensaje motivacional para el equipo"
+    },
+    "tags": [
+      "text",
+      "motivation"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_33_price",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Suggest a fair price for the product",
+      "ko": "제품의 적정 가격을 제안하라",
+      "zh": "为产品建议一个合理的价格",
+      "ar": "اقترح سعرًا عادلاً للمنتج",
+      "es": "Sugiere un precio justo para el producto"
+    },
+    "tags": [
+      "pricing"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_34_improve",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Suggest improvements to the user interface",
+      "ko": "사용자 인터페이스의 개선점을 제안하라",
+      "zh": "为用户界面提出改进建议",
+      "ar": "اقترح تحسينات لواجهة المستخدم",
+      "es": "Sugiere mejoras para la interfaz de usuario"
+    },
+    "tags": [
+      "design",
+      "improvement"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_35_conflict",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Resolve the conflict between the two requirements",
+      "ko": "두 요구사항 사이의 충돌을 해결하라",
+      "zh": "解决两个需求之间的冲突",
+      "ar": "حُل التعارض بين المتطلبين",
+      "es": "Resuelve el conflicto entre los dos requisitos"
+    },
+    "tags": [
+      "conflict",
+      "resolution"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_36_persuade",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Write a persuasive argument for the proposal",
+      "ko": "제안에 대한 설득력 있는 논거를 작성하라",
+      "zh": "为该提案撰写有说服力的论据",
+      "ar": "اكتب حجة مقنعة للاقتراح",
+      "es": "Escribe un argumento persuasivo para la propuesta"
+    },
+    "tags": [
+      "text",
+      "persuasion"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_37_empathy",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Respond to the complaint with empathy",
+      "ko": "불만에 공감하며 응답하라",
+      "zh": "以共情的方式回应投诉",
+      "ar": "استجب للشكوى بتعاطف",
+      "es": "Responde a la queja con empatía"
+    },
+    "tags": [
+      "communication",
+      "empathy"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_38_strategy",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Develop a marketing strategy for the new product",
+      "ko": "신제품을 위한 마케팅 전략을 수립하라",
+      "zh": "为新产品制定营销策略",
+      "ar": "طوّر استراتيجية تسويقية للمنتج الجديد",
+      "es": "Desarrolla una estrategia de marketing para el nuevo producto"
+    },
+    "tags": [
+      "strategy",
+      "marketing"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_39_diagnose",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Diagnose the root cause of the system failure",
+      "ko": "시스템 장애의 근본 원인을 진단하라",
+      "zh": "诊断系统故障的根本原因",
+      "ar": "شخّص السبب الجذري لعطل النظام",
+      "es": "Diagnostica la causa raíz de la falla del sistema"
+    },
+    "tags": [
+      "diagnosis",
+      "system"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_40_forgive",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Decide whether a second chance should be given",
+      "ko": "재기회를 줄지 여부를 결정하라",
+      "zh": "决定是否应给予第二次机会",
+      "ar": "قرر ما إذا كان ينبغي منح فرصة ثانية",
+      "es": "Decide si se debe dar una segunda oportunidad"
+    },
+    "tags": [
+      "decision",
+      "fairness"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_41_sensitive",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Handle the sensitive topic with appropriate care",
+      "ko": "민감한 주제를 적절히 주의하여 다루어라",
+      "zh": "以适当的谨慎处理敏感话题",
+      "ar": "تعامل مع الموضوع الحساس بعناية مناسبة",
+      "es": "Trata el tema sensible con el cuidado adecuado"
+    },
+    "tags": [
+      "communication",
+      "sensitivity"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_42_innovate",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Propose an innovative solution to the problem",
+      "ko": "문제에 대한 혁신적인 해결책을 제안하라",
+      "zh": "为该问题提出创新的解决方案",
+      "ar": "اقترح حلاً مبتكرًا للمشكلة",
+      "es": "Propón una solución innovadora al problema"
+    },
+    "tags": [
+      "innovation"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_43_acceptable",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Determine if the error rate is acceptable",
+      "ko": "오류율이 허용 범위인지 판단하라",
+      "zh": "判断错误率是否可接受",
+      "ar": "حدد ما إذا كان معدل الخطأ مقبولاً",
+      "es": "Determina si la tasa de error es aceptable"
+    },
+    "tags": [
+      "evaluation",
+      "threshold"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_44_narrative",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Craft a compelling narrative from the data",
+      "ko": "데이터로부터 설득력 있는 서사를 구성하라",
+      "zh": "从数据中构建引人注目的叙事",
+      "ar": "صِغ رواية مقنعة من البيانات",
+      "es": "Elabora una narrativa convincente a partir de los datos"
+    },
+    "tags": [
+      "text",
+      "storytelling"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_45_polite",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Rewrite the rejection to be polite yet firm",
+      "ko": "거절문을 정중하되 단호하게 다시 써라",
+      "zh": "将拒绝信改写得礼貌但坚定",
+      "ar": "أعد صياغة الرفض بأسلوب مهذب لكن حازم",
+      "es": "Reescribe el rechazo para que sea cortés pero firme"
+    },
+    "tags": [
+      "text",
+      "communication"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_46_naming",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Choose the most appropriate name for the new feature",
+      "ko": "새 기능에 가장 적합한 이름을 선택하라",
+      "zh": "为新功能选择最合适的名称",
+      "ar": "اختر الاسم الأنسب للميزة الجديدة",
+      "es": "Elige el nombre más apropiado para la nueva función"
+    },
+    "tags": [
+      "naming",
+      "product"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_47_tradeoff",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Analyze the tradeoffs between speed and accuracy",
+      "ko": "속도와 정확도 사이의 절충점을 분석하라",
+      "zh": "分析速度与准确性之间的权衡",
+      "ar": "حلل المفاضلات بين السرعة والدقة",
+      "es": "Analiza las compensaciones entre velocidad y precisión"
+    },
+    "tags": [
+      "analysis",
+      "tradeoff"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_48_trust_level",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Set the appropriate trust level for the new partner",
+      "ko": "새 파트너에 대한 적절한 신뢰 수준을 설정하라",
+      "zh": "为新合作伙伴设置适当的信任级别",
+      "ar": "حدد مستوى الثقة المناسب للشريك الجديد",
+      "es": "Establece el nivel de confianza adecuado para el nuevo socio"
+    },
+    "tags": [
+      "trust",
+      "relationship"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_49_timing",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Determine the best time to launch the campaign",
+      "ko": "캠페인을 시작할 최적의 시기를 결정하라",
+      "zh": "确定启动活动的最佳时间",
+      "ar": "حدد أفضل وقت لإطلاق الحملة",
+      "es": "Determina el mejor momento para lanzar la campaña"
+    },
+    "tags": [
+      "timing",
+      "strategy"
+    ],
+    "has_implicit_criteria": true
+  },
+  {
+    "id": "judg_50_legacy",
+    "category": "judgment",
+    "descriptions": {
+      "en": "Decide whether to maintain or retire the legacy system",
+      "ko": "레거시 시스템을 유지할지 폐기할지 결정하라",
+      "zh": "决定是维护还是淘汰旧系统",
+      "ar": "قرر ما إذا كان يجب صيانة النظام القديم أو إيقافه",
+      "es": "Decide si mantener o retirar el sistema heredado"
+    },
+    "tags": [
+      "decision",
+      "system"
+    ],
+    "has_implicit_criteria": true
+  }
+]

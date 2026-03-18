@@ -1,0 +1,902 @@
+[
+  {
+    "id": "comp_01_sort_asc",
+    "variants": {
+      "correct": "목록을 오름차순으로 정렬하라",
+      "no_space": "목록을오름차순으로정렬하라",
+      "informal": "목록을오름차순으로 정렬하라",
+      "over_spaced": "목 록 을   오 름 차 순 으 로   정 렬 하 라"
+    }
+  },
+  {
+    "id": "comp_02_find_max",
+    "variants": {
+      "correct": "목록에서 최댓값을 찾아라",
+      "no_space": "목록에서최댓값을찾아라",
+      "informal": "목록에서최댓값을 찾아라",
+      "over_spaced": "목 록 에 서   최 댓 값 을   찾 아 라"
+    }
+  },
+  {
+    "id": "comp_03_filter_pos",
+    "variants": {
+      "correct": "목록에서 양수만 걸러내라",
+      "no_space": "목록에서양수만걸러내라",
+      "informal": "목록에서양수만 걸러내라",
+      "over_spaced": "목 록 에 서   양 수 만   걸 러 내 라"
+    }
+  },
+  {
+    "id": "comp_04_reverse",
+    "variants": {
+      "correct": "목록의 원소 순서를 뒤집어라",
+      "no_space": "목록의원소순서를뒤집어라",
+      "informal": "목록의원소 순서를뒤집어라",
+      "over_spaced": "목 록 의   원 소   순 서 를   뒤 집 어 라"
+    }
+  },
+  {
+    "id": "comp_05_count",
+    "variants": {
+      "correct": "목록의 원소 개수를 세라",
+      "no_space": "목록의원소개수를세라",
+      "informal": "목록의원소 개수를세라",
+      "over_spaced": "목 록 의   원 소   개 수 를   세 라"
+    }
+  },
+  {
+    "id": "comp_06_sum",
+    "variants": {
+      "correct": "목록에 있는 모든 숫자의 합을 구하라",
+      "no_space": "목록에있는모든숫자의합을구하라",
+      "informal": "목록에있는 모든숫자의 합을구하라",
+      "over_spaced": "목 록 에   있 는   모 든   숫 자 의   합 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_07_deduplicate",
+    "variants": {
+      "correct": "목록에서 중복된 원소를 제거하라",
+      "no_space": "목록에서중복된원소를제거하라",
+      "informal": "목록에서중복된 원소를제거하라",
+      "over_spaced": "목 록 에 서   중 복 된   원 소 를   제 거 하 라"
+    }
+  },
+  {
+    "id": "comp_08_top3",
+    "variants": {
+      "correct": "주어진 목록에서 가장 큰 값 세 개를 찾아라",
+      "no_space": "주어진목록에서가장큰값세개를찾아라",
+      "informal": "주어진목록에서 가장큰 값세 개를찾아라",
+      "over_spaced": "주 어 진   목 록 에 서   가 장   큰   값   세   개 를   찾 아 라"
+    }
+  },
+  {
+    "id": "comp_09_mean",
+    "variants": {
+      "correct": "목록에 있는 모든 숫자의 평균을 구하라",
+      "no_space": "목록에있는모든숫자의평균을구하라",
+      "informal": "목록에있는 모든숫자의 평균을구하라",
+      "over_spaced": "목 록 에   있 는   모 든   숫 자 의   평 균 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_10_sort_desc",
+    "variants": {
+      "correct": "목록을 내림차순으로 정렬하라",
+      "no_space": "목록을내림차순으로정렬하라",
+      "informal": "목록을내림차순으로 정렬하라",
+      "over_spaced": "목 록 을   내 림 차 순 으 로   정 렬 하 라"
+    }
+  },
+  {
+    "id": "comp_11_concat",
+    "variants": {
+      "correct": "두 문자열을 이어붙여라",
+      "no_space": "두문자열을이어붙여라",
+      "informal": "두문자열을 이어붙여라",
+      "over_spaced": "두   문 자 열 을   이 어 붙 여 라"
+    }
+  },
+  {
+    "id": "comp_12_uppercase",
+    "variants": {
+      "correct": "문자열을 대문자로 변환하라",
+      "no_space": "문자열을대문자로변환하라",
+      "informal": "문자열을대문자로 변환하라",
+      "over_spaced": "문 자 열 을   대 문 자 로   변 환 하 라"
+    }
+  },
+  {
+    "id": "comp_13_split",
+    "variants": {
+      "correct": "문자열을 공백 기준으로 나누어 단어 목록을 만들어라",
+      "no_space": "문자열을공백기준으로나누어단어목록을만들어라",
+      "informal": "문자열을공백 기준으로나누어 단어목록을 만들어라",
+      "over_spaced": "문 자 열 을   공 백   기 준 으 로   나 누 어   단 어   목 록 을   만 들 어 라"
+    }
+  },
+  {
+    "id": "comp_14_replace",
+    "variants": {
+      "correct": "문자열에서 'a'를 모두 'b'로 바꿔라",
+      "no_space": "문자열에서'a'를모두'b'로바꿔라",
+      "informal": "문자열에서'a'를 모두'b'로 바꿔라",
+      "over_spaced": "문 자 열 에 서   ' a ' 를   모 두   ' b ' 로   바 꿔 라"
+    }
+  },
+  {
+    "id": "comp_15_length",
+    "variants": {
+      "correct": "문자열의 길이를 구하라",
+      "no_space": "문자열의길이를구하라",
+      "informal": "문자열의길이를 구하라",
+      "over_spaced": "문 자 열 의   길 이 를   구 하 라"
+    }
+  },
+  {
+    "id": "comp_16_abs",
+    "variants": {
+      "correct": "숫자의 절댓값을 구하라",
+      "no_space": "숫자의절댓값을구하라",
+      "informal": "숫자의절댓값을 구하라",
+      "over_spaced": "숫 자 의   절 댓 값 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_17_power",
+    "variants": {
+      "correct": "숫자를 세제곱하라",
+      "no_space": "숫자를세제곱하라",
+      "informal": "숫자를세제곱하라",
+      "over_spaced": "숫 자 를   세 제 곱 하 라"
+    }
+  },
+  {
+    "id": "comp_18_modulo",
+    "variants": {
+      "correct": "7로 나눈 나머지를 구하라",
+      "no_space": "7로나눈나머지를구하라",
+      "informal": "7로나눈 나머지를구하라",
+      "over_spaced": "7 로   나 눈   나 머 지 를   구 하 라"
+    }
+  },
+  {
+    "id": "comp_19_sqrt",
+    "variants": {
+      "correct": "숫자의 제곱근을 구하라",
+      "no_space": "숫자의제곱근을구하라",
+      "informal": "숫자의제곱근을 구하라",
+      "over_spaced": "숫 자 의   제 곱 근 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_20_gcd",
+    "variants": {
+      "correct": "두 수의 최대공약수를 구하라",
+      "no_space": "두수의최대공약수를구하라",
+      "informal": "두수의 최대공약수를구하라",
+      "over_spaced": "두   수 의   최 대 공 약 수 를   구 하 라"
+    }
+  },
+  {
+    "id": "comp_21_union",
+    "variants": {
+      "correct": "두 집합의 합집합을 구하라",
+      "no_space": "두집합의합집합을구하라",
+      "informal": "두집합의 합집합을구하라",
+      "over_spaced": "두   집 합 의   합 집 합 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_22_intersect",
+    "variants": {
+      "correct": "두 집합의 공통 원소를 찾아라",
+      "no_space": "두집합의공통원소를찾아라",
+      "informal": "두집합의 공통원소를 찾아라",
+      "over_spaced": "두   집 합 의   공 통   원 소 를   찾 아 라"
+    }
+  },
+  {
+    "id": "comp_23_difference",
+    "variants": {
+      "correct": "첫 번째 집합에만 있는 원소를 찾아라",
+      "no_space": "첫번째집합에만있는원소를찾아라",
+      "informal": "첫번째 집합에만있는 원소를찾아라",
+      "over_spaced": "첫   번 째   집 합 에 만   있 는   원 소 를   찾 아 라"
+    }
+  },
+  {
+    "id": "comp_24_keys",
+    "variants": {
+      "correct": "사전에서 모든 키를 추출하라",
+      "no_space": "사전에서모든키를추출하라",
+      "informal": "사전에서모든 키를추출하라",
+      "over_spaced": "사 전 에 서   모 든   키 를   추 출 하 라"
+    }
+  },
+  {
+    "id": "comp_25_merge",
+    "variants": {
+      "correct": "두 사전을 하나로 합쳐라",
+      "no_space": "두사전을하나로합쳐라",
+      "informal": "두사전을 하나로합쳐라",
+      "over_spaced": "두   사 전 을   하 나 로   합 쳐 라"
+    }
+  },
+  {
+    "id": "comp_26_transpose",
+    "variants": {
+      "correct": "행렬을 전치하라",
+      "no_space": "행렬을전치하라",
+      "informal": "행렬을전치하라",
+      "over_spaced": "행 렬 을   전 치 하 라"
+    }
+  },
+  {
+    "id": "comp_27_flatten",
+    "variants": {
+      "correct": "중첩된 목록을 하나의 목록으로 펼쳐라",
+      "no_space": "중첩된목록을하나의목록으로펼쳐라",
+      "informal": "중첩된목록을 하나의목록으로 펼쳐라",
+      "over_spaced": "중 첩 된   목 록 을   하 나 의   목 록 으 로   펼 쳐 라"
+    }
+  },
+  {
+    "id": "comp_28_zip",
+    "variants": {
+      "correct": "두 목록의 원소를 위치별로 짝지어라",
+      "no_space": "두목록의원소를위치별로짝지어라",
+      "informal": "두목록의 원소를위치별로 짝지어라",
+      "over_spaced": "두   목 록 의   원 소 를   위 치 별 로   짝 지 어 라"
+    }
+  },
+  {
+    "id": "comp_29_index",
+    "variants": {
+      "correct": "목록에서 목표 값의 위치를 찾아라",
+      "no_space": "목록에서목표값의위치를찾아라",
+      "informal": "목록에서목표 값의위치를 찾아라",
+      "over_spaced": "목 록 에 서   목 표   값 의   위 치 를   찾 아 라"
+    }
+  },
+  {
+    "id": "comp_30_contains",
+    "variants": {
+      "correct": "목록에 주어진 값이 있는지 확인하라",
+      "no_space": "목록에주어진값이있는지확인하라",
+      "informal": "목록에주어진 값이있는지 확인하라",
+      "over_spaced": "목 록 에   주 어 진   값 이   있 는 지   확 인 하 라"
+    }
+  },
+  {
+    "id": "comp_31_all_pos",
+    "variants": {
+      "correct": "목록의 모든 수가 양수인지 확인하라",
+      "no_space": "목록의모든수가양수인지확인하라",
+      "informal": "목록의모든 수가양수인지 확인하라",
+      "over_spaced": "목 록 의   모 든   수 가   양 수 인 지   확 인 하 라"
+    }
+  },
+  {
+    "id": "comp_32_any_neg",
+    "variants": {
+      "correct": "목록에 음수가 하나라도 있는지 확인하라",
+      "no_space": "목록에음수가하나라도있는지확인하라",
+      "informal": "목록에음수가 하나라도있는지 확인하라",
+      "over_spaced": "목 록 에   음 수 가   하 나 라 도   있 는 지   확 인 하 라"
+    }
+  },
+  {
+    "id": "comp_33_int_to_str",
+    "variants": {
+      "correct": "정수를 문자열로 변환하라",
+      "no_space": "정수를문자열로변환하라",
+      "informal": "정수를문자열로 변환하라",
+      "over_spaced": "정 수 를   문 자 열 로   변 환 하 라"
+    }
+  },
+  {
+    "id": "comp_34_round",
+    "variants": {
+      "correct": "숫자를 소수점 둘째 자리까지 반올림하라",
+      "no_space": "숫자를소수점둘째자리까지반올림하라",
+      "informal": "숫자를소수점 둘째자리까지 반올림하라",
+      "over_spaced": "숫 자 를   소 수 점   둘 째   자 리 까 지   반 올 림 하 라"
+    }
+  },
+  {
+    "id": "comp_35_min",
+    "variants": {
+      "correct": "목록에서 가장 작은 값을 찾아라",
+      "no_space": "목록에서가장작은값을찾아라",
+      "informal": "목록에서가장 작은값을 찾아라",
+      "over_spaced": "목 록 에 서   가 장   작 은   값 을   찾 아 라"
+    }
+  },
+  {
+    "id": "comp_36_median",
+    "variants": {
+      "correct": "숫자들의 중앙값을 구하라",
+      "no_space": "숫자들의중앙값을구하라",
+      "informal": "숫자들의중앙값을 구하라",
+      "over_spaced": "숫 자 들 의   중 앙 값 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_37_slice",
+    "variants": {
+      "correct": "인덱스 2부터 5까지의 원소를 추출하라",
+      "no_space": "인덱스2부터5까지의원소를추출하라",
+      "informal": "인덱스2부터 5까지의원소를 추출하라",
+      "over_spaced": "인 덱 스   2 부 터   5 까 지 의   원 소 를   추 출 하 라"
+    }
+  },
+  {
+    "id": "comp_38_even",
+    "variants": {
+      "correct": "목록에서 짝수만 걸러내라",
+      "no_space": "목록에서짝수만걸러내라",
+      "informal": "목록에서짝수만 걸러내라",
+      "over_spaced": "목 록 에 서   짝 수 만   걸 러 내 라"
+    }
+  },
+  {
+    "id": "comp_39_freq",
+    "variants": {
+      "correct": "각 원소가 목록에 몇 번 나타나는지 세라",
+      "no_space": "각원소가목록에몇번나타나는지세라",
+      "informal": "각원소가 목록에몇 번나타나는지 세라",
+      "over_spaced": "각   원 소 가   목 록 에   몇   번   나 타 나 는 지   세 라"
+    }
+  },
+  {
+    "id": "comp_40_map_double",
+    "variants": {
+      "correct": "목록의 모든 숫자를 두 배로 만들어라",
+      "no_space": "목록의모든숫자를두배로만들어라",
+      "informal": "목록의모든 숫자를두 배로만들어라",
+      "over_spaced": "목 록 의   모 든   숫 자 를   두   배 로   만 들 어 라"
+    }
+  },
+  {
+    "id": "comp_41_depth",
+    "variants": {
+      "correct": "트리의 깊이를 구하라",
+      "no_space": "트리의깊이를구하라",
+      "informal": "트리의깊이를 구하라",
+      "over_spaced": "트 리 의   깊 이 를   구 하 라"
+    }
+  },
+  {
+    "id": "comp_42_is_palindrome",
+    "variants": {
+      "correct": "문자열이 회문인지 확인하라",
+      "no_space": "문자열이회문인지확인하라",
+      "informal": "문자열이회문인지 확인하라",
+      "over_spaced": "문 자 열 이   회 문 인 지   확 인 하 라"
+    }
+  },
+  {
+    "id": "comp_43_binary",
+    "variants": {
+      "correct": "숫자를 이진수로 변환하라",
+      "no_space": "숫자를이진수로변환하라",
+      "informal": "숫자를이진수로 변환하라",
+      "over_spaced": "숫 자 를   이 진 수 로   변 환 하 라"
+    }
+  },
+  {
+    "id": "comp_44_cumsum",
+    "variants": {
+      "correct": "목록의 누적합을 구하라",
+      "no_space": "목록의누적합을구하라",
+      "informal": "목록의누적합을 구하라",
+      "over_spaced": "목 록 의   누 적 합 을   구 하 라"
+    }
+  },
+  {
+    "id": "comp_45_prod",
+    "variants": {
+      "correct": "목록의 모든 숫자를 곱하라",
+      "no_space": "목록의모든숫자를곱하라",
+      "informal": "목록의모든 숫자를곱하라",
+      "over_spaced": "목 록 의   모 든   숫 자 를   곱 하 라"
+    }
+  },
+  {
+    "id": "comp_46_range",
+    "variants": {
+      "correct": "1부터 10까지 정수 목록을 생성하라",
+      "no_space": "1부터10까지정수목록을생성하라",
+      "informal": "1부터10까지 정수목록을 생성하라",
+      "over_spaced": "1 부 터   1 0 까 지   정 수   목 록 을   생 성 하 라"
+    }
+  },
+  {
+    "id": "comp_47_char_count",
+    "variants": {
+      "correct": "문자열의 글자 수를 세라",
+      "no_space": "문자열의글자수를세라",
+      "informal": "문자열의글자 수를세라",
+      "over_spaced": "문 자 열 의   글 자   수 를   세 라"
+    }
+  },
+  {
+    "id": "comp_48_prime",
+    "variants": {
+      "correct": "숫자가 소수인지 확인하라",
+      "no_space": "숫자가소수인지확인하라",
+      "informal": "숫자가소수인지 확인하라",
+      "over_spaced": "숫 자 가   소 수 인 지   확 인 하 라"
+    }
+  },
+  {
+    "id": "comp_49_sort_by_len",
+    "variants": {
+      "correct": "문자열 목록을 길이순으로 정렬하라",
+      "no_space": "문자열목록을길이순으로정렬하라",
+      "informal": "문자열목록을 길이순으로정렬하라",
+      "over_spaced": "문 자 열   목 록 을   길 이 순 으 로   정 렬 하 라"
+    }
+  },
+  {
+    "id": "comp_50_matrix_mult",
+    "variants": {
+      "correct": "두 행렬을 곱하라",
+      "no_space": "두행렬을곱하라",
+      "informal": "두행렬을 곱하라",
+      "over_spaced": "두   행 렬 을   곱 하 라"
+    }
+  },
+  {
+    "id": "judg_01_prioritize",
+    "variants": {
+      "correct": "중요도에 따라 작업의 우선순위를 정하라",
+      "no_space": "중요도에따라작업의우선순위를정하라",
+      "informal": "중요도에따라 작업의우선순위를 정하라",
+      "over_spaced": "중 요 도 에   따 라   작 업 의   우 선 순 위 를   정 하 라"
+    }
+  },
+  {
+    "id": "judg_02_evaluate",
+    "variants": {
+      "correct": "각 후보의 품질을 평가하라",
+      "no_space": "각후보의품질을평가하라",
+      "informal": "각후보의 품질을평가하라",
+      "over_spaced": "각   후 보 의   품 질 을   평 가 하 라"
+    }
+  },
+  {
+    "id": "judg_03_summarize",
+    "variants": {
+      "correct": "문서를 몇 문장으로 요약하라",
+      "no_space": "문서를몇문장으로요약하라",
+      "informal": "문서를몇 문장으로요약하라",
+      "over_spaced": "문 서 를   몇   문 장 으 로   요 약 하 라"
+    }
+  },
+  {
+    "id": "judg_04_recommend",
+    "variants": {
+      "correct": "목록에서 가장 좋은 선택지를 추천하라",
+      "no_space": "목록에서가장좋은선택지를추천하라",
+      "informal": "목록에서가장 좋은선택지를 추천하라",
+      "over_spaced": "목 록 에 서   가 장   좋 은   선 택 지 를   추 천 하 라"
+    }
+  },
+  {
+    "id": "judg_05_risk",
+    "variants": {
+      "correct": "각 항목의 위험 수준을 평가하라",
+      "no_space": "각항목의위험수준을평가하라",
+      "informal": "각항목의 위험수준을 평가하라",
+      "over_spaced": "각   항 목 의   위 험   수 준 을   평 가 하 라"
+    }
+  },
+  {
+    "id": "judg_06_categorize",
+    "variants": {
+      "correct": "항목들을 적절한 그룹으로 분류하라",
+      "no_space": "항목들을적절한그룹으로분류하라",
+      "informal": "항목들을적절한 그룹으로분류하라",
+      "over_spaced": "항 목 들 을   적 절 한   그 룹 으 로   분 류 하 라"
+    }
+  },
+  {
+    "id": "judg_07_select_key",
+    "variants": {
+      "correct": "데이터베이스에서 주요 고객을 선별하라",
+      "no_space": "데이터베이스에서주요고객을선별하라",
+      "informal": "데이터베이스에서주요 고객을선별하라",
+      "over_spaced": "데 이 터 베 이 스 에 서   주 요   고 객 을   선 별 하 라"
+    }
+  },
+  {
+    "id": "judg_08_rank",
+    "variants": {
+      "correct": "관련성에 따라 기사를 순위 매겨라",
+      "no_space": "관련성에따라기사를순위매겨라",
+      "informal": "관련성에따라 기사를순위 매겨라",
+      "over_spaced": "관 련 성 에   따 라   기 사 를   순 위   매 겨 라"
+    }
+  },
+  {
+    "id": "judg_09_flag",
+    "variants": {
+      "correct": "잠재적으로 문제가 있는 항목을 표시하라",
+      "no_space": "잠재적으로문제가있는항목을표시하라",
+      "informal": "잠재적으로문제가 있는항목을 표시하라",
+      "over_spaced": "잠 재 적 으 로   문 제 가   있 는   항 목 을   표 시 하 라"
+    }
+  },
+  {
+    "id": "judg_10_tone",
+    "variants": {
+      "correct": "메시지의 어조를 더 전문적으로 조정하라",
+      "no_space": "메시지의어조를더전문적으로조정하라",
+      "informal": "메시지의어조를 더전문적으로 조정하라",
+      "over_spaced": "메 시 지 의   어 조 를   더   전 문 적 으 로   조 정 하 라"
+    }
+  },
+  {
+    "id": "judg_11_sentiment",
+    "variants": {
+      "correct": "텍스트의 전반적인 감정을 판단하라",
+      "no_space": "텍스트의전반적인감정을판단하라",
+      "informal": "텍스트의전반적인 감정을판단하라",
+      "over_spaced": "텍 스 트 의   전 반 적 인   감 정 을   판 단 하 라"
+    }
+  },
+  {
+    "id": "judg_12_appropriate",
+    "variants": {
+      "correct": "콘텐츠가 대상 독자에게 적절한지 판단하라",
+      "no_space": "콘텐츠가대상독자에게적절한지판단하라",
+      "informal": "콘텐츠가대상 독자에게적절한지 판단하라",
+      "over_spaced": "콘 텐 츠 가   대 상   독 자 에 게   적 절 한 지   판 단 하 라"
+    }
+  },
+  {
+    "id": "judg_13_urgency",
+    "variants": {
+      "correct": "티켓을 긴급도에 따라 분류하라",
+      "no_space": "티켓을긴급도에따라분류하라",
+      "informal": "티켓을긴급도에 따라분류하라",
+      "over_spaced": "티 켓 을   긴 급 도 에   따 라   분 류 하 라"
+    }
+  },
+  {
+    "id": "judg_14_credibility",
+    "variants": {
+      "correct": "각 출처의 신뢰도를 평가하라",
+      "no_space": "각출처의신뢰도를평가하라",
+      "informal": "각출처의 신뢰도를평가하라",
+      "over_spaced": "각   출 처 의   신 뢰 도 를   평 가 하 라"
+    }
+  },
+  {
+    "id": "judg_15_simplify",
+    "variants": {
+      "correct": "일반 독자를 위해 설명을 쉽게 풀어라",
+      "no_space": "일반독자를위해설명을쉽게풀어라",
+      "informal": "일반독자를 위해설명을 쉽게풀어라",
+      "over_spaced": "일 반   독 자 를   위 해   설 명 을   쉽 게   풀 어 라"
+    }
+  },
+  {
+    "id": "judg_16_compare",
+    "variants": {
+      "correct": "두 제안을 비교하여 더 나은 것을 선택하라",
+      "no_space": "두제안을비교하여더나은것을선택하라",
+      "informal": "두제안을 비교하여더 나은것을 선택하라",
+      "over_spaced": "두   제 안 을   비 교 하 여   더   나 은   것 을   선 택 하 라"
+    }
+  },
+  {
+    "id": "judg_17_negotiate",
+    "variants": {
+      "correct": "양쪽 당사자 간의 공정한 타협안을 제시하라",
+      "no_space": "양쪽당사자간의공정한타협안을제시하라",
+      "informal": "양쪽당사자 간의공정한 타협안을제시하라",
+      "over_spaced": "양 쪽   당 사 자   간 의   공 정 한   타 협 안 을   제 시 하 라"
+    }
+  },
+  {
+    "id": "judg_18_ethical",
+    "variants": {
+      "correct": "해당 행동이 윤리적으로 허용 가능한지 평가하라",
+      "no_space": "해당행동이윤리적으로허용가능한지평가하라",
+      "informal": "해당행동이 윤리적으로허용 가능한지평가하라",
+      "over_spaced": "해 당   행 동 이   윤 리 적 으 로   허 용   가 능 한 지   평 가 하 라"
+    }
+  },
+  {
+    "id": "judg_19_creative",
+    "variants": {
+      "correct": "기사에 어울리는 창의적인 제목을 만들어라",
+      "no_space": "기사에어울리는창의적인제목을만들어라",
+      "informal": "기사에어울리는 창의적인제목을 만들어라",
+      "over_spaced": "기 사 에   어 울 리 는   창 의 적 인   제 목 을   만 들 어 라"
+    }
+  },
+  {
+    "id": "judg_20_delegate",
+    "variants": {
+      "correct": "각 작업을 가장 적합한 팀원에게 배정하라",
+      "no_space": "각작업을가장적합한팀원에게배정하라",
+      "informal": "각작업을 가장적합한 팀원에게배정하라",
+      "over_spaced": "각   작 업 을   가 장   적 합 한   팀 원 에 게   배 정 하 라"
+    }
+  },
+  {
+    "id": "judg_21_budget",
+    "variants": {
+      "correct": "예산을 부서 간에 공정하게 배분하라",
+      "no_space": "예산을부서간에공정하게배분하라",
+      "informal": "예산을부서 간에공정하게 배분하라",
+      "over_spaced": "예 산 을   부 서   간 에   공 정 하 게   배 분 하 라"
+    }
+  },
+  {
+    "id": "judg_22_hire",
+    "variants": {
+      "correct": "해당 직위에 가장 적합한 후보를 선발하라",
+      "no_space": "해당직위에가장적합한후보를선발하라",
+      "informal": "해당직위에 가장적합한 후보를선발하라",
+      "over_spaced": "해 당   직 위 에   가 장   적 합 한   후 보 를   선 발 하 라"
+    }
+  },
+  {
+    "id": "judg_23_feedback",
+    "variants": {
+      "correct": "직원에게 건설적인 피드백을 작성하라",
+      "no_space": "직원에게건설적인피드백을작성하라",
+      "informal": "직원에게건설적인 피드백을작성하라",
+      "over_spaced": "직 원 에 게   건 설 적 인   피 드 백 을   작 성 하 라"
+    }
+  },
+  {
+    "id": "judg_24_trustworthy",
+    "variants": {
+      "correct": "각 리뷰의 신뢰성을 평가하라",
+      "no_space": "각리뷰의신뢰성을평가하라",
+      "informal": "각리뷰의 신뢰성을평가하라",
+      "over_spaced": "각   리 뷰 의   신 뢰 성 을   평 가 하 라"
+    }
+  },
+  {
+    "id": "judg_25_context",
+    "variants": {
+      "correct": "질의에 가장 관련 있는 맥락을 결정하라",
+      "no_space": "질의에가장관련있는맥락을결정하라",
+      "informal": "질의에가장 관련있는 맥락을결정하라",
+      "over_spaced": "질 의 에   가 장   관 련   있 는   맥 락 을   결 정 하 라"
+    }
+  },
+  {
+    "id": "judg_26_harmful",
+    "variants": {
+      "correct": "텍스트에서 잠재적으로 해로운 내용을 식별하라",
+      "no_space": "텍스트에서잠재적으로해로운내용을식별하라",
+      "informal": "텍스트에서잠재적으로 해로운내용을 식별하라",
+      "over_spaced": "텍 스 트 에 서   잠 재 적 으 로   해 로 운   내 용 을   식 별 하 라"
+    }
+  },
+  {
+    "id": "judg_27_success",
+    "variants": {
+      "correct": "프로젝트의 성공 가능성을 예측하라",
+      "no_space": "프로젝트의성공가능성을예측하라",
+      "informal": "프로젝트의성공 가능성을예측하라",
+      "over_spaced": "프 로 젝 트 의   성 공   가 능 성 을   예 측 하 라"
+    }
+  },
+  {
+    "id": "judg_28_translate_nuance",
+    "variants": {
+      "correct": "관용구의 문화적 뉘앙스를 살려 번역하라",
+      "no_space": "관용구의문화적뉘앙스를살려번역하라",
+      "informal": "관용구의문화적 뉘앙스를살려 번역하라",
+      "over_spaced": "관 용 구 의   문 화 적   뉘 앙 스 를   살 려   번 역 하 라"
+    }
+  },
+  {
+    "id": "judg_29_scope",
+    "variants": {
+      "correct": "첫 번째 릴리스에 어떤 기능을 포함할지 결정하라",
+      "no_space": "첫번째릴리스에어떤기능을포함할지결정하라",
+      "informal": "첫번째 릴리스에어떤 기능을포함할지 결정하라",
+      "over_spaced": "첫   번 째   릴 리 스 에   어 떤   기 능 을   포 함 할 지   결 정 하 라"
+    }
+  },
+  {
+    "id": "judg_30_apologize",
+    "variants": {
+      "correct": "고객에게 적절한 사과 메시지를 작성하라",
+      "no_space": "고객에게적절한사과메시지를작성하라",
+      "informal": "고객에게적절한 사과메시지를 작성하라",
+      "over_spaced": "고 객 에 게   적 절 한   사 과   메 시 지 를   작 성 하 라"
+    }
+  },
+  {
+    "id": "judg_31_bias",
+    "variants": {
+      "correct": "데이터셋에서 잠재적 편향을 감지하라",
+      "no_space": "데이터셋에서잠재적편향을감지하라",
+      "informal": "데이터셋에서잠재적 편향을감지하라",
+      "over_spaced": "데 이 터 셋 에 서   잠 재 적   편 향 을   감 지 하 라"
+    }
+  },
+  {
+    "id": "judg_32_motivate",
+    "variants": {
+      "correct": "팀을 위한 동기 부여 메시지를 작성하라",
+      "no_space": "팀을위한동기부여메시지를작성하라",
+      "informal": "팀을위한 동기부여 메시지를작성하라",
+      "over_spaced": "팀 을   위 한   동 기   부 여   메 시 지 를   작 성 하 라"
+    }
+  },
+  {
+    "id": "judg_33_price",
+    "variants": {
+      "correct": "제품의 적정 가격을 제안하라",
+      "no_space": "제품의적정가격을제안하라",
+      "informal": "제품의적정 가격을제안하라",
+      "over_spaced": "제 품 의   적 정   가 격 을   제 안 하 라"
+    }
+  },
+  {
+    "id": "judg_34_improve",
+    "variants": {
+      "correct": "사용자 인터페이스의 개선점을 제안하라",
+      "no_space": "사용자인터페이스의개선점을제안하라",
+      "informal": "사용자인터페이스의 개선점을제안하라",
+      "over_spaced": "사 용 자   인 터 페 이 스 의   개 선 점 을   제 안 하 라"
+    }
+  },
+  {
+    "id": "judg_35_conflict",
+    "variants": {
+      "correct": "두 요구사항 사이의 충돌을 해결하라",
+      "no_space": "두요구사항사이의충돌을해결하라",
+      "informal": "두요구사항 사이의충돌을 해결하라",
+      "over_spaced": "두   요 구 사 항   사 이 의   충 돌 을   해 결 하 라"
+    }
+  },
+  {
+    "id": "judg_36_persuade",
+    "variants": {
+      "correct": "제안에 대한 설득력 있는 논거를 작성하라",
+      "no_space": "제안에대한설득력있는논거를작성하라",
+      "informal": "제안에대한 설득력있는 논거를작성하라",
+      "over_spaced": "제 안 에   대 한   설 득 력   있 는   논 거 를   작 성 하 라"
+    }
+  },
+  {
+    "id": "judg_37_empathy",
+    "variants": {
+      "correct": "불만에 공감하며 응답하라",
+      "no_space": "불만에공감하며응답하라",
+      "informal": "불만에공감하며 응답하라",
+      "over_spaced": "불 만 에   공 감 하 며   응 답 하 라"
+    }
+  },
+  {
+    "id": "judg_38_strategy",
+    "variants": {
+      "correct": "신제품을 위한 마케팅 전략을 수립하라",
+      "no_space": "신제품을위한마케팅전략을수립하라",
+      "informal": "신제품을위한 마케팅전략을 수립하라",
+      "over_spaced": "신 제 품 을   위 한   마 케 팅   전 략 을   수 립 하 라"
+    }
+  },
+  {
+    "id": "judg_39_diagnose",
+    "variants": {
+      "correct": "시스템 장애의 근본 원인을 진단하라",
+      "no_space": "시스템장애의근본원인을진단하라",
+      "informal": "시스템장애의 근본원인을 진단하라",
+      "over_spaced": "시 스 템   장 애 의   근 본   원 인 을   진 단 하 라"
+    }
+  },
+  {
+    "id": "judg_40_forgive",
+    "variants": {
+      "correct": "재기회를 줄지 여부를 결정하라",
+      "no_space": "재기회를줄지여부를결정하라",
+      "informal": "재기회를줄지 여부를결정하라",
+      "over_spaced": "재 기 회 를   줄 지   여 부 를   결 정 하 라"
+    }
+  },
+  {
+    "id": "judg_41_sensitive",
+    "variants": {
+      "correct": "민감한 주제를 적절히 주의하여 다루어라",
+      "no_space": "민감한주제를적절히주의하여다루어라",
+      "informal": "민감한주제를 적절히주의하여 다루어라",
+      "over_spaced": "민 감 한   주 제 를   적 절 히   주 의 하 여   다 루 어 라"
+    }
+  },
+  {
+    "id": "judg_42_innovate",
+    "variants": {
+      "correct": "문제에 대한 혁신적인 해결책을 제안하라",
+      "no_space": "문제에대한혁신적인해결책을제안하라",
+      "informal": "문제에대한 혁신적인해결책을 제안하라",
+      "over_spaced": "문 제 에   대 한   혁 신 적 인   해 결 책 을   제 안 하 라"
+    }
+  },
+  {
+    "id": "judg_43_acceptable",
+    "variants": {
+      "correct": "오류율이 허용 범위인지 판단하라",
+      "no_space": "오류율이허용범위인지판단하라",
+      "informal": "오류율이허용 범위인지판단하라",
+      "over_spaced": "오 류 율 이   허 용   범 위 인 지   판 단 하 라"
+    }
+  },
+  {
+    "id": "judg_44_narrative",
+    "variants": {
+      "correct": "데이터로부터 설득력 있는 서사를 구성하라",
+      "no_space": "데이터로부터설득력있는서사를구성하라",
+      "informal": "데이터로부터설득력 있는서사를 구성하라",
+      "over_spaced": "데 이 터 로 부 터   설 득 력   있 는   서 사 를   구 성 하 라"
+    }
+  },
+  {
+    "id": "judg_45_polite",
+    "variants": {
+      "correct": "거절문을 정중하되 단호하게 다시 써라",
+      "no_space": "거절문을정중하되단호하게다시써라",
+      "informal": "거절문을정중하되 단호하게다시 써라",
+      "over_spaced": "거 절 문 을   정 중 하 되   단 호 하 게   다 시   써 라"
+    }
+  },
+  {
+    "id": "judg_46_naming",
+    "variants": {
+      "correct": "새 기능에 가장 적합한 이름을 선택하라",
+      "no_space": "새기능에가장적합한이름을선택하라",
+      "informal": "새기능에 가장적합한 이름을선택하라",
+      "over_spaced": "새   기 능 에   가 장   적 합 한   이 름 을   선 택 하 라"
+    }
+  },
+  {
+    "id": "judg_47_tradeoff",
+    "variants": {
+      "correct": "속도와 정확도 사이의 절충점을 분석하라",
+      "no_space": "속도와정확도사이의절충점을분석하라",
+      "informal": "속도와정확도 사이의절충점을 분석하라",
+      "over_spaced": "속 도 와   정 확 도   사 이 의   절 충 점 을   분 석 하 라"
+    }
+  },
+  {
+    "id": "judg_48_trust_level",
+    "variants": {
+      "correct": "새 파트너에 대한 적절한 신뢰 수준을 설정하라",
+      "no_space": "새파트너에대한적절한신뢰수준을설정하라",
+      "informal": "새파트너에 대한적절한 신뢰수준을 설정하라",
+      "over_spaced": "새   파 트 너 에   대 한   적 절 한   신 뢰   수 준 을   설 정 하 라"
+    }
+  },
+  {
+    "id": "judg_49_timing",
+    "variants": {
+      "correct": "캠페인을 시작할 최적의 시기를 결정하라",
+      "no_space": "캠페인을시작할최적의시기를결정하라",
+      "informal": "캠페인을시작할 최적의시기를 결정하라",
+      "over_spaced": "캠 페 인 을   시 작 할   최 적 의   시 기 를   결 정 하 라"
+    }
+  },
+  {
+    "id": "judg_50_legacy",
+    "variants": {
+      "correct": "레거시 시스템을 유지할지 폐기할지 결정하라",
+      "no_space": "레거시시스템을유지할지폐기할지결정하라",
+      "informal": "레거시시스템을 유지할지폐기할지 결정하라",
+      "over_spaced": "레 거 시   시 스 템 을   유 지 할 지   폐 기 할 지   결 정 하 라"
+    }
+  }
+]
