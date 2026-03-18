@@ -7,6 +7,7 @@ __pycache__/
 
 # OS
 .DS_Store
+Thumbs.db
 
 # Experiment artifacts
 experiments/results/
@@ -23,7 +24,18 @@ experiments/.env
 *.fdb_latexmk
 *.synctex.gz
 *.pdf
+*.toc
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
 missfont.log
+
+# IDE
+.idea/
+*.swp
+*~
 
 # Local
 CLAUDE.md
