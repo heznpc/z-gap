@@ -13,5 +13,16 @@ experiments/results/
 experiments/.venv/
 experiments/.env
 
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+paper/main.pdf
+
 # Local
 CLAUDE.md

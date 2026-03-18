@@ -92,6 +92,66 @@ def discriminability_ratio(
     }
 
 
+def compute_per_operation_detail(
+    embeddings: dict[str, np.ndarray],
+    operation_ids: list[str],
+    languages: list[str],
+    categories: dict[str, str],
+) -> list[dict]:
+    """Per-operation breakdown: d_intra, per-language-pair distances, mean distance to others.
+
+    Returns list of dicts with:
+      op_id, category, d_intra, lang_pair_distances, mean_dist_to_others
+    """
+    lang_pairs = list(combinations(languages, 2))
+    results = []
+
+    # Pre-collect per-language vectors for d_inter contribution
+    lang_op_vecs: dict[str, list[tuple[str, np.ndarray]]] = {l: [] for l in languages}
+    for op_id in operation_ids:
+        for lang in languages:
+            key = f"{op_id}_{lang}"
+            if key in embeddings:
+                lang_op_vecs[lang].append((op_id, embeddings[key]))
+
+    for op_id in operation_ids:
+        # d_intra: mean pairwise distance across languages for this operation
+        vecs_by_lang = {}
+        for lang in languages:
+            key = f"{op_id}_{lang}"
+            if key in embeddings:
+                vecs_by_lang[lang] = embeddings[key]
+
+        # Per-language-pair distances
+        pair_dists = {}
+        for l1, l2 in lang_pairs:
+            if l1 in vecs_by_lang and l2 in vecs_by_lang:
+                pair_dists[f"{l1}-{l2}"] = cosine_distance(vecs_by_lang[l1], vecs_by_lang[l2])
+
+        d_intra = float(np.mean(list(pair_dists.values()))) if pair_dists else 0.0
+
+        # Mean distance to other operations (per language)
+        mean_dist_to_others = {}
+        for lang in languages:
+            key = f"{op_id}_{lang}"
+            if key not in embeddings:
+                continue
+            vec = embeddings[key]
+            dists = [cosine_distance(vec, v) for oid, v in lang_op_vecs[lang] if oid != op_id]
+            mean_dist_to_others[lang] = float(np.mean(dists)) if dists else 0.0
+
+        results.append({
+            "op_id": op_id,
+            "category": categories.get(op_id, "unknown"),
+            "d_intra": d_intra,
+            "lang_pair_distances": pair_dists,
+            "mean_dist_to_others": mean_dist_to_others,
+            "mean_d_inter": float(np.mean(list(mean_dist_to_others.values()))) if mean_dist_to_others else 0.0,
+        })
+
+    return results
+
+
 def spacing_robustness(
     embeddings_correct: dict[str, np.ndarray],
     embeddings_variants: dict[str, dict[str, np.ndarray]],

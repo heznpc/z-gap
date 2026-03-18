@@ -66,15 +66,54 @@ def test_p7_spacing_robustness(
     embeddings_correct: dict[str, np.ndarray],
     embeddings_variants: dict[str, dict[str, np.ndarray]],
     operation_ids: list[str],
+    n_boot: int = 10000,
 ) -> PredictionResult:
     """P7: R_spacing > 1 — spacing variation << semantic variation."""
+    from .metrics import cosine_distance
     result = spacing_robustness(embeddings_correct, embeddings_variants, operation_ids)
     R_sp = result["R_spacing"]
 
+    # Collect raw distance arrays for bootstrap
+    d_spacing_list = []
+    for op_id in operation_ids:
+        if op_id not in embeddings_correct or op_id not in embeddings_variants:
+            continue
+        correct = embeddings_correct[op_id]
+        for vname, vvec in embeddings_variants[op_id].items():
+            if vname == "correct":
+                continue
+            d_spacing_list.append(cosine_distance(correct, vvec))
+
+    vecs = list(embeddings_correct.values())
+    rng = np.random.default_rng(42)
+    indices = rng.choice(len(vecs), size=(min(500, len(vecs) * 2), 2), replace=True)
+    indices = indices[indices[:, 0] != indices[:, 1]]
+    d_semantic_list = [cosine_distance(vecs[i], vecs[j]) for i, j in indices]
+
+    d_spacing_arr = np.array(d_spacing_list)
+    d_semantic_arr = np.array(d_semantic_list)
+
+    # Bootstrap: resample both distributions, compute R_spacing
+    boot_Rs = []
+    for _ in range(n_boot):
+        bs = rng.choice(d_spacing_arr, size=len(d_spacing_arr), replace=True)
+        bd = rng.choice(d_semantic_arr, size=len(d_semantic_arr), replace=True)
+        mean_bs = np.mean(bs)
+        mean_bd = np.mean(bd)
+        r = mean_bd / mean_bs if mean_bs > 1e-10 else 0.0
+        boot_Rs.append(r)
+
+    boot_Rs = np.array(boot_Rs)
+    p_value = float(np.mean(boot_Rs <= 1.0))
+    ci_95 = (float(np.percentile(boot_Rs, 2.5)), float(np.percentile(boot_Rs, 97.5)))
+
+    result["ci_95"] = ci_95
+    result["p_value"] = p_value
+
     return PredictionResult(
         prediction_id="P7",
-        supported=R_sp > 1.0,
+        supported=R_sp > 1.0 and p_value < 0.05,
         effect_size=R_sp,
-        p_value=0.0,  # placeholder — proper bootstrap in full version
+        p_value=p_value,
         details=result,
     )

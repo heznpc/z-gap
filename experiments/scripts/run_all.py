@@ -9,9 +9,15 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.stimuli import get_all_operations, export_stimuli, LANGUAGES, get_spacing_variants
 from src.embeddings import SentenceTransformerEmbedder, EmbeddingCache
-from src.metrics import discriminability_ratio, spacing_robustness
+from src.metrics import discriminability_ratio, spacing_robustness, compute_per_operation_detail
 from src.predictions import test_p2_cross_lingual_invariance, test_p7_spacing_robustness
-from src.visualize import plot_embedding_space, plot_discriminability, plot_spacing_robustness
+from src.visualize import (
+    plot_embedding_space, plot_discriminability, plot_spacing_robustness,
+    plot_d_intra_distributions, plot_d_intra_vs_d_inter,
+    plot_per_operation_d_intra, plot_p1_scale_trend, plot_cross_lingual_heatmap,
+)
+from src.analysis import diagnose_p2_failure, compute_p1_trend
+from src.report import generate_report
 
 ROOT = Path(__file__).parent.parent
 DATA_DIR = ROOT / "data" / "stimuli"
@@ -62,6 +68,10 @@ def run_model(model, ops, comp_ids, judg_ids, all_ids, categories, cache):
                 embeddings_correct[op_id] = spacing_array[idx]
     print(f"  Embedded {len(spacing_texts)} spacing variants")
 
+    # --- Per-operation detail ---
+    per_op_details = compute_per_operation_detail(embeddings, all_ids, LANGUAGES, categories)
+    print(f"  Computed per-operation detail for {len(per_op_details)} operations")
+
     # --- Test P2 ---
     p2 = test_p2_cross_lingual_invariance(embeddings, comp_ids, judg_ids, LANGUAGES)
     print(f"\n  P2: R_C={p2.details['R_C']:.3f}  R_J={p2.details['R_J']:.3f}  "
@@ -71,7 +81,13 @@ def run_model(model, ops, comp_ids, judg_ids, all_ids, categories, cache):
     p7 = test_p7_spacing_robustness(embeddings_correct, embeddings_variants, all_ids)
     print(f"  P7: R_spacing={p7.details['R_spacing']:.3f}  "
           f"d_sp={p7.details['mean_d_spacing']:.4f}  d_sem={p7.details['mean_d_semantic']:.4f}  "
-          f"{'OK' if p7.supported else 'FAIL'}")
+          f"p={p7.p_value:.4f}  {'OK' if p7.supported else 'FAIL'}")
+
+    # --- P2 Failure Diagnosis ---
+    result_c = discriminability_ratio(embeddings, comp_ids, LANGUAGES)
+    result_j = discriminability_ratio(embeddings, judg_ids, LANGUAGES)
+    diagnosis = diagnose_p2_failure(result_c, result_j, per_op_details)
+    print(f"  P2 diagnosis: primary driver = {diagnosis['primary_driver']}")
 
     # --- Figures ---
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
@@ -92,14 +108,48 @@ def run_model(model, ops, comp_ids, judg_ids, all_ids, categories, cache):
         FIGURES_DIR / f"spacing_{tag}.png"
     )
 
+    # New diagnostic plots
+    plot_d_intra_distributions(
+        per_op_details, model.name,
+        FIGURES_DIR / f"d_intra_dist_{tag}.png"
+    )
+    plot_d_intra_vs_d_inter(
+        per_op_details, model.name,
+        FIGURES_DIR / f"d_intra_vs_d_inter_{tag}.png"
+    )
+    plot_per_operation_d_intra(
+        per_op_details, model.name,
+        FIGURES_DIR / f"per_op_d_intra_{tag}.png"
+    )
+    plot_cross_lingual_heatmap(
+        per_op_details, LANGUAGES, "computational", model.name,
+        FIGURES_DIR / f"heatmap_comp_{tag}.png"
+    )
+    plot_cross_lingual_heatmap(
+        per_op_details, LANGUAGES, "judgment", model.name,
+        FIGURES_DIR / f"heatmap_judg_{tag}.png"
+    )
+
     return {
         "model": model.name, "dim": model.dimension,
         "n_comp": len(comp_ids), "n_judg": len(judg_ids),
-        "P2": {"R_C": p2.details["R_C"], "R_J": p2.details["R_J"],
-               "supported": p2.supported, "p": p2.p_value},
-        "P7": {"R_spacing": p7.details["R_spacing"], "supported": p7.supported,
-               "d_spacing": p7.details["mean_d_spacing"],
-               "d_semantic": p7.details["mean_d_semantic"]},
+        "P2": {
+            "R_C": p2.details["R_C"], "R_J": p2.details["R_J"],
+            "supported": p2.supported, "p": p2.p_value,
+            "ci_95": p2.details.get("ci_95"),
+            "d_intra_C": result_c["mean_d_intra"],
+            "d_intra_J": result_j["mean_d_intra"],
+            "d_inter_C": result_c["mean_d_inter"],
+            "d_inter_J": result_j["mean_d_inter"],
+        },
+        "P7": {
+            "R_spacing": p7.details["R_spacing"], "supported": p7.supported,
+            "d_spacing": p7.details["mean_d_spacing"],
+            "d_semantic": p7.details["mean_d_semantic"],
+            "p_value": p7.p_value,
+            "ci_95": p7.details.get("ci_95"),
+        },
+        "diagnosis": diagnosis,
     }
 
 
@@ -116,21 +166,56 @@ def main():
 
     cache = EmbeddingCache(CACHE_DIR)
 
+    # Add more models here for P1 scale analysis (requires disk space for downloads)
     models = [
-        SentenceTransformerEmbedder("paraphrase-multilingual-MiniLM-L12-v2"),
-        SentenceTransformerEmbedder("intfloat/multilingual-e5-large"),
+        SentenceTransformerEmbedder("paraphrase-multilingual-MiniLM-L12-v2"),   # 384d
+        SentenceTransformerEmbedder("intfloat/multilingual-e5-large"),           # 1024d
+        # SentenceTransformerEmbedder("intfloat/multilingual-e5-small"),         # 384d
+        # SentenceTransformerEmbedder("paraphrase-multilingual-mpnet-base-v2"), # 768d
+        # SentenceTransformerEmbedder("intfloat/multilingual-e5-base"),         # 768d
     ]
 
     all_results = []
+    diagnoses = []
     for model in models:
         result = run_model(model, ops, comp_ids, judg_ids, all_ids, categories, cache)
         all_results.append(result)
+        diagnoses.append(result["diagnosis"])
 
-    # Save
+    # --- P1 Scale-Convergence Analysis ---
+    p1_result = compute_p1_trend(all_results)
+    print(f"\n  P1 (Scale-Convergence): rho_total={p1_result.get('rho_total', 'N/A')}, "
+          f"p={p1_result.get('p_total', 'N/A')}  "
+          f"{'Supported' if p1_result.get('supported') else 'Not supported'}")
+
+    # P1 plot
+    if p1_result.get("n_models", 0) >= 3:
+        plot_p1_scale_trend(p1_result, FIGURES_DIR / "p1_scale_trend.png")
+
+    # --- Save JSON results ---
+    # Strip non-serializable diagnosis data for JSON
+    json_results = []
+    for r in all_results:
+        jr = {k: v for k, v in r.items() if k != "diagnosis"}
+        # Serialize diagnosis summary (exclude numpy arrays)
+        diag = r["diagnosis"]
+        jr["diagnosis_summary"] = {
+            "primary_driver": diag["primary_driver"],
+            "d_intra_C": diag["d_intra_C"],
+            "d_intra_J": diag["d_intra_J"],
+            "d_inter_C": diag["d_inter_C"],
+            "d_inter_J": diag["d_inter_J"],
+            "mannwhitney_p": diag["mannwhitney_p"],
+        }
+        json_results.append(jr)
+
     results_path = RESULTS_DIR / "prediction_results.json"
     results_path.parent.mkdir(parents=True, exist_ok=True)
     with open(results_path, "w") as f:
-        json.dump(all_results, f, indent=2)
+        json.dump(json_results, f, indent=2)
+
+    # --- Generate Report ---
+    generate_report(all_results, p1_result, diagnoses, RESULTS_DIR / "report.md")
 
     # --- Final Summary ---
     print(f"\n{'='*60}")
@@ -143,13 +228,6 @@ def main():
               f"{r['P2']['R_C']:>6.2f} {r['P2']['R_J']:>6.2f} "
               f"{'OK' if r['P2']['supported'] else 'FAIL':>4} | "
               f"{r['P7']['R_spacing']:>6.2f} {'OK' if r['P7']['supported'] else 'FAIL':>4}")
-
-    # P1 check: does R increase with scale?
-    if len(all_results) >= 2:
-        R_small = all_results[0]["P2"]["R_C"] + all_results[0]["P2"]["R_J"]
-        R_large = all_results[1]["P2"]["R_C"] + all_results[1]["P2"]["R_J"]
-        print(f"\n  P1 (Scale-Convergence): R_total small={R_small:.2f} → large={R_large:.2f}  "
-              f"{'INCREASING (OK)' if R_large > R_small else 'NOT INCREASING'}")
 
 
 if __name__ == "__main__":
