@@ -22,7 +22,9 @@ experiments/.env
 *.fls
 *.fdb_latexmk
 *.synctex.gz
-paper/main.pdf
+*.pdf
+missfont.log
 
 # Local
 CLAUDE.md
+.claude/

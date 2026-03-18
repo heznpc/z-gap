@@ -344,167 +344,25 @@ Wave~3 accepts NL (Type-1), translates to code (Type-2), executes. The translati
 
 \section{Toward Representation-Level Execution}\label{sec:toward}
 
-\subsection{Architecture}
+A representation-level system would: (1)~accept any surface form, (2)~normalize (spacing, OCR, ASR), (3)~encode to $Z$, (4)~verify and disambiguate at $Z$, (5)~execute at $Z$ or project to Type-2. Several pieces exist: constrained decoding (Outlines, LMQL) makes $Z \to$ Type-2 deterministic; Large Concept Models~\cite{meta2024lcm} operate on SONAR sentence embeddings; LPN~\cite{macfarlane2025lpn} and COCONUT~\cite{hao2024coconut} demonstrate latent execution; neuro-symbolic systems (Scallop~\cite{li2023scallop}, Lobster~\cite{huang2026lobster}) bridge continuous representations and discrete logic. The gap is unifying these with PRH-predicted convergence.
 
-A representation-level system would: (1)~accept any surface form, (2)~normalize surface form (spacing recovery, OCR correction), (3)~encode to $Z$, (4)~verify at $Z$ and disambiguate (cultural context + completeness check), (5)~execute at $Z$ or project to Type-2.
+Key open problems include: determinism at $Z$ (convergence $\neq$ identity), verification without Type-2 projection, compositionality (NL composes loosely; code composes strictly), and cultural invariance (when $\Zsem$ carries cultural inflection, the ideal is a family $Z(c)$, not a single $Z$).
 
-\begin{center}
-\begin{tikzpicture}[
-  node distance=0.6cm and 0.3cm,
-  box/.style={draw, rounded corners, fill=blue!8, text width=4.8cm, align=center, minimum height=0.7cm, font=\small},
-  arrow/.style={->, thick, >=stealth}
-]
-\node[box] (input) {User input (any surface form,\\any language, any modality)};
-\node[box, below=of input] (norm) {Surface normalization\\(spacing, OCR, ASR)};
-\node[box, below=of norm] (enc) {Encoder to $Z$\\(SONAR-like, 200 languages)};
-\node[box, below=of enc] (verify) {Cultural context + Verification\\+ Disambiguation at $Z$};
-\node[box, below left=0.6cm and -0.5cm of verify] (exec) {Direct execute at $Z$\\(LCM)};
-\node[box, below right=0.6cm and -0.5cm of verify] (proj) {Project to code\\(constrained decoding)};
-\draw[arrow] (input) -- (norm);
-\draw[arrow] (norm) -- (enc);
-\draw[arrow] (enc) -- (verify);
-\draw[arrow] (verify) -- (exec);
-\draw[arrow] (verify) -- (proj);
-\end{tikzpicture}
-\end{center}
+\subsection{Illustrative Pilot}\label{sec:pilot}
 
-SONAR supports speech as input---the spacing problem disappears when the input modality has no spacing to begin with.
+We test four predictions using 100 operations (50 computational + 50 judgment) described in five languages (English, Korean, Chinese, Arabic, Spanish), embedded through multilingual sentence-transformers (MiniLM-L12, E5-large) and UniXcoder. The discriminability ratio $R = d_{\text{inter}}/d_{\text{intra}}$ tests whether cross-lingual same-operation similarity exceeds within-language different-operation similarity. Full protocol in Appendix~\ref{app:pilot}.
 
-\subsection{Existing Pieces}
+\paragraph{P2 (Cross-Lingual Invariance): Not supported.}
+Judgment operations show \emph{higher} cross-lingual invariance than computational operations ($R_J = 3.79$ vs.\ $R_C = 1.91$ for MiniLM; $p=1.0$)---the opposite of our prediction. Computational operations have higher $d_{\text{intra}}$ (0.295 vs.\ 0.191, $p < 0.0001$), meaning they are \emph{less} invariant at the description level. We interpret this as evidence that description-level invariance $\neq$ execution-level convergence: judgment operations use abstract, cross-linguistically shared vocabulary (``evaluate,'' ``prioritize''), while computational operations use domain-specific terms (``transpose,'' ``palindrome'') that vary across languages.
 
-\begin{itemize}[nosep]
-  \item \textbf{Constrained decoding} (Outlines, LMQL): $Z \to$ Type-2, made deterministic. Requires specifying target grammar.
-  \item \textbf{Large Concept Models} (Meta)~\cite{meta2024lcm}: Operates on SONAR sentence embeddings---architecturally closest to the proposed pipeline, but performs generation, not execution.
-  \item \textbf{Latent execution systems:} LaSynth (Meta, NeurIPS 2021)~\cite{chen2021lasynth} learns latent representations to approximate execution of partially generated programs. Latent Program Network (LPN, NeurIPS 2025 spotlight)~\cite{macfarlane2025lpn} learns a latent space of implicit programs and executes via neural decoder---the closest existing system to Wave~4, achieving 3rd place at ARC Prize 2024. COCONUT (Meta, 2024)~\cite{hao2024coconut} bypasses language tokens entirely, reasoning in continuous latent space. Code World Models (CWM, Meta FAIR, 2025)~\cite{metafair2025cwm} models program execution trajectories, tracking variable states---but at the token level, not in SONAR space. These demonstrate that execution at $Z$ is feasible in limited domains; the gap is unifying them with PRH-predicted convergence.
-  \item \textbf{Neuro-symbolic systems} (Scallop~\cite{li2023scallop}, Lobster/ASPLOS 2026~\cite{huang2026lobster}): Combine neural perception with symbolic reasoning, bridging continuous representations and discrete logic. Directly relevant to the $Z \to$ verification pipeline. Differentiable relaxations of discrete constraints may enable partial verification without full Type-2 projection.
-\end{itemize}
+\paragraph{P7 (Spacing Robustness): Strongly supported.}
+Korean spacing variants cluster ${\sim}3\times$ closer than semantically different operations ($R_{\text{spacing}} = 2.90$, $p < 0.001$). Punctuation robustness is even stronger: $R_{\text{punct}} = 13.6$. The one outlier is UPPERCASE (drift = 0.192), acting as a pragmatic signal---evidence that $\Zprag$ is encoded in surface cues even when $\Zsem$ is unchanged.
 
-\subsection{Open Problems}
+\paragraph{NL-Code Alignment: Supports PRH.}
+Embedding NL descriptions alongside Python code through UniXcoder yields $R_{\text{code}} > 1$: NL maps closer to its corresponding code than to other code. This resolves the P2 ambiguity---NL descriptions diverge across languages (P2 fails), yet each maps closer to its code equivalent (NL-code alignment holds). \textbf{Description-level invariance and execution-level convergence are distinct phenomena}---the central empirical finding.
 
-\begin{enumerate}[nosep]
-  \item \textbf{Determinism at $Z$}---PRH convergence $\neq$ identity. Temperature-zero decoding helps but does not eliminate stochasticity.
-  \item \textbf{Verification at $Z$}---Can we verify program properties in continuous embedding space? Connects to neural theorem proving.
-  \item \textbf{The grounding problem}---\texttt{x > 5} must mean exactly ``strictly greater than 5.'' What representational precision suffices?
-  \item \textbf{Compositionality}---Code composes via strict nesting; NL composes loosely. Categorically: the question is whether a functor $F: \mathrm{NL}_{\mathrm{comp}} \to \mathrm{Prog}$ preserves compositional structure.
-  \item \textbf{The specification problem}---If the user writes NL $\to$ system maps to $Z$, the user cannot inspect $Z$. This is a new form of opacity.
-  \item \textbf{Cultural invariance}---If $\Zsem$ carries cultural inflection for judgment-involving domains (\S\ref{sec:dtrain}), the ``Platonic ideal'' is a family $Z(c)$, not a single $Z$.
-  \item \textbf{Surface-form invariance}---The encoder must map all spacing/OCR/typographic variants of the same meaning to the same $Z$.
-\end{enumerate}
-
-\subsection{Evaluation Criteria}
-
-\begin{table*}[t]
-\centering
-\caption{Evaluation criteria for representation-level execution systems.}
-\label{tab:eval}
-\small
-\begin{tabular}{llll}
-\toprule
-\textbf{Criterion} & \textbf{Metric} & \textbf{Baseline} & \textbf{Target} \\
-\midrule
-Convergence & NL-code cosine similarity & 0.77 MRR & $> 0.95$ \\
-Determinism & Same NL $\to$ same output rate & $\sim$0.6 & $> 0.99$ \\
-Cross-lingual invariance & $\sigma$ of sim.\ across NL languages & N/A & $\sigma < 0.05$ \\
-Verification at $Z$ & \% properties verifiable w/o projection & 0\% & $> 50\%$ \\
-Disambiguation efficiency & Clarification queries per task & N/A & $\leq$ syntax errors/task \\
-Spacing robustness & spacing var.\ / semantic var. & N/A & $> 10\times$ \\
-$\Dtrain$ invariance & Cross-model $\Zsem$ agreement & N/A & $> 0.9$ cosine \\
-\bottomrule
-\end{tabular}
-\end{table*}
-
-\subsection{Pilot Experiment and Results}\label{sec:pilot}
-
-We conducted a pilot experiment testing P2 and P7 using 50 computational + 50 judgment operations described in five languages (English, Korean, Chinese, Arabic, Spanish), embedded through two multilingual sentence-transformers: paraphrase-multilingual-MiniLM-L12-v2 (384d) and multilingual-e5-large (1024d). The discriminability ratio $R = d_{\text{inter}}/d_{\text{intra}}$ tests whether cross-lingual same-operation similarity exceeds within-language different-operation similarity. See Appendix~\ref{app:pilot} for the full protocol.
-
-\paragraph{P2 Results: Cross-Lingual Semantic Invariance.}
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Model} & \textbf{dim} & $R_C$ & $R_J$ & \textbf{P2} ($R_C > R_J$?) \\
-\midrule
-MiniLM-L12 & 384 & 1.91 & 3.79 & \textbf{No} ($p=1.0$) \\
-E5-large & 1024 & 1.22 & 1.59 & \textbf{No} ($p=1.0$) \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-P2 is \textbf{not supported}: judgment operations show higher cross-lingual invariance than computational operations---the opposite of our prediction. Decomposition reveals the primary driver: computational operations have significantly higher $d_{\text{intra}}$ (mean 0.295 vs.\ 0.191, Mann-Whitney $p < 0.0001$ for MiniLM), meaning they are \emph{less} cross-lingually invariant at the description level.
-
-\paragraph{Interpretation.}
-We consider three interpretations of this failure:
-\begin{enumerate}[nosep]
-  \item \textbf{PRH does not hold for code.} The simplest reading: computational operations fail to converge cross-lingually because code is not a modality for which PRH applies. If so, the entire framework requires revision.
-  \item \textbf{Description-level $\neq$ execution-level.} Judgment operations use abstract, cross-linguistically shared vocabulary (``evaluate,'' ``prioritize'') that multilingual models align well, while computational operations use domain-specific terms (``transpose,'' ``palindrome'') that vary across languages. PRH's $\Zsem$ convergence claim may concern computational semantics (denotational equivalence), not NL description similarity. Under this reading, the pilot measures the wrong quantity.
-  \item \textbf{Embedding models are insufficient proxies.} Sentence-level multilingual embeddings (MiniLM, E5) are trained on NL similarity, not code semantics. Code-specialized models (StarCoder, CodeBERT) or probing experiments may yield different results.
-\end{enumerate}
-We favor interpretation~(2) but cannot rule out~(1) without code-embedding experiments. A stronger test would embed code alongside NL descriptions and measure NL-code alignment rather than NL-NL alignment across languages. We refine P2 accordingly: cross-lingual invariance at $\Zsem$ may hold for execution semantics while failing for NL descriptions of those semantics.
-
-\paragraph{P7 Results: Spacing Robustness.}
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Model} & \textbf{dim} & $R_{\text{spacing}}$ & \textbf{95\% CI} & $p$ \\
-\midrule
-MiniLM-L12 & 384 & 2.90 & $[2.54, 3.36]$ & $< 0.001$ \\
-E5-large & 1024 & 2.90 & $[2.65, 3.20]$ & $< 0.001$ \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-P7 is \textbf{strongly supported}: Korean spacing variants cluster ${\sim}3\times$ closer than semantically different operations with identical spacing. This holds across both models with tight bootstrap confidence intervals. Even BPE-based models achieve substantial spacing robustness ($R_{\text{spacing}} \approx 2.9$), though byte-level models (ByT5, CANINE) should achieve higher ratios.
-
-\paragraph{NL-Code Cross-Modal Alignment.}
-To directly test PRH for code, we embed 50 computational NL descriptions alongside their Python code equivalents through UniXcoder~\cite{unixcoder} (code-trained, 768d) and MiniLM-L12 (NL-only, 384d). We define $R_{\text{code}} = d_{\text{mismatch}} / d_{\text{match}}$, where $d_{\text{match}}$ is the distance between an NL description and its corresponding code, and $d_{\text{mismatch}}$ is the distance to a different operation's code.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lccccc}
-\toprule
-\textbf{Model} & \textbf{dim} & $R_{\text{code}}$ & $d_{\text{match}}$ & $d_{\text{mis}}$ & \textbf{PRH} \\
-\midrule
-UniXcoder (code-trained) & 768 & 1.04 & 0.788 & 0.821 & Yes \\
-MiniLM-L12 (NL-only) & 384 & 1.18 & 0.622 & 0.735 & Yes \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-Both models show $R_{\text{code}} > 1$: NL descriptions are closer to their corresponding code than to other code, consistent with PRH. Per-language analysis reveals $\Dtrain$ effects: English NL is closest to code ($d_{\text{match}} = 0.64$ for UniXcoder), while Korean and Arabic are most distant ($d_{\text{match}} \approx 0.88$)---a direct consequence of English-dominant code training data.
-
-Critically, this result resolves the P2 ambiguity. P2 measured NL-NL cross-lingual invariance and found computational operations \emph{less} invariant. The NL-code experiment shows computational NL-code alignment is \emph{positive} ($R_{\text{code}} > 1$). The two results are consistent: NL descriptions of code vary across languages (P2 fails), but each language's NL description still maps closer to its code equivalent than to unrelated code (NL-code alignment holds). This supports interpretation~(2) from \S\ref{sec:pilot}: description-level invariance and execution-level convergence are distinct phenomena.
-
-\paragraph{P7 Extension: Punctuation Robustness.}
-We extend P7 beyond spacing to punctuation and formatting variants. For each of 100 English operations, we generate 10 variants: bare, period, question mark, exclamation, ellipsis, colon, lowercase, UPPERCASE, extra spaces, and article removal. $R_{\text{punct}} = d_{\text{semantic}} / d_{\text{punct}} = 13.6$---punctuation variants are ${\sim}14\times$ closer than semantically different operations, far exceeding spacing robustness ($R_{\text{spacing}} \approx 2.9$). Most variants drift minimally (period: 0.014, question mark: 0.013). The one outlier is UPPERCASE (drift = 0.192), which acts as a pragmatic signal (emphasis, shouting)---evidence that $\Zprag$ is encoded in surface-form cues even when $\Zsem$ is unchanged.
-
-\paragraph{P3 Results: Stratification Separability.}
-We train linear probes on English embeddings (MiniLM-L12) and test cross-lingual transfer, directly testing whether $\Zsem$ is separable across languages.
-
-\begin{table}[h]
-\centering
-\small
-\begin{tabular}{lccccc}
-\toprule
-\textbf{Probe task} & \textbf{en} & \textbf{es} & \textbf{zh} & \textbf{ar} & \textbf{ko} \\
-\midrule
-Category (comp/judg, chance 50\%) & 1.00 & 0.97 & 0.96 & 0.87 & 0.80 \\
-Operation ID (100-way, chance 1\%) & 1.00 & 0.98 & 0.93 & 0.86 & 0.66 \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-P3 is \textbf{supported}: a classifier trained only on English embeddings achieves 90\% mean accuracy on category transfer and 85.8\% on 100-way operation identification across non-English languages---far above chance. This is direct evidence that $\Zsem$ structure generalizes cross-lingually: the representation of \emph{what is computed} is shared across languages. Korean transfers worst (80\%/66\%), consistent with $\Dtrain$ effects and its typological distance from English.
-
-\paragraph{P1 Results: Scale-Convergence.}
-We tested three models (MiniLM 384d, mpnet 768d, E5-large 1024d). $R_{\text{total}}$ does not increase monotonically with dimension (5.7 $\to$ 8.3 $\to$ 2.8), so \textbf{P1 is not supported} in this configuration. However, the models span different architectures and training procedures; a clean P1 test requires models from the same family at different scales (e.g., E5-small/base/large). We note this as a limitation.
-
-\paragraph{Extensions.} Full-scale P1 testing within single model families and P6 ($\Dtrain$ sensitivity via cross-model comparison) are planned.
+\paragraph{P3 (Stratification Separability): Supported.}
+Linear probes trained on English embeddings achieve 90\% mean accuracy on category transfer and 85.8\% on 100-way operation ID across non-English languages (chance: 50\% and 1\%). Korean transfers worst (80\%/66\%), consistent with $\Dtrain$ effects. This directly demonstrates that $\Zsem$ generalizes cross-lingually.
 
 %% ============================================================
 %% 6. DISCUSSION
@@ -512,46 +370,13 @@ We tested three models (MiniLM 384d, mpnet 768d, E5-large 1024d). $R_{\text{tota
 
 \section{Discussion}
 
-\subsection{Implications}
-
-For compilers, the wall is absolute. For LLM-based systems, it is irrelevant in practice. For hybrid systems, it becomes a design choice. Python occupies the closest point to NL within the Type-2 boundary---the productive question is not ``push further within Type-2?'' but ``accept NL and project to Type-2 via $Z$?''
-
-If representation-level execution becomes practical, programming languages shift from human-writable specifications to machine-generated projections from $Z$---languages become output formats. Debugging shifts from code to $Z$, requiring new visualization tools and provenance links.
-
-\subsection{Cultural Boundary and Safety}
-
-$\Zsem$ is culture-invariant for purely computational domains (sorting, arithmetic); $Z$ carries cultural inflection for judgment-involving domains (risk assessment, prioritization)---requiring $Z(c)$ rather than $Z$. $\Dtrain$ dependence creates ethical risks: computational colonialism (English-derived norms as ``neutral'' $Z$), consent opacity (users cannot see which cultural assumptions shaped interpretation), accountability gaps, and cultural feedback loops ($Z$-projected outputs re-enter $\Dtrain$). Representation-level systems must make cultural parameterization explicit. See Appendix~\ref{app:ethics} for full analysis and mitigation paths.
-
-\subsection{Non-English Programming}
-
-Korean programmers face a double translation: thought (Korean) $\to$ code (English syntax) $\to$ execution. Representation-level execution would eliminate both: Korean intent $\to$ $Z$ $\to$ execution. Research on reasoning-language effects~\cite{li2026reasoning} suggests the ``thinking in English'' overhead is real---the global talent pool could expand by an order of magnitude.
-
 \subsection{The Verification Paradox}\label{sec:verification}
 
-A deeper tension emerges: if verification requires formal methods, and formal methods require Type-2 input, the system must project from $Z$ to Type-2 for verification---reintroducing the Chomsky wall at the verification stage. The wall is dissolved at input but reassembled at verification.
+If verification requires formal methods, and formal methods require Type-2 input, the system must project from $Z$ to Type-2 for verification---reintroducing the Chomsky wall at the verification stage. The wall is dissolved at input but reassembled at verification. Near-term systems will use a hybrid: $Z$ provides expressiveness; Type-2 projection provides verifiability. The paradox is not fatal but constrains the deployment path: the wall retreats inward, from the user-facing boundary to the system-internal verification layer.
 
-\begin{center}
-\begin{tikzpicture}[
-  node distance=0.5cm,
-  box/.style={draw, rounded corners, fill=blue!8, minimum height=0.6cm, font=\small, align=center},
-  arrow/.style={->, thick, >=stealth},
-  label/.style={font=\scriptsize\itshape, text=gray!70!black}
-]
-\node[box] (nl) {NL input};
-\node[box, right=1.2cm of nl] (z) {$Z$};
-\node[box, below=0.8cm of z] (proj) {Project to Type-2};
-\node[box, right=1.2cm of proj] (verify) {Verify};
-\node[box, right=1.2cm of verify] (exec) {Execute};
-\node[label, above right=0.15cm and 0.1cm of z] {verify at $Z$? $\to$ no current tools};
-\draw[arrow] (nl) -- (z);
-\draw[arrow] (z) -- (proj);
-\draw[arrow] (proj) -- (verify);
-\draw[arrow] (verify) -- (exec);
-\node[label, below=0.15cm of verify] {$\uparrow$ wall reappears};
-\end{tikzpicture}
-\end{center}
+\subsection{Cultural Boundary}
 
-Near-term systems will use a hybrid architecture: $Z$ provides expressiveness; Type-2 projection provides verifiability. Full representation-level execution---input, verification, and execution all at $Z$---requires advances in neural verification. The neuro-symbolic literature (Scallop, Lobster) offers partial tools: differentiable verification predicates that operate on continuous representations without full Type-2 projection. But these handle only simple properties; general program verification at $Z$ remains open. The paradox is not fatal but constrains the deployment path: the Chomsky wall retreats inward, from the user-facing boundary to the system-internal verification layer. Progress is measured by how far inward the wall can be pushed.
+$\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultural inflection for judgment-involving domains---requiring $Z(c)$ rather than $Z$. $\Dtrain$ dependence creates ethical risks: computational colonialism (English-derived norms as ``neutral'' $Z$), consent opacity, and cultural feedback loops ($Z$-projected outputs re-enter $\Dtrain$). Korean programmers face a double translation: thought (Korean) $\to$ code (English syntax) $\to$ execution; representation-level systems could eliminate both steps~\cite{li2026reasoning}. See Appendix~\ref{app:ethics} for full analysis.
 
 % Limitations moved to standalone section after Conclusion (EMNLP requirement)
 
@@ -576,8 +401,8 @@ LPN (NeurIPS 2025)~\cite{macfarlane2025lpn}, COCONUT (Meta, 2024)~\cite{hao2024c
 \paragraph{Tokenization and naturalness.}
 Tokenizers introduce up to 15$\times$ cost unfairness across languages~\cite{petrov2024tokenizers}. Software is ``natural''---statistically predictable like NL~\cite{hindle2012naturalness}.
 
-\paragraph{Neuroscience: cross-brain representational similarity.}
-Our communicability question has a direct parallel in neuroscience. Hyperalignment~\cite{haxby2011hyperalignment} shows that different brains produce similar representational geometries when processing the same stimuli---the neural analogue of PRH convergence. Representational Similarity Analysis (RSA; Kriegeskorte et al., 2008)~\cite{kriegeskorte2008rsa} provides the methodological bridge: RSA in neuroscience and CKA/probing in AI both ask whether two systems encode the same structure. Yet shared geometry does not resolve the \emph{private language problem} (Wittgenstein, 1953)~\cite{wittgenstein1953}: ``Is my red your red?'' maps directly onto ``Is my $\Zsem$ your $\Zsem$?'' The gap between representational convergence and communicability is not unique to AI---it is a fundamental question about whether shared structure entails shared meaning, studied across cognitive science, philosophy of mind, and now, we argue, the NL-code interface.
+\paragraph{Neuroscience and philosophy.}
+Hyperalignment~\cite{haxby2011hyperalignment} and RSA~\cite{kriegeskorte2008rsa} show cross-brain representational convergence---the biological analogue of PRH---yet shared geometry does not resolve the private language problem~\cite{wittgenstein1953}. The communicability gap is studied across cognitive science and philosophy of mind; we extend it to the NL-code interface.
 
 %% ============================================================
 %% 8. CONCLUSION
@@ -589,11 +414,7 @@ PRH establishes that neural representations converge. We have argued that this i
 
 Mathematics shows that communicability is achievable: Platonic ideals function as a cross-cultural medium despite divergent derivation paths and conventional notation. But mathematics achieves this by encoding denotations directly, bypassing natural language. Our pilot provides evidence that the NL-to-$Z$ encoding path does not inherit this property: execution-level convergence (NL-code alignment, $R_{\text{code}} > 1$) coexists with description-level divergence (P2 failure). Representations can converge without the descriptions that access them converging---existence does not entail communicability.
 
-This distinction connects to parallel challenges: in neuroscience, cross-brain representational similarity does not resolve the private language problem; in philosophy, the existence of universals does not guarantee intersubjective access; in denotational semantics, programs may share denotations while their specifications diverge. The communicability gap is not unique to AI---it is a structural feature of any system where shared representations are accessed through culturally mediated encoders.
-
-Three practical consequences follow. First, disambiguation cost is conserved: representation-level systems redistribute specification complexity rather than eliminating it. Second, the Chomsky wall retreats inward---dissolved at input, it reappears at verification, constraining the deployment path. Third, $\Dtrain$ dependence means that even $\Zsem$ carries cultural bias, requiring explicit cultural parameterization rather than the assumption of neutrality.
-
-The research agenda is to close the communicability gap---to build systems where convergent representations are not merely shared but reliably accessible across languages, cultures, and encoding paths. Mathematics achieved this for abstract reasoning. Whether computation can achieve it for executable intent remains the central open question.
+This parallels challenges in neuroscience (representational similarity $\neq$ shared experience), philosophy (universals $\neq$ intersubjective access), and denotational semantics (shared denotation $\neq$ shared specification). Three practical consequences follow: disambiguation cost is conserved, the Chomsky wall retreats inward to verification, and $\Dtrain$ dependence requires explicit cultural parameterization. Mathematics achieved communicability for abstract reasoning; whether computation can achieve it for executable intent remains open.
 
 %% ============================================================
 %% LIMITATIONS (required by EMNLP — does not count toward page limit)
