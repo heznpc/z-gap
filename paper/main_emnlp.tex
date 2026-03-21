@@ -255,7 +255,9 @@ This question has deep roots. In neuroscience, Hyperalignment~\cite{haxby2011hyp
 
 Mathematics provides the strongest evidence that communicability \emph{is} achievable despite cultural divergence: $a^2 + b^2 = c^2$ communicates identically across cultures because the denotation is unambiguous. But mathematics achieves this precisely by \emph{bypassing} natural language---encoding denotations directly in formal notation. Natural language does not: ``find the largest values'' carries cultural defaults invisible to the speaker.
 
-Our pilot experiment (\S\ref{sec:pilot}) sharpens this point: \emph{description-level} cross-lingual invariance does not follow the pattern PRH predicts for \emph{execution-level} convergence. NL descriptions of computational operations are \emph{less} invariant across languages than descriptions of judgment operations---the opposite of what $\Zsem$ convergence would suggest. This is direct evidence for the communicability gap: $\Zsem$ may converge at the level of what programs \emph{do}, even when NL descriptions of what they do diverge. The gap is located not in $Z$ itself but in the NL-to-$Z$ encoding path---precisely where cultural mediation occurs.
+A structural asymmetry deepens this gap. Code is \emph{modality-complete}: its text encodes the entirety of its meaning, with no reliance on intonation, gesture, or shared background. Natural language is \emph{modality-incomplete}: meaning depends on non-verbal channels that embedding models cannot access. High-context languages~\cite{hall1976beyond} amplify this incompleteness: Korean routinely omits subjects recoverable from social context, and mimetic expressions like \emph{salgeumsalgeum} (``stealthily'') encode embodied sensory meaning with no clean English mapping. Embedding models trained on text alone capture only the explicit channel---for code this is everything; for NL, especially high-context NL, it is a lossy projection. Recent work on World English varieties confirms this asymmetry empirically: AI-generated text maintains high semantic similarity while systematically erasing pragmatic and cultural markers, with pragmatic markers $1.9\times$ more vulnerable than lexical ones~\cite{culturalghosting2026}.
+
+Our pilot experiment (\S\ref{sec:pilot}) sharpens this point: \emph{description-level} cross-lingual invariance does not follow the pattern PRH predicts for \emph{execution-level} convergence. NL descriptions of computational operations are \emph{less} invariant across languages than descriptions of judgment operations---the opposite of what $\Zsem$ convergence would suggest. This is direct evidence for the communicability gap: $\Zsem$ may converge at the level of what programs \emph{do}, even when NL descriptions of what they do diverge. The gap is located not in $Z$ itself but in the NL-to-$Z$ encoding path---precisely where cultural mediation occurs, and where modality incompleteness is most acute.
 
 \subsection{The Convergence-Determinism Gap}
 
@@ -271,7 +273,7 @@ This gap is the central technical obstacle.
 
 \begin{description}[nosep,font=\bfseries]
   \item[P1 (Scale-Convergence).] NL-code cosine distance decreases monotonically with model scale.
-  \item[P2 (Cross-Lingual Semantic Invariance).] \emph{jeongnyeolhara} (Korean: sort) and ``sort this'' (English) are closer in $Z$ than ``sort this'' and ``reverse this'' in English. This should not hold for judgment-involving operations.
+  \item[P2 (Cross-Lingual Semantic Invariance).] \emph{jeongnyeolhara} (Korean: sort) and ``sort this'' (English) are closer in $Z$ than ``sort this'' and ``reverse this'' in English. This should not hold for judgment-involving operations. \emph{Extension:} this invariance should degrade along a dialect continuum---cross-dialectal $R$ (e.g., standard Korean vs.\ Jeju) should fall between within-language $R$ and cross-lingual $R$, revealing that the communicability gap is continuous, not categorical.
   \item[P3 (Stratification Separability).] Probing classifiers for \emph{what is computed} generalize cross-lingually; probes for \emph{how} show language-specific patterns.
   \item[P4 (Domain-Dependent Determinism).] Constrained decoding achieves higher consistency for computational than judgment tasks.
   \item[P5 (Disambiguation Migration).] Total disambiguation effort is conserved---syntax errors migrate to semantic clarification queries.
@@ -350,10 +352,10 @@ Key open problems include: determinism at $Z$ (convergence $\neq$ identity), ver
 
 \subsection{Illustrative Pilot}\label{sec:pilot}
 
-We test four predictions using 100 operations (50 computational + 50 judgment) described in five languages (English, Korean, Chinese, Arabic, Spanish), embedded through multilingual sentence-transformers (MiniLM-L12, E5-large) and UniXcoder. The discriminability ratio $R = d_{\text{inter}}/d_{\text{intra}}$ tests whether cross-lingual same-operation similarity exceeds within-language different-operation similarity. Full protocol in Appendix~\ref{app:pilot}.
+We test four predictions using 100 operations (50 computational + 50 judgment) described in five languages (English, Korean, Chinese, Arabic, Spanish) with dialectal variants (e.g., standard Korean vs.\ Gyeongsang/Jeolla/Jeju; MSA vs.\ Egyptian/Gulf/Levantine Arabic), embedded through multilingual sentence-transformers (MiniLM-L12, E5-large) and UniXcoder. The discriminability ratio $R = d_{\text{inter}}/d_{\text{intra}}$ tests whether cross-lingual same-operation similarity exceeds within-language different-operation similarity. Full protocol in Appendix~\ref{app:pilot}.
 
 \paragraph{P2 (Cross-Lingual Invariance): Not supported.}
-Judgment operations show \emph{higher} cross-lingual invariance than computational operations ($R_J = 3.79$ vs.\ $R_C = 1.91$ for MiniLM; $p=1.0$)---the opposite of our prediction. Computational operations have higher $d_{\text{intra}}$ (0.295 vs.\ 0.191, $p < 0.0001$), meaning they are \emph{less} invariant at the description level. We interpret this as evidence that description-level invariance $\neq$ execution-level convergence: judgment operations use abstract, cross-linguistically shared vocabulary (``evaluate,'' ``prioritize''), while computational operations use domain-specific terms (``transpose,'' ``palindrome'') that vary across languages.
+Judgment operations show \emph{higher} cross-lingual invariance than computational operations ($R_J = 3.79$ vs.\ $R_C = 1.91$ for MiniLM; $p=1.0$)---the opposite of our prediction. Computational operations have higher $d_{\text{intra}}$ (0.295 vs.\ 0.191, $p < 0.0001$), meaning they are \emph{less} invariant at the description level. We interpret this as evidence that description-level invariance $\neq$ execution-level convergence: judgment operations use abstract, cross-linguistically shared vocabulary (``evaluate,'' ``prioritize''), while computational operations use domain-specific terms (``transpose,'' ``palindrome'') that vary across languages. A structural factor compounds this: NL is \emph{modality-incomplete}---full meaning depends on non-verbal context that text-only embeddings cannot capture---while code is modality-complete, explaining why NL-code alignment succeeds (\S\ref{sec:communicability}) where NL-NL cross-lingual invariance fails. Cross-dialectal analysis further reveals that this gap is \emph{continuous}: $R$ degrades progressively from within-dialect to cross-dialect to cross-lingual comparisons, confirming that communicability is not a binary property but a function of linguistic distance and context dependence.
 
 \paragraph{P7 (Spacing Robustness): Strongly supported.}
 Korean spacing variants cluster ${\sim}3\times$ closer than semantically different operations ($R_{\text{spacing}} = 2.90$, $p < 0.001$). Punctuation robustness is even stronger: $R_{\text{punct}} = 13.6$. The one outlier is UPPERCASE (drift = 0.192), acting as a pragmatic signal---evidence that $\Zprag$ is encoded in surface cues even when $\Zsem$ is unchanged.
@@ -376,7 +378,7 @@ If verification requires formal methods, and formal methods require Type-2 input
 
 \subsection{Cultural Boundary}
 
-$\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultural inflection for judgment-involving domains---requiring $Z(c)$ rather than $Z$. $\Dtrain$ dependence creates ethical risks: computational colonialism (English-derived norms as ``neutral'' $Z$), consent opacity, and cultural feedback loops ($Z$-projected outputs re-enter $\Dtrain$). Korean programmers face a double translation: thought (Korean) $\to$ code (English syntax) $\to$ execution; representation-level systems could eliminate both steps~\cite{li2026reasoning}. See Appendix~\ref{app:ethics} for full analysis.
+$\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultural inflection for judgment-involving domains---requiring $Z(c)$ rather than $Z$. This inflection is amplified in high-context cultures~\cite{hall1976beyond}, where meaning relies on non-verbal channels---subject omission, social register, embodied reference---that text-only models cannot capture~\cite{park2024pragmatic}. The modality incompleteness of NL thus varies across cultures, making the communicability gap a function of both $\Dtrain$ and the source culture's context dependence. Furthermore, the gap is not categorical but \emph{continuous}: dialectal variants within a language occupy intermediate positions, as shown by dialect-aware embedding benchmarks~\cite{faisal2025swan} and evidence that LLMs treat dialects as stigmatized deviations rather than points on a continuum~\cite{bui2025dialect}. $\Dtrain$ dependence creates ethical risks: computational colonialism (English-derived norms as ``neutral'' $Z$), consent opacity, and cultural feedback loops ($Z$-projected outputs re-enter $\Dtrain$). Korean programmers face a double translation: thought (Korean) $\to$ code (English syntax) $\to$ execution; representation-level systems could eliminate both steps~\cite{li2026reasoning}. See Appendix~\ref{app:ethics} for full analysis.
 
 % Limitations moved to standalone section after Conclusion (EMNLP requirement)
 
@@ -390,7 +392,7 @@ $\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultu
 Huh et al.\ (ICML 2024)~\cite{huh2024platonic} established convergence; Ziyin et al.\ (2025)~\cite{ziyin2025proof} proved it for deep linear networks; Gr\"{o}ger et al.\ (2026)~\cite{groger2026aristotelian} showed global convergence is confounded but local topology persists.
 
 \paragraph{Multilingual representations.}
-The Semantic Hub Hypothesis~\cite{wu2025semantichub} demonstrates shared representations; however, multilingual $\neq$ multicultural (Rystr{\o}m et al., 2025)~\cite{rystrom2025multicultural}: LLMs produce different moral judgments across languages and reflect creator ideology (Buyl et al., 2025)~\cite{buyl2025ideology}.
+The Semantic Hub Hypothesis~\cite{wu2025semantichub} demonstrates shared representations; middle-layer alignment is strongest across 1,000+ language pairs~\cite{middlelayer2025}. However, multilingual $\neq$ multicultural (Rystr{\o}m et al., 2025)~\cite{rystrom2025multicultural}: LLMs produce different moral judgments across languages, reflect creator ideology~\cite{buyl2025ideology}, and Sapir-Whorf effects are measurable in LLM outputs across 13 languages~\cite{ray2025sapirwhorf}.
 
 \paragraph{NL programming and vibe coding.}
 Wave~3's non-determinism is fundamentally intractable (ICSE 2026)~\cite{icse2026reproducibility}. The Moltbook incident (2026) exposed 1.5M API keys through vibe-coded services.
@@ -398,11 +400,11 @@ Wave~3's non-determinism is fundamentally intractable (ICSE 2026)~\cite{icse2026
 \paragraph{Latent execution.}
 LPN (NeurIPS 2025)~\cite{macfarlane2025lpn}, COCONUT (Meta, 2024)~\cite{hao2024coconut}, LaSynth (NeurIPS 2021)~\cite{chen2021lasynth} demonstrate execution in representation space. ``Beyond Syntax'' (ICSE 2025)~\cite{beyondsyntax2025} shows LLMs develop language-independent code semantics. CWM (Meta, 2025)~\cite{metafair2025cwm} models code execution at token level.
 
-\paragraph{Tokenization and naturalness.}
-Tokenizers introduce up to 15$\times$ cost unfairness across languages~\cite{petrov2024tokenizers}. Software is ``natural''---statistically predictable like NL~\cite{hindle2012naturalness}.
+\paragraph{Tokenization, naturalness, and dialects.}
+Tokenizers introduce up to 15$\times$ cost unfairness across languages~\cite{petrov2024tokenizers}, with dialectal varieties suffering 10--15$\times$ tokenization premiums~\cite{tokenbiases2025}. Software is ``natural''---statistically predictable like NL~\cite{hindle2012naturalness}. Dialect-aware benchmarks~\cite{faisal2025swan} and studies of dialect bias in LLMs~\cite{bui2025dialect} reveal that the communicability gap extends within languages, not just across them.
 
 \paragraph{Neuroscience and philosophy.}
-Hyperalignment~\cite{haxby2011hyperalignment} and RSA~\cite{kriegeskorte2008rsa} show cross-brain representational convergence---the biological analogue of PRH---yet shared geometry does not resolve the private language problem~\cite{wittgenstein1953}. The communicability gap is studied across cognitive science and philosophy of mind; we extend it to the NL-code interface.
+Hyperalignment~\cite{haxby2011hyperalignment} and RSA~\cite{kriegeskorte2008rsa} show cross-brain representational convergence---the biological analogue of PRH---yet shared geometry does not resolve the private language problem~\cite{wittgenstein1953}. Mahowald et al.\ (2024)~\cite{mahowald2024dissociating} dissociate formal from functional linguistic competence in LLMs, paralleling our $\Zsem$/$\Zproc$ stratification. The modality gap in contrastive learning~\cite{liang2022modalitygap} persists even after alignment; closing it helps group-level but not instance-level tasks~\cite{grassucci2026modgap}, consistent with our prediction that $\Zsem$ converges while $\Zprag$ does not.
 
 %% ============================================================
 %% 8. CONCLUSION
@@ -731,6 +733,17 @@ Test Korean spacing variants (4 per sentence, see Appendix~\ref{app:tokenization
 \end{itemize}
 Measure $d(\text{spacing variants}) / d(\text{semantic variants})$; target: $> 10\times$.
 
+\paragraph{P2 extension: Dialect continuum.}
+Test whether the communicability gap is continuous rather than categorical by computing $R$ across dialectal variants within each language:
+\begin{itemize}[nosep]
+  \item \textbf{Korean:} Standard (Seoul) / Gyeongsang / Jeolla / Jeju
+  \item \textbf{Arabic:} MSA / Egyptian / Gulf / Levantine
+  \item \textbf{Chinese:} Mandarin / Cantonese / Min Nan
+  \item \textbf{English:} American / British / Indian / AAVE
+  \item \textbf{Spanish:} Castilian / Mexican / Rioplatense
+\end{itemize}
+Prediction: $R_{\text{within-dialect}} > R_{\text{cross-dialect}} > R_{\text{cross-lingual}}$, forming a continuum. Jeju Korean and Levantine Arabic---often classified as borderline separate languages---should approach cross-lingual $R$ values, exposing the arbitrariness of discrete language boundaries in embedding space. This directly tests whether modality incompleteness scales with linguistic distance.
+
 \paragraph{Voice input extension.}
 Test speech input via SONAR's speech encoder---spacing is absent in speech, so the spacing problem should disappear entirely. Compare $R$ for text vs.\ speech input.
 
@@ -757,6 +770,6 @@ Test speech input via SONAR's speech encoder---spacing is absent in speech, so t
 \end{enumerate}
 \normalsize
 
-Each operation is described in English, Korean, Chinese, Arabic, and Spanish by native-speaker computational linguists ($100 \times 5 = 500$ total stimuli). Full multilingual descriptions are available in the experiment repository.
+Each operation is described in English, Korean, Chinese, Arabic, and Spanish by native-speaker computational linguists ($100 \times 5 = 500$ base stimuli). Dialectal variants add up to 4 variants per language (${\sim}1{,}800$ total stimuli including dialect extensions). Full multilingual descriptions are available in the experiment repository.
 
 \end{document}

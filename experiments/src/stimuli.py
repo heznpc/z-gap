@@ -6,11 +6,28 @@ from pathlib import Path
 
 LANGUAGES = ["en", "ko", "zh", "ar", "es"]
 
+# Dialect variants per language
+DIALECTS = {
+    "ko": ["standard", "gyeongsang", "jeolla", "jeju"],
+    "ar": ["msa", "egyptian", "gulf", "levantine"],
+    "zh": ["mandarin", "cantonese", "minnan"],
+    "en": ["american", "british", "indian", "aave"],
+    "es": ["castilian", "mexican", "rioplatense"],
+}
+
+# Standard dialect labels (the one used in base descriptions)
+STANDARD_DIALECT = {
+    "ko": "standard", "ar": "msa", "zh": "mandarin",
+    "en": "american", "es": "castilian",
+}
+
+
 @dataclass
 class Operation:
     id: str
     category: str  # "computational" or "judgment"
     descriptions: dict[str, str] = field(default_factory=dict)  # lang -> description
+    dialect_descriptions: dict[str, dict[str, str]] = field(default_factory=dict)  # lang -> {dialect -> description}
     tags: list[str] = field(default_factory=list)
     has_implicit_criteria: bool = False  # for P6: operations where "correct" depends on context
 

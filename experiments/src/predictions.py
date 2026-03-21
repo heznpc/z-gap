@@ -1,9 +1,9 @@
-"""Test harness for falsifiable predictions P1, P2, P6, P7."""
+"""Test harness for falsifiable predictions P1, P2, P2-dialect, P6, P7."""
 
 from dataclasses import dataclass
 import numpy as np
 from scipy import stats
-from .metrics import discriminability_ratio, spacing_robustness
+from .metrics import discriminability_ratio, spacing_robustness, dialectal_continuum
 
 
 @dataclass
@@ -59,6 +59,37 @@ def test_p2_cross_lingual_invariance(
             "ci_95": (float(np.percentile(boot_diffs, 2.5)),
                       float(np.percentile(boot_diffs, 97.5))),
         }
+    )
+
+
+def test_p2_dialectal(
+    embeddings: dict[str, np.ndarray],
+    comp_ids: list[str],
+    judg_ids: list[str],
+    languages: list[str],
+    dialects: dict[str, list[str]],
+) -> PredictionResult:
+    """P2-dialect: R_cross_dialect > R_cross_lingual (continuum prediction).
+
+    Tests that the communicability gap is continuous — cross-dialectal R
+    falls between within-dialect and cross-lingual R.
+    """
+    result_comp = dialectal_continuum(embeddings, comp_ids, languages, dialects)
+    result_judg = dialectal_continuum(embeddings, judg_ids, languages, dialects)
+
+    continuum_holds = result_comp["continuum_holds"] and result_judg["continuum_holds"]
+
+    return PredictionResult(
+        prediction_id="P2-dialect",
+        supported=continuum_holds,
+        effect_size=result_comp["R_cross_dialect"] - result_comp["R_cross_lingual"],
+        p_value=0.0,  # TODO: bootstrap CI
+        details={
+            "comp": result_comp,
+            "judg": result_judg,
+            "continuum_holds_comp": result_comp["continuum_holds"],
+            "continuum_holds_judg": result_judg["continuum_holds"],
+        },
     )
 
 

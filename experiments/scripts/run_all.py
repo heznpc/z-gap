@@ -7,10 +7,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.stimuli import get_all_operations, export_stimuli, LANGUAGES, get_spacing_variants
-from src.embeddings import SentenceTransformerEmbedder, EmbeddingCache
-from src.metrics import discriminability_ratio, spacing_robustness, compute_per_operation_detail
-from src.predictions import test_p2_cross_lingual_invariance, test_p7_spacing_robustness
+from src.stimuli import get_all_operations, export_stimuli, LANGUAGES, DIALECTS, get_spacing_variants
+from src.embeddings import SentenceTransformerEmbedder, MistralEmbedder, EmbeddingCache
+from src.metrics import discriminability_ratio, spacing_robustness, compute_per_operation_detail, dialectal_continuum
+from src.predictions import test_p2_cross_lingual_invariance, test_p2_dialectal, test_p7_spacing_robustness
 from src.visualize import (
     plot_embedding_space, plot_discriminability, plot_spacing_robustness,
     plot_d_intra_distributions, plot_d_intra_vs_d_inter,
@@ -130,6 +130,18 @@ def run_model(model, ops, comp_ids, judg_ids, all_ids, categories, cache):
         FIGURES_DIR / f"heatmap_judg_{tag}.png"
     )
 
+    # --- Dialect continuum (P2-dialect) ---
+    p2d_result = {"supported": False, "details": {}}
+    # Check if any dialect embeddings exist
+    dialect_keys = [k for k in embeddings if k.count("_") >= 3]  # op_lang_dialect format
+    if dialect_keys:
+        p2d = test_p2_dialectal(embeddings, comp_ids, judg_ids, LANGUAGES, DIALECTS)
+        print(f"  P2-dialect: continuum={'YES' if p2d.supported else 'NO'}  "
+              f"effect={p2d.effect_size:.3f}")
+        p2d_result = {"supported": p2d.supported, "effect_size": p2d.effect_size, "details": p2d.details}
+    else:
+        print("  P2-dialect: skipped (no dialect stimuli loaded)")
+
     return {
         "model": model.name, "dim": model.dimension,
         "n_comp": len(comp_ids), "n_judg": len(judg_ids),
@@ -142,6 +154,7 @@ def run_model(model, ops, comp_ids, judg_ids, all_ids, categories, cache):
             "d_inter_C": result_c["mean_d_inter"],
             "d_inter_J": result_j["mean_d_inter"],
         },
+        "P2_dialect": p2d_result,
         "P7": {
             "R_spacing": p7.details["R_spacing"], "supported": p7.supported,
             "d_spacing": p7.details["mean_d_spacing"],
@@ -166,13 +179,26 @@ def main():
 
     cache = EmbeddingCache(CACHE_DIR)
 
-    # Add more models here for P1 scale analysis (requires disk space for downloads)
+    # --- Full model list ---
+    # Group 1: Existing baselines
+    # Group 2: E5 family (P1 scale-convergence test — same architecture, different scales)
+    # Group 3: New multilingual/code models
     models = [
+        # Baselines
         SentenceTransformerEmbedder("paraphrase-multilingual-MiniLM-L12-v2"),   # 384d
+        # E5 family (P1: scale-convergence)
+        SentenceTransformerEmbedder("intfloat/multilingual-e5-small"),           # 384d
+        SentenceTransformerEmbedder("intfloat/multilingual-e5-base"),            # 768d
         SentenceTransformerEmbedder("intfloat/multilingual-e5-large"),           # 1024d
-        # SentenceTransformerEmbedder("intfloat/multilingual-e5-small"),         # 384d
-        # SentenceTransformerEmbedder("paraphrase-multilingual-mpnet-base-v2"), # 768d
-        # SentenceTransformerEmbedder("intfloat/multilingual-e5-base"),         # 768d
+        # Cross-lingual retrieval (P2 retest)
+        SentenceTransformerEmbedder("BAAI/bge-m3"),                              # 1024d
+        # Multilingual (P2, P6)
+        SentenceTransformerEmbedder("Qwen/Qwen3-Embedding-8B"),                  # 4096d
+        SentenceTransformerEmbedder("jinaai/jina-embeddings-v3"),                 # 1024d
+        # Code-specialized (NL-code alignment)
+        MistralEmbedder("codestral-embed-2505"),                                 # 1024d
+        # TODO: OmniSONAR — requires fairseq2, add when available
+        # MetaEmbedder("omnisonar"),
     ]
 
     all_results = []

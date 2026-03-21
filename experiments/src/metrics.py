@@ -1,4 +1,4 @@
-"""Core metrics: d_intra, d_inter, discriminability ratio R, spacing robustness."""
+"""Core metrics: d_intra, d_inter, discriminability ratio R, spacing robustness, dialectal continuum."""
 
 import numpy as np
 from scipy.spatial.distance import cosine
@@ -191,4 +191,83 @@ def spacing_robustness(
         "mean_d_semantic": mean_d_semantic,
         "n_spacing_pairs": len(d_spacing_list),
         "n_semantic_pairs": len(d_semantic_list),
+    }
+
+
+def dialectal_continuum(
+    embeddings: dict[str, np.ndarray],
+    operation_ids: list[str],
+    languages: list[str],
+    dialects: dict[str, list[str]],
+) -> dict:
+    """Compute R at three levels: within-dialect, cross-dialect, cross-lingual.
+
+    Embedding keys: "{op_id}_{lang}_{dialect}" for dialect variants,
+                    "{op_id}_{lang}" for standard (backward-compatible).
+
+    Returns: {level: R, d_intra, d_inter} for each level.
+    """
+    def _mean_dist(pairs: list[tuple[np.ndarray, np.ndarray]]) -> float:
+        if not pairs:
+            return 0.0
+        return float(np.mean([cosine_distance(a, b) for a, b in pairs]))
+
+    # 1. Cross-lingual d_intra: same op, different languages (standard dialects)
+    cross_lingual_pairs = []
+    for op_id in operation_ids:
+        vecs = []
+        for lang in languages:
+            key = f"{op_id}_{lang}"
+            if key in embeddings:
+                vecs.append(embeddings[key])
+        cross_lingual_pairs.extend(combinations(vecs, 2))
+
+    # 2. Cross-dialect d_intra: same op, same language, different dialects
+    cross_dialect_pairs = []
+    for op_id in operation_ids:
+        for lang in languages:
+            if lang not in dialects:
+                continue
+            vecs = []
+            for dialect in dialects[lang]:
+                key = f"{op_id}_{lang}_{dialect}"
+                if key in embeddings:
+                    vecs.append(embeddings[key])
+            cross_dialect_pairs.extend(combinations(vecs, 2))
+
+    # 3. Within-dialect d_inter: different ops, same language+dialect
+    within_dialect_pairs = []
+    for lang in languages:
+        if lang not in dialects:
+            continue
+        for dialect in dialects[lang]:
+            vecs = []
+            for op_id in operation_ids:
+                key = f"{op_id}_{lang}_{dialect}"
+                if key in embeddings:
+                    vecs.append(embeddings[key])
+            if len(vecs) >= 2:
+                rng = np.random.default_rng(42)
+                idxs = rng.choice(len(vecs), size=(min(200, len(vecs)), 2), replace=True)
+                idxs = idxs[idxs[:, 0] != idxs[:, 1]]
+                within_dialect_pairs.extend([(vecs[i], vecs[j]) for i, j in idxs])
+
+    d_cross_lingual = _mean_dist(cross_lingual_pairs)
+    d_cross_dialect = _mean_dist(cross_dialect_pairs)
+    d_within_dialect = _mean_dist(within_dialect_pairs)
+
+    # R at each level (higher R = more invariance at that level)
+    R_cross_lingual = d_within_dialect / d_cross_lingual if d_cross_lingual > 1e-10 else float("inf")
+    R_cross_dialect = d_within_dialect / d_cross_dialect if d_cross_dialect > 1e-10 else float("inf")
+
+    return {
+        "d_cross_lingual": d_cross_lingual,
+        "d_cross_dialect": d_cross_dialect,
+        "d_within_dialect": d_within_dialect,
+        "R_cross_lingual": R_cross_lingual,
+        "R_cross_dialect": R_cross_dialect,
+        "n_cross_lingual_pairs": len(cross_lingual_pairs),
+        "n_cross_dialect_pairs": len(cross_dialect_pairs),
+        "n_within_dialect_pairs": len(within_dialect_pairs),
+        "continuum_holds": R_cross_dialect > R_cross_lingual,  # prediction
     }
