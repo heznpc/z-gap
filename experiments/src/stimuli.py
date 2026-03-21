@@ -754,6 +754,88 @@ def get_all_operations() -> list[Operation]:
     return COMPUTATIONAL_OPS + JUDGMENT_OPS
 
 
+# --- Keyboard transliteration (P8) ---
+
+# Korean Dubeolsik (KS X 5002) → English QWERTY mapping
+_KO_TO_EN = {
+    'ㅂ': 'q', 'ㅈ': 'w', 'ㄷ': 'e', 'ㄱ': 'r', 'ㅅ': 't',
+    'ㅛ': 'y', 'ㅕ': 'u', 'ㅑ': 'i', 'ㅐ': 'o', 'ㅔ': 'p',
+    'ㅁ': 'a', 'ㄴ': 's', 'ㅇ': 'd', 'ㄹ': 'f', 'ㅎ': 'g',
+    'ㅗ': 'h', 'ㅓ': 'j', 'ㅏ': 'k', 'ㅣ': 'l',
+    'ㅋ': 'z', 'ㅌ': 'x', 'ㅊ': 'c', 'ㅍ': 'v', 'ㅠ': 'b',
+    'ㅜ': 'n', 'ㅡ': 'm',
+    # Shifted
+    'ㅃ': 'Q', 'ㅉ': 'W', 'ㄸ': 'E', 'ㄲ': 'R', 'ㅆ': 'T',
+    'ㅒ': 'O', 'ㅖ': 'P',
+}
+
+# Unicode Hangul Jamo decomposition offsets
+_CHO = list('ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ')
+_JUNG = list('ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ')
+_JONG = [''] + list('ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ')
+
+# Compound jamo decomposition
+_COMPOUND_JUNG = {
+    'ㅘ': ('ㅗ', 'ㅏ'), 'ㅙ': ('ㅗ', 'ㅐ'), 'ㅚ': ('ㅗ', 'ㅣ'),
+    'ㅝ': ('ㅜ', 'ㅓ'), 'ㅞ': ('ㅜ', 'ㅔ'), 'ㅟ': ('ㅜ', 'ㅣ'),
+    'ㅢ': ('ㅡ', 'ㅣ'),
+}
+_COMPOUND_JONG = {
+    'ㄳ': ('ㄱ', 'ㅅ'), 'ㄵ': ('ㄴ', 'ㅈ'), 'ㄶ': ('ㄴ', 'ㅎ'),
+    'ㄺ': ('ㄹ', 'ㄱ'), 'ㄻ': ('ㄹ', 'ㅁ'), 'ㄼ': ('ㄹ', 'ㅂ'),
+    'ㄽ': ('ㄹ', 'ㅅ'), 'ㄾ': ('ㄹ', 'ㅌ'), 'ㄿ': ('ㄹ', 'ㅍ'),
+    'ㅀ': ('ㄹ', 'ㅎ'), 'ㅄ': ('ㅂ', 'ㅅ'),
+}
+
+
+def korean_to_english_keyboard(text_ko: str) -> str:
+    """Convert Korean text to what it would look like typed on English keyboard layout.
+
+    Decomposes Hangul syllables into jamo, then maps each jamo to its
+    QWERTY key position using the Dubeolsik layout.
+    E.g., '안녕하세요' → 'dkssudgktpdy'
+    """
+    result = []
+    for ch in text_ko:
+        code = ord(ch)
+        if 0xAC00 <= code <= 0xD7A3:  # Hangul syllable block
+            offset = code - 0xAC00
+            cho_idx = offset // (21 * 28)
+            jung_idx = (offset % (21 * 28)) // 28
+            jong_idx = offset % 28
+            jamos = [_CHO[cho_idx]]
+            jung = _JUNG[jung_idx]
+            if jung in _COMPOUND_JUNG:
+                jamos.extend(_COMPOUND_JUNG[jung])
+            else:
+                jamos.append(jung)
+            if jong_idx > 0:
+                jong = _JONG[jong_idx]
+                if jong in _COMPOUND_JONG:
+                    jamos.extend(_COMPOUND_JONG[jong])
+                else:
+                    jamos.append(jong)
+            for j in jamos:
+                result.append(_KO_TO_EN.get(j, j))
+        elif ch in _KO_TO_EN:  # standalone jamo
+            result.append(_KO_TO_EN[ch])
+        else:
+            result.append(ch)
+    return ''.join(result)
+
+
+def get_keyboard_transliterations(operations: list) -> dict[str, str]:
+    """Generate English-keyboard transliterations for all Korean descriptions.
+
+    Returns: {op_id: transliterated_text}
+    """
+    return {
+        op.id: korean_to_english_keyboard(op.descriptions.get("ko", ""))
+        for op in operations
+        if "ko" in op.descriptions
+    }
+
+
 def get_spacing_variants(text_ko: str) -> dict[str, str]:
     """Generate Korean spacing variants for a given text."""
     # (a) original (correct spacing assumed)
