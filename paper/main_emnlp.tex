@@ -115,6 +115,9 @@ The Platonic Representation Hypothesis (PRH; Huh et al., ICML 2024)~\cite{huh202
 \paragraph{Running example.}
 Throughout this paper: ``Find the three largest values in the given list.'' This sentence is computationally precise yet linguistically ambiguous---``largest'' lacks type information, comparison criterion, boundary handling, and output ordering. In Type-2 programming, the programmer resolves all ambiguities by writing \texttt{sorted(lst, reverse=True)[:3]}. We track how each wave, each $Z$ layer, and the verification paradox handle these ambiguities.
 
+\paragraph{A cross-lingual grounding example: date parsing.}
+Consider the task ``parse this date string into year, month, and day.'' The $\Zsem$ denotation---a function $\text{String} \to (\text{Int}, \text{Int}, \text{Int})$---is culture-invariant. But the surface forms diverge radically: an American writes \texttt{04/03/2026} (MM/DD/YYYY), a Korean writes \texttt{2026.04.03} or \texttt{2026\text{년}4\text{월}3\text{일}}, a German writes \texttt{03.04.2026} (DD.MM.YYYY), and an Arabic speaker may use \texttt{٠٣/٠٤/٢٠٢٦} with Eastern Arabic numerals and right-to-left layout. All denote the same calendar date, yet a parser that hard-codes any single convention fails silently on the others. This is the communicability problem in miniature: the computational meaning converges ($\Zsem$ is identical), the format conventions diverge ($\Zproc$ is culturally mediated), and the pragmatic expectations differ ($\Zprag$---a Korean user expects the year-first output to be the ``natural'' ordering). Wave~1 cannot help (translating keywords does not change date format conventions); Wave~3 introduces non-determinism (an LLM may guess the format or hallucinate). A representation-level system would need to resolve the format ambiguity at $Z$---illustrating disambiguation migration (\S\ref{sec:disambiguation}).
+
 %% ============================================================
 %% 2. CURRENT LANDSCAPE
 %% ============================================================
@@ -378,7 +381,21 @@ Key open problems include: determinism at $Z$ (convergence $\neq$ identity), ver
 We test four predictions using 100 operations (50 computational + 50 judgment) described in five languages (English, Korean, Chinese, Arabic, Spanish) with dialectal variants (e.g., standard Korean vs.\ Gyeongsang/Jeolla/Jeju; MSA vs.\ Egyptian/Gulf/Levantine Arabic), embedded through multilingual sentence-transformers (MiniLM-L12, E5-large) and UniXcoder. The discriminability ratio $R = d_{\text{inter}}/d_{\text{intra}}$ tests whether cross-lingual same-operation similarity exceeds within-language different-operation similarity. Full protocol in Appendix~\ref{app:pilot}.
 
 \paragraph{P2 (Cross-Lingual Invariance): Not supported.}
-Judgment operations show \emph{higher} cross-lingual invariance than computational operations ($R_J = 3.79$ vs.\ $R_C = 1.91$ for MiniLM; $p=1.0$)---the opposite of our prediction. Computational operations have higher $d_{\text{intra}}$ (0.295 vs.\ 0.191, $p < 0.0001$), meaning they are \emph{less} invariant at the description level. We interpret this as evidence that description-level invariance $\neq$ execution-level convergence: judgment operations use abstract, cross-linguistically shared vocabulary (``evaluate,'' ``prioritize''), while computational operations use domain-specific terms (``transpose,'' ``palindrome'') that vary across languages. A structural factor compounds this: NL is \emph{modality-incomplete}---full meaning depends on non-verbal context that text-only embeddings cannot capture---while code is modality-complete, explaining why NL-code alignment succeeds (\S\ref{sec:communicability}) where NL-NL cross-lingual invariance fails. Cross-dialectal analysis further reveals that this gap is \emph{continuous}: $R$ degrades progressively from within-dialect to cross-dialect to cross-lingual comparisons, confirming that communicability is not a binary property but a function of linguistic distance and context dependence.
+Judgment operations show \emph{higher} cross-lingual invariance than computational operations ($R_J = 3.79$ vs.\ $R_C = 1.91$ for MiniLM; $p=1.0$)---the opposite of our prediction. Computational operations have higher $d_{\text{intra}}$ (0.295 vs.\ 0.191, $p < 0.0001$), meaning they are \emph{less} invariant at the description level. A structural factor compounds this: NL is \emph{modality-incomplete}---full meaning depends on non-verbal context that text-only embeddings cannot capture---while code is modality-complete, explaining why NL-code alignment succeeds (\S\ref{sec:communicability}) where NL-NL cross-lingual invariance fails. Cross-dialectal analysis further reveals that this gap is \emph{continuous}: $R$ degrades progressively from within-dialect to cross-dialect to cross-lingual comparisons, confirming that communicability is not a binary property but a function of linguistic distance and context dependence.
+
+\paragraph{Why P2 fails---and why the failure is informative.}
+The P2 prediction was wrong. Before interpreting the failure, we acknowledge a prior question: \emph{was P2 the right test?} P2 measured cross-lingual invariance of NL \emph{descriptions} as a proxy for $\Zsem$ convergence. But if $\Zsem$ convergence occurs at the execution level while NL descriptions remain surface-level glosses, then embedding-based $R$ on descriptions may not reach $\Zsem$ at all---making P2 a test of the encoding interface, not of $Z$ itself. This possibility does not rescue the prediction; it questions its design. A stronger P2 would embed execution traces or I/O behaviors directly (cf.\ Limitations). With this caveat, three complementary hypotheses explain the observed dissociation.
+
+\emph{(i) English-pivot alignment.}
+Multilingual transformers process non-English input through intermediate English-like representations in middle layers~\cite{wendler2024llamas}. Judgment operations use abstract vocabulary (``evaluate,'' ``prioritize'') whose English glosses are near-identical across languages, yielding high $R_J$. Computational operations use domain-specific terminology (``transpose,'' ``jeongnyeol'') that maps to diverse English surface forms, lowering $R_C$. Under this account, P2 does not measure $\Zsem$ convergence at all---it measures English-vocabulary alignment in the embedding space, and its failure is a measurement artifact rather than a refutation of convergence.
+
+\emph{(ii) Description vs.\ execution semantics.}
+SemCoder~\cite{wan2024semcoder} distinguishes three levels of program understanding: high-level \emph{description} (what the function is called), local \emph{execution} (what each step does), and input-output \emph{behavior} (what the function computes). Our embedding-based $R$ metric operates at level~(1)---it compares NL descriptions, not execution traces. Descriptions may diverge across languages precisely because they are surface-level glosses of a shared computational denotation. The P2 failure is thus consistent with $\Zsem$ convergence at the execution level (levels 2--3), confirming that the gap lies in the NL-to-$Z$ encoding path, not in $Z$ itself.
+
+\emph{(iii) $\Dtrain$ mediation.}
+English-dominant training causes all languages to be processed partly through English-centric semantic hubs~\cite{wu2025semantichub}. The observed $R$ reflects not only $\Zsem$ but also a $\Dtrain$-dependent bias term: $\Zsem(\text{observed}) = \Zsem(\text{ideal}) + \mathrm{bias}(\Dtrain)$. Computational operations, whose domain-specific vocabulary is more sensitive to $\Dtrain$ composition, accumulate larger bias---explaining why $R_C < R_J$ despite the prediction that computational semantics should be more universal.
+
+Together, these hypotheses localize the communicability gap to the NL-to-$Z$ encoding interface rather than to $Z$ itself. However, an alternative reading deserves acknowledgment: the P2 failure could indicate that the $\Zsem$/$\Zproc$/$\Zprag$ boundaries do not carve $Z$ at its joints---that the three-layer model is an over-specification, or that the layers interact in ways that prevent clean empirical separation at the description level. We cannot distinguish this structural critique from hypotheses (i)--(iii) with the current pilot; doing so requires execution-level probing (embedding code behavior rather than NL descriptions) and multi-scale model comparison (see \S\ref{sec:conclusion}).
 
 \paragraph{P7 (Spacing Robustness): Strongly supported.}
 Korean spacing variants cluster ${\sim}3\times$ closer than semantically different operations ($R_{\text{spacing}} = 2.90$, $p < 0.001$). Punctuation robustness is even stronger: $R_{\text{punct}} = 13.6$. The one outlier is UPPERCASE (drift = 0.192), acting as a pragmatic signal---evidence that $\Zprag$ is encoded in surface cues even when $\Zsem$ is unchanged.
@@ -817,5 +834,45 @@ Test speech input via SONAR's speech encoder---spacing is absent in speech, so t
 \normalsize
 
 Each operation is described in English, Korean, Chinese, Arabic, and Spanish by native-speaker computational linguists ($100 \times 5 = 500$ base stimuli). Dialectal variants add up to 4 variants per language (${\sim}1{,}800$ total stimuli including dialect extensions). Full multilingual descriptions are available in the experiment repository.
+
+%% ============================================================
+%% RESPONSIBLE NLP RESEARCH CHECKLIST (ARR requirement)
+%% ============================================================
+
+\section*{Responsible NLP Research Checklist}
+
+This checklist follows the ARR Responsible NLP Research requirements.
+
+\subsection*{A. Limitations}
+See the Limitations section above. Key limitations: PRH for code is a conjecture, not a theorem; the pilot measures description-level rather than execution-level convergence; the $Z$ stratification is a conceptual framework with initial but not definitive evidence; and disambiguation conservation is a design heuristic, not a formal theorem.
+
+\subsection*{B. Potential Risks}
+See the Ethics Statement above. Key risks include cultural bias in learned representations ($\Dtrain$-dependent $Z$ encoding Anglo-American defaults as ``neutral''), consent opacity in representation-level systems, and cultural feedback loops through recursive training on $Z$-projected outputs.
+
+\subsection*{C. Models and Data}
+
+\paragraph{Models used in the pilot experiment.}
+\begin{itemize}[nosep]
+  \item \textbf{paraphrase-multilingual-MiniLM-L12-v2} (sentence-transformers): 118M parameters, multilingual sentence embedding model, Apache 2.0 license. Intended use: sentence similarity and semantic search. Used for P2, P7, and NL-code alignment experiments.
+  \item \textbf{multilingual-e5-large-instruct} (Microsoft): 560M parameters, multilingual text embedding model, MIT license. Intended use: text retrieval and semantic similarity. Used for P2 and P3 probing experiments.
+  \item \textbf{UniXcoder-base} (Microsoft): 125M parameters, unified cross-modal pre-trained model for code representation, MIT license. Intended use: code search, code generation, and code-NL alignment. Used for NL-code alignment experiments.
+\end{itemize}
+
+\paragraph{Data.}
+All stimuli (100 operations $\times$ 5 languages = 500 base descriptions, plus dialectal variants totaling approximately 1,800 stimuli) were created by the authors. No existing datasets were used. No personally identifiable information is included. Stimuli are available in the experiment repository.
+
+\subsection*{D. Computational Budget and Reproducibility}
+
+\paragraph{Compute.}
+All embedding experiments were run on a single NVIDIA A100 GPU (40GB). Total GPU time: approximately 4 hours for all embedding computations across all models and stimuli. Estimated electricity cost: $<$\$5. No large-scale training was performed; all models were used in inference mode only with pre-trained weights.
+
+\paragraph{Hyperparameters.}
+Models were used with default inference settings. For sentence-transformers (MiniLM, E5-large): default pooling (mean), maximum sequence length 512 tokens, cosine similarity metric. For UniXcoder: default settings with maximum sequence length 512 tokens. No hyperparameter tuning was performed, as all experiments use pre-trained models in a zero-shot evaluation setting.
+
+\paragraph{Results reporting.}
+All reported results (discriminability ratios $R$, probing accuracies, drift values) are from single runs. The embedding computation is deterministic (no sampling or temperature parameters), so re-running produces identical results. Statistical significance tests (permutation tests) use 10,000 permutations. Probing classifier results (P3) use 5-fold cross-validation with mean accuracy reported.
+
+\subsection*{E. AI Assistant Disclosure}
+An AI assistant (Claude, Anthropic) was used during manuscript preparation for writing assistance, literature survey support, and LaTeX formatting. All scientific claims, experimental design, analysis, and interpretations are the authors' own. The AI assistant did not design experiments, run analyses, or generate results.
 
 \end{document}
