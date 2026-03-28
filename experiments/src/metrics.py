@@ -56,8 +56,12 @@ def compute_d_inter(
         dists = [cosine_distance(a, b) for a, b in combinations(vecs, 2)]
     else:
         rng = np.random.default_rng(42)
-        indices = rng.choice(len(vecs), size=(sample_size, 2), replace=True)
-        indices = indices[indices[:, 0] != indices[:, 1]]
+        indices = np.empty((0, 2), dtype=int)
+        while len(indices) < sample_size:
+            new = rng.choice(len(vecs), size=(sample_size - len(indices) + 50, 2), replace=True)
+            new = new[new[:, 0] != new[:, 1]]
+            indices = np.vstack([indices, new]) if len(indices) > 0 else new
+        indices = indices[:sample_size]
         dists = [cosine_distance(vecs[i], vecs[j]) for i, j in indices]
 
     return float(np.mean(dists))
@@ -177,8 +181,13 @@ def spacing_robustness(
     if len(vecs) < 2:
         return {"R_spacing": 0.0}
     rng = np.random.default_rng(42)
-    indices = rng.choice(len(vecs), size=(min(500, len(vecs) * 2), 2), replace=True)
-    indices = indices[indices[:, 0] != indices[:, 1]]
+    target = min(500, len(vecs) * 2)
+    indices = np.empty((0, 2), dtype=int)
+    while len(indices) < target:
+        new = rng.choice(len(vecs), size=(target - len(indices) + 50, 2), replace=True)
+        new = new[new[:, 0] != new[:, 1]]
+        indices = np.vstack([indices, new]) if len(indices) > 0 else new
+    indices = indices[:target]
     d_semantic_list = [cosine_distance(vecs[i], vecs[j]) for i, j in indices]
 
     mean_d_spacing = float(np.mean(d_spacing_list)) if d_spacing_list else 0.0
@@ -248,8 +257,13 @@ def dialectal_continuum(
                     vecs.append(embeddings[key])
             if len(vecs) >= 2:
                 rng = np.random.default_rng(42)
-                idxs = rng.choice(len(vecs), size=(min(200, len(vecs)), 2), replace=True)
-                idxs = idxs[idxs[:, 0] != idxs[:, 1]]
+                target = min(200, len(vecs))
+                idxs = np.empty((0, 2), dtype=int)
+                while len(idxs) < target:
+                    new = rng.choice(len(vecs), size=(target - len(idxs) + 50, 2), replace=True)
+                    new = new[new[:, 0] != new[:, 1]]
+                    idxs = np.vstack([idxs, new]) if len(idxs) > 0 else new
+                idxs = idxs[:target]
                 within_dialect_pairs.extend([(vecs[i], vecs[j]) for i, j in idxs])
 
     d_cross_lingual = _mean_dist(cross_lingual_pairs)

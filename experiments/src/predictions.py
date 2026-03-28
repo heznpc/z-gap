@@ -117,8 +117,13 @@ def test_p7_spacing_robustness(
 
     vecs = list(embeddings_correct.values())
     rng = np.random.default_rng(42)
-    indices = rng.choice(len(vecs), size=(min(500, len(vecs) * 2), 2), replace=True)
-    indices = indices[indices[:, 0] != indices[:, 1]]
+    target = min(500, len(vecs) * 2)
+    indices = np.empty((0, 2), dtype=int)
+    while len(indices) < target:
+        new = rng.choice(len(vecs), size=(target - len(indices) + 50, 2), replace=True)
+        new = new[new[:, 0] != new[:, 1]]
+        indices = np.vstack([indices, new]) if len(indices) > 0 else new
+    indices = indices[:target]
     d_semantic_list = [cosine_distance(vecs[i], vecs[j]) for i, j in indices]
 
     d_spacing_arr = np.array(d_spacing_list)
