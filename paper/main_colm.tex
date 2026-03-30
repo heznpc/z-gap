@@ -1,15 +1,13 @@
 % Beyond the Chomsky Wall: Platonic Representations as the Convergence Point
 % of Natural Language and Code
-% Formatted for ACL Rolling Review (EMNLP 2026 submission)
+% Formatted for COLM 2026 submission
 
-\documentclass[11pt]{article}
+\documentclass{article}
 
-% ACL style — "review" for anonymous submission with line numbers
-\usepackage[review]{acl}
+% COLM style — "submission" for anonymous review
+\usepackage[submission]{colm2026_conference}
 
-% Standard ACL packages
-\usepackage{times}
-\usepackage{latexsym}
+%% ---- Encoding ----
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}
@@ -83,15 +81,15 @@ The Platonic Representation Hypothesis (PRH; Huh et al., ICML 2024) claims that 
 %% 1. INTRODUCTION
 %% ============================================================
 
-\section{Introduction}
+\section{Introduction}\label{sec:intro}
 
 Mathematics is humanity's most successful Platonic communication medium. The Pythagorean theorem holds in every culture---the \emph{result} is universal. Yet the \emph{derivation} differs: Bourbaki proceeds axiomatically, the Soviet tradition constructively, the Indian tradition intuitively-inductively. The \emph{notation}---Leibniz's $dy/dx$ versus Newton's $\dot{y}$---persists by historical accident. Despite these divergences, mathematicians across cultures reliably communicate through shared ideals. The result is invariant; the path is cultural; the notation is conventional---and yet the system \emph{works} as a communication medium.
 
-But viewing mathematics and natural language as fundamentally separate systems is itself a surface-level distinction. Both are acts of \emph{representation}---ways humans encode their understanding of reality into communicable form. Mathematics constrains its representations to enforce unambiguous denotation; natural language relaxes that constraint to gain expressiveness and efficiency~\cite{piantadosi2012ambiguity}. They are not different kinds of things but different \emph{regimes} of the same representational capacity, trading off precision against flexibility. Code occupies a third regime---formally constrained like mathematics, but operationally directed (it \emph{does} something). From this perspective, convergence across modalities is not surprising; the deeper question is why convergent representations do not automatically yield mutual intelligibility.
+But viewing mathematics and natural language as fundamentally separate systems is itself a surface-level distinction. Both are acts of \emph{representation}---ways humans encode their understanding of reality into communicable form. Mathematics constrains its representations to enforce unambiguous denotation; natural language relaxes that constraint to gain expressiveness and efficiency~\citep{piantadosi2012ambiguity}. They are not different kinds of things but different \emph{regimes} of the same representational capacity, trading off precision against flexibility. Code occupies a third regime---formally constrained like mathematics, but operationally directed (it \emph{does} something). From this perspective, convergence across modalities is not surprising; the deeper question is why convergent representations do not automatically yield mutual intelligibility.
 
 Can computation achieve what mathematics has? When a Korean speaker says \emph{``jeongnyeolhara''} and an English speaker says ``sort this list,'' do they access the same computational ideal? If so, can that ideal serve as a shared channel---not merely existing, but being \emph{communicable}?
 
-The Platonic Representation Hypothesis (PRH; Huh et al., ICML 2024)~\cite{huh2024platonic} claims that neural networks trained on different modalities converge toward a shared latent structure $Z$. Ziyin et al.\ (2025)~\cite{ziyin2025proof} prove convergence for deep linear networks. We accept PRH and ask the next question: \textbf{does convergence imply communicability?} This is the computational version of an ancient philosophical problem---whether universals, even if real, are accessible as a shared medium---and it connects to parallel questions in neuroscience, where cross-brain representational similarity~\cite{haxby2011hyperalignment} does not guarantee shared subjective experience.
+The Platonic Representation Hypothesis (PRH; Huh et al., ICML 2024)~\citep{huh2024platonic} claims that neural networks trained on different modalities converge toward a shared latent structure $Z$. Ziyin et al.\ (2025)~\citep{ziyin2025proof} prove convergence for deep linear networks. We accept PRH and ask the next question: \textbf{does convergence imply communicability?} This is the computational version of an ancient philosophical problem---whether universals, even if real, are accessible as a shared medium---and it connects to parallel questions in neuroscience, where cross-brain representational similarity~\citep{haxby2011hyperalignment} does not guarantee shared subjective experience.
 
 \paragraph{Position.} This paper does not refute PRH---it \emph{refines} it. We argue that:
 \begin{enumerate}[label=(\roman*),nosep]
@@ -101,7 +99,7 @@ The Platonic Representation Hypothesis (PRH; Huh et al., ICML 2024)~\cite{huh202
   \item Disambiguation cost is conserved: representation-level systems redistribute, rather than eliminate, specification complexity (\S\ref{sec:disambiguation}).
 \end{enumerate}
 
-\paragraph{Context: three waves of NL programming.} Attempts to bridge NL and code have come in three waves, all operating at the surface level: \textbf{Wave~1} (keyword substitution, 1960s--) replaces English tokens with native-language equivalents---the grammar remains Type-2. \textbf{Wave~2} (structured NL, 2024--) constrains prose into parseable templates~\cite{core2025,elliott2023sudolang}---new formal grammars that look like English. \textbf{Wave~3} (LLM-mediated translation, 2023--) generates code from free-form NL---the ``vibe coding'' paradigm, but non-deterministic and fundamentally intractable~\cite{icse2026reproducibility}. The QWERTY analogy is instructive: typewriter jams required a specific key layout; the constraint vanished with computers but the layout persisted. Programming syntax may be similar---an engineering constraint maintained by path dependency. But the NL-code gap runs deeper than engineering, into the mathematical structure of grammars (\S\ref{sec:chomsky}). PRH suggests the gap is a property of surface forms, not representations---and the productive question is not whether $Z$ exists, but whether it is communicable.
+\paragraph{Context: three waves of NL programming.} Attempts to bridge NL and code have come in three waves, all operating at the surface level: \textbf{Wave~1} (keyword substitution, 1960s--) replaces English tokens with native-language equivalents---the grammar remains Type-2. \textbf{Wave~2} (structured NL, 2024--) constrains prose into parseable templates~\citep{core2025,elliott2023sudolang}---new formal grammars that look like English. \textbf{Wave~3} (LLM-mediated translation, 2023--) generates code from free-form NL---the ``vibe coding'' paradigm, but non-deterministic and fundamentally intractable~\citep{icse2026reproducibility}. The QWERTY analogy is instructive: typewriter jams required a specific key layout; the constraint vanished with computers but the layout persisted. Programming syntax may be similar---an engineering constraint maintained by path dependency. But the NL-code gap runs deeper than engineering, into the mathematical structure of grammars (\S\ref{sec:chomsky}). PRH suggests the gap is a property of surface forms, not representations---and the productive question is not whether $Z$ exists, but whether it is communicable.
 
 \paragraph{Contributions.}
 \begin{enumerate}[label=(\arabic*),nosep]
@@ -154,7 +152,7 @@ Both RAG and NL$\to$Code map NL to structured output via learned representations
 
 \subsection{Overview and Formal Framework}
 
-The naming is not accidental. PRH raises the oldest question in philosophy: do universals exist? Plato's forms were ideal objects that particular instances approximate; PRH claims neural networks discover such forms empirically---that a shared latent structure $Z$ exists, from which images, text, and code are projections. The question ``does $Z$ exist?'' is the computational version of ``do Platonic ideals exist?''---and PRH's answer, supported by Huh et al.\ (ICML 2024)~\cite{huh2024platonic}, is yes, as a statistical convergence. Ziyin et al.\ (2025)~\cite{ziyin2025proof} prove that embedded deep linear networks trained with SGD become ``Perfectly Platonic''---every pair of layers learns the same representation up to rotation. Crucially, they identify six conditions that break convergence (weight decay, label transformation, saddle convergence, input heterogeneity, gradient flow vs.\ SGD, finite-step edge-of-stability), suggesting PRH convergence is the default for well-behaved training but can fail under specific conditions. We introduce semi-formal definitions:
+The naming is not accidental. PRH raises the oldest question in philosophy: do universals exist? Plato's forms were ideal objects that particular instances approximate; PRH claims neural networks discover such forms empirically---that a shared latent structure $Z$ exists, from which images, text, and code are projections. The question ``does $Z$ exist?'' is the computational version of ``do Platonic ideals exist?''---and PRH's answer, supported by Huh et al.\ (ICML 2024)~\citep{huh2024platonic}, is yes, as a statistical convergence. Ziyin et al.\ (2025)~\citep{ziyin2025proof} prove that embedded deep linear networks trained with SGD become ``Perfectly Platonic''---every pair of layers learns the same representation up to rotation. Crucially, they identify six conditions that break convergence (weight decay, label transformation, saddle convergence, input heterogeneity, gradient flow vs.\ SGD, finite-step edge-of-stability), suggesting PRH convergence is the default for well-behaved training but can fail under specific conditions. We introduce semi-formal definitions:
 
 \begin{definition}[Modality Encoder]\label{def:encoder}
 An encoder $E_i : M_i \to \mathbb{R}^d$ maps inputs from modality $M_i$ to $d$-dimensional representations; a decoder $D_i : \mathbb{R}^d \to M_i$ maps back.
@@ -184,7 +182,7 @@ We do not contest PRH---we extend it. PRH establishes that $Z$ converges; we ask
 
 \subsection{Connection to Denotational Semantics}
 
-Denotational semantics (Scott \& Strachey, 1971)~\cite{scott1971semantics} maps programs to mathematical objects in a semantic domain $\mathcal{D}$, independent of syntax. We observe a structural parallel: $\Zsem$ is a neural approximation of $\mathcal{D}$.
+Denotational semantics (Scott \& Strachey, 1971)~\citep{scott1971semantics} maps programs to mathematical objects in a semantic domain $\mathcal{D}$, independent of syntax. We observe a structural parallel: $\Zsem$ is a neural approximation of $\mathcal{D}$.
 
 \begin{conjecture}\label{conj:denotational}
 $\lim_{\text{scale}\to\infty} \Zsem(E(d)) \approx [\![ P ]\!]$ (up to continuous bijection), where $d$ is a NL description and $[\![ P ]\!]$ is the denotation of program $P$.
@@ -196,10 +194,10 @@ This explains why $\Zsem$ converges cross-culturally (denotational semantics is 
 
 \begin{itemize}[nosep]
   \item \textbf{Aligned embeddings.} UniXcoder achieves 77.1\% MRR on NL-code search across six languages.
-  \item \textbf{Cross-model transferability.} Steering vectors from 7B models control 70B model behavior (ACL 2025)~\cite{chen2025crossmodel}---$Z$ structure is recoverable across architectures.
-  \item \textbf{Language-independent code semantics.} LLMs develop language-independent semantic representations of code, with syntax-specific components in early layers feeding shared semantic components in middle layers (ICSE 2025 NIER)~\cite{beyondsyntax2025}.
-  \item \textbf{The Naturalness Hypothesis.} Software is statistically natural---code cross-entropy approaches that of English text (Hindle et al., 2012)~\cite{hindle2012naturalness}, a precondition for PRH convergence.
-  \item \textbf{Translation emergence.} LLMs trained primarily on NL generate code without code-specific training; cross-language synergies follow scaling laws (Cassano et al., 2025)~\cite{cassano2025scaling}.
+  \item \textbf{Cross-model transferability.} Steering vectors from 7B models control 70B model behavior (ACL 2025)~\citep{chen2025crossmodel}---$Z$ structure is recoverable across architectures.
+  \item \textbf{Language-independent code semantics.} LLMs develop language-independent semantic representations of code, with syntax-specific components in early layers feeding shared semantic components in middle layers (ICSE 2025 NIER)~\citep{beyondsyntax2025}.
+  \item \textbf{The Naturalness Hypothesis.} Software is statistically natural---code cross-entropy approaches that of English text (Hindle et al., 2012)~\citep{hindle2012naturalness}, a precondition for PRH convergence.
+  \item \textbf{Translation emergence.} LLMs trained primarily on NL generate code without code-specific training; cross-language synergies follow scaling laws (Cassano et al., 2025)~\citep{cassano2025scaling}.
   \item \textbf{Bidirectional transfer.} Training on NL documentation improves code completion, and vice versa.
 \end{itemize}
 
@@ -238,10 +236,10 @@ The LLM code-switches between culturally-mediated representations---Korean input
 \paragraph{Model B: The Platonic oracle.}
 The LLM contains a culture-invariant $Z$; cultural variations are decoding artifacts.
 
-Evidence increasingly favors Model~A for judgment, Model~B for structure: 9--56pp moral judgment gaps across languages including preference reversals~\cite{vida2024moral,agarwal2024ethical}, GPT-4o displays Cultural Frame Switching with distinct ``personalities'' per language (COLING 2025)~\cite{ahn2025coling}, and reasoning-language effects contribute twice the variance of input-language effects~\cite{li2026reasoning}. But shared grammatical features persist across typologically diverse languages~\cite{brinkmann2025shared}, a semantic hub appears in middle layers~\cite{wu2025semantichub}, and language identity is encoded via sparse dimensions separate from semantic content~\cite{zhong2025sparse}.
+Evidence increasingly favors Model~A for judgment, Model~B for structure: 9--56pp moral judgment gaps across languages including preference reversals~\citep{vida2024moral,agarwal2024ethical}, GPT-4o displays Cultural Frame Switching with distinct ``personalities'' per language (COLING 2025)~\citep{ahn2025coling}, and reasoning-language effects contribute twice the variance of input-language effects~\citep{li2026reasoning}. But shared grammatical features persist across typologically diverse languages~\citep{brinkmann2025shared}, a semantic hub appears in middle layers~\citep{wu2025semantichub}, and language identity is encoded via sparse dimensions separate from semantic content~\citep{zhong2025sparse}.
 
 \paragraph{Resolution.}
-$\Zsem$ converges (Model~B); $\Zproc$ and $\Zprag$ remain culturally distributed (Model~A). The Aristotelian critique (Gr\"{o}ger et al., 2026)~\cite{groger2026aristotelian} refines further: what converges is local neighborhood topology (preserved neighborhoods), not global geometry (preserved distances). $Z$ may be a topological rather than geometric structure.
+$\Zsem$ converges (Model~B); $\Zproc$ and $\Zprag$ remain culturally distributed (Model~A). The Aristotelian critique (Gr\"{o}ger et al., 2026)~\citep{groger2026aristotelian} refines further: what converges is local neighborhood topology (preserved neighborhoods), not global geometry (preserved distances). $Z$ may be a topological rather than geometric structure.
 
 \paragraph{$\Dtrain$ dependence.}
 $Z$ is not determined by scale alone---it depends on training data cultural composition: $Z = Z(\text{scale}, \Dtrain)$. Even ``purely computational'' domains carry implicit cultural defaults: sort order conventions, null handling semantics, error semantics (Python exceptions vs.\ Go explicit errors vs.\ C undefined behavior), and number formatting. The clean $\Zsem$/$\Zproc$ separation is an idealization:
@@ -252,35 +250,35 @@ The sovereign AI movement (Korea's five-consortium initiative, Japan's ABCI 3.0,
 
 \subsection{Why Does Z Converge?}\label{sec:whydoes}
 
-PRH attributes convergence to a shared statistical model of \emph{reality}~\cite{huh2024platonic}. We propose an alternative: convergence reflects the cognitive homogeneity of its sole training species.
+PRH attributes convergence to a shared statistical model of \emph{reality}~\citep{huh2024platonic}. We propose an alternative: convergence reflects the cognitive homogeneity of its sole training species.
 
 \paragraph{Species-level constraint.}
-Homo sapiens is among the most genetically homogeneous large mammals. A single group of 50 chimpanzees harbors more nucleotide diversity than all 8 billion humans~\cite{pradomartinez2013apes}. A severe bottleneck ${\sim}930{,}000$ years ago reduced the breeding population to ${\sim}1{,}280$ individuals, erasing an estimated 65.85\% of genetic diversity~\cite{hu2023bottleneck}. All LLM training data is produced by this genetically constrained species; the apparent universality of $Z$ may reflect the narrow bandwidth of human perception rather than a Platonic structure of the world.
+Homo sapiens is among the most genetically homogeneous large mammals. A single group of 50 chimpanzees harbors more nucleotide diversity than all 8 billion humans~\citep{pradomartinez2013apes}. A severe bottleneck ${\sim}930{,}000$ years ago reduced the breeding population to ${\sim}1{,}280$ individuals, erasing an estimated 65.85\% of genetic diversity~\citep{hu2023bottleneck}. All LLM training data is produced by this genetically constrained species; the apparent universality of $Z$ may reflect the narrow bandwidth of human perception rather than a Platonic structure of the world.
 
 \paragraph{WEIRD double constraint.}
-Internet text further narrows this sample. Henrich et al.\ (2010)~\cite{henrich2010weird} showed that WEIRD (Western, Educated, Industrialized, Rich, Democratic) subjects---from whom the majority of training data originates---are ``among the least representative populations one could find for generalizing about humans.'' $Z$ is thus doubly constrained: by species-level cognitive architecture and by the cultural subsample that dominates $\Dtrain$.
+Internet text further narrows this sample. Henrich et al.\ (2010)~\citep{henrich2010weird} showed that WEIRD (Western, Educated, Industrialized, Rich, Democratic) subjects---from whom the majority of training data originates---are ``among the least representative populations one could find for generalizing about humans.'' $Z$ is thus doubly constrained: by species-level cognitive architecture and by the cultural subsample that dominates $\Dtrain$.
 
 \paragraph{Biological precedent.}
 Biology provides abundant cases where signals converge \emph{without} communicability---precisely the pattern we argue holds for $Z$:
 \begin{itemize}[nosep]
-  \item \textbf{Quorum sensing.} Autoinducer-2 (AI-2) is produced by $>$50\% of sequenced bacterial species, yet each species uses different receptors and triggers different gene cascades~\cite{waters2005quorum}. Same representation, species-specific interpretation.
+  \item \textbf{Quorum sensing.} Autoinducer-2 (AI-2) is produced by $>$50\% of sequenced bacterial species, yet each species uses different receptors and triggers different gene cascades~\citep{waters2005quorum}. Same representation, species-specific interpretation.
   \item \textbf{Pheromone reuse.} The same sesquiterpene compound functions as alarm pheromone in one species and sex pheromone in another. Identical signal, opposite semantics.
-  \item \textbf{Heterospecific eavesdropping.} Fairy-wrens decode other species' alarm calls only in sympatry---where they co-occur and co-train~\cite{magrath2015eavesdropping}. Communicability requires alignment beyond signal convergence.
+  \item \textbf{Heterospecific eavesdropping.} Fairy-wrens decode other species' alarm calls only in sympatry---where they co-occur and co-train~\citep{magrath2015eavesdropping}. Communicability requires alignment beyond signal convergence.
 \end{itemize}
-These are not edge cases; convergence without communicability is the biological norm. Vervet monkeys' alarm calls~\cite{seyfarth1980vervet}---acoustically distinct signals for leopards, eagles, and snakes---show that even within a species, signal-meaning mappings must be \emph{learned}, not inherited. The convergent signal is necessary but not sufficient.
+These are not edge cases; convergence without communicability is the biological norm. Vervet monkeys' alarm calls~\citep{seyfarth1980vervet}---acoustically distinct signals for leopards, eagles, and snakes---show that even within a species, signal-meaning mappings must be \emph{learned}, not inherited. The convergent signal is necessary but not sufficient.
 
 \paragraph{Implication for PRH.}
-If convergence reflects $Z(\text{Homo sapiens})$ rather than $Z(\text{reality})$, the communicability gap is deeper than PRH suggests. It is not merely that convergent representations are hard to \emph{access} across cultures (a practical problem); it is that what converges may be a species-specific projection of reality, further distorted by a WEIRD subsample (a structural problem). Model collapse from recursive training~\cite{shumailov2024collapse} compounds this: tail distributions---including minority cultural data---vanish first.
+If convergence reflects $Z(\text{Homo sapiens})$ rather than $Z(\text{reality})$, the communicability gap is deeper than PRH suggests. It is not merely that convergent representations are hard to \emph{access} across cultures (a practical problem); it is that what converges may be a species-specific projection of reality, further distorted by a WEIRD subsample (a structural problem). Model collapse from recursive training~\citep{shumailov2024collapse} compounds this: tail distributions---including minority cultural data---vanish first.
 
 \subsection{The Communicability Problem}\label{sec:communicability}
 
 The preceding sections establish that $Z$ may exist (PRH convergence), that it stratifies ($\Zsem$ converges while $\Zproc$ does not), and that this stratification depends on training data. But existence is not sufficient for utility. \textbf{The central question of this paper is whether $Z$ can serve as a communication medium}---whether a Korean speaker's computational intent, encoded to $Z$, is decoded by the system as the same intent.
 
-This question has deep roots. In neuroscience, Hyperalignment~\cite{haxby2011hyperalignment} demonstrates that different brains produce geometrically similar representations when processing identical stimuli---a biological analogue of PRH convergence. Representational Similarity Analysis~\cite{kriegeskorte2008rsa} quantifies this convergence using the same mathematical tools (second-order similarity matrices) as CKA and probing in AI. Yet shared representational geometry does not resolve Wittgenstein's private language problem~\cite{wittgenstein1953}: even if your neural representation of ``red'' is geometrically similar to mine, we cannot verify that we \emph{experience} the same red. ``Is my $\Zsem$ your $\Zsem$?'' is the computational version of this question.
+This question has deep roots. In neuroscience, Hyperalignment~\citep{haxby2011hyperalignment} demonstrates that different brains produce geometrically similar representations when processing identical stimuli---a biological analogue of PRH convergence. Representational Similarity Analysis~\citep{kriegeskorte2008rsa} quantifies this convergence using the same mathematical tools (second-order similarity matrices) as CKA and probing in AI. Yet shared representational geometry does not resolve Wittgenstein's private language problem~\citep{wittgenstein1953}: even if your neural representation of ``red'' is geometrically similar to mine, we cannot verify that we \emph{experience} the same red. ``Is my $\Zsem$ your $\Zsem$?'' is the computational version of this question.
 
 Mathematics provides the strongest evidence that communicability \emph{is} achievable despite cultural divergence: $a^2 + b^2 = c^2$ communicates identically across cultures because the denotation is unambiguous. But even mathematical notation is not fully culture-free: the number 4 carries death associations in CJK cultures ($\text{四} \approx \text{死}$), 13 is avoided in Western contexts, and 8 connotes prosperity in Chinese ($\text{八} \approx \text{發}$). A \texttt{sort(array)[:4]} is denotationally identical everywhere, but its connotation leaks $\Zprag$---the ``purely computational'' carries cultural residue. Mathematics achieves communicability precisely by \emph{bypassing} natural language---encoding denotations directly in formal notation---yet even this bypass is imperfect. Natural language does not even attempt the bypass: ``find the largest values'' carries cultural defaults invisible to the speaker.
 
-A structural asymmetry deepens this gap. Code is \emph{modality-complete}: its text encodes the entirety of its meaning, with no reliance on intonation, gesture, or shared background. Natural language is \emph{modality-incomplete}: meaning depends on non-verbal channels that embedding models cannot access. High-context languages~\cite{hall1976beyond} amplify this incompleteness: Korean routinely omits subjects recoverable from social context, and mimetic expressions like \emph{salgeumsalgeum} (``stealthily'') encode embodied sensory meaning with no clean English mapping. Embedding models trained on text alone capture only the explicit channel---for code this is everything; for NL, especially high-context NL, it is a lossy projection. Recent work on World English varieties confirms this asymmetry empirically: AI-generated text maintains high semantic similarity while systematically erasing pragmatic and cultural markers, with pragmatic markers $1.9\times$ more vulnerable than lexical ones~\cite{culturalghosting2026}.
+A structural asymmetry deepens this gap. Code is \emph{modality-complete}: its text encodes the entirety of its meaning, with no reliance on intonation, gesture, or shared background. Natural language is \emph{modality-incomplete}: meaning depends on non-verbal channels that embedding models cannot access. High-context languages~\citep{hall1976beyond} amplify this incompleteness: Korean routinely omits subjects recoverable from social context, and mimetic expressions like \emph{salgeumsalgeum} (``stealthily'') encode embodied sensory meaning with no clean English mapping. Embedding models trained on text alone capture only the explicit channel---for code this is everything; for NL, especially high-context NL, it is a lossy projection. Recent work on World English varieties confirms this asymmetry empirically: AI-generated text maintains high semantic similarity while systematically erasing pragmatic and cultural markers, with pragmatic markers $1.9\times$ more vulnerable than lexical ones~\citep{culturalghosting2026}.
 
 Our pilot experiment (\S\ref{sec:pilot}) sharpens this point: \emph{description-level} cross-lingual invariance does not follow the pattern PRH predicts for \emph{execution-level} convergence. NL descriptions of computational operations are \emph{less} invariant across languages than descriptions of judgment operations---the opposite of what $\Zsem$ convergence would suggest. This is direct evidence for the communicability gap: $\Zsem$ may converge at the level of what programs \emph{do}, even when NL descriptions of what they do diverge. The gap is located not in $Z$ itself but in the NL-to-$Z$ encoding path---precisely where cultural mediation occurs, and where modality incompleteness is most acute.
 
@@ -336,10 +334,10 @@ No deterministic algorithm resolves Type-1 ambiguity in polynomial time. Type-2 
 
 \subsection{The Wall Dissolves---at the Representation Level}
 
-LLMs map input sequences to high-dimensional representations via attention over full context. ``if x is greater than 5'' (Korean NL), \texttt{if x > 5:} (Python), \texttt{(> x 5)} (Lisp) all map to nearby points (Semantic Hub Hypothesis). Language identity is encoded via sparse dimensions orthogonal to semantic content~\cite{zhong2025sparse}. The Chomsky hierarchy describes parsing complexity of surface forms---it says nothing about representing meaning.
+LLMs map input sequences to high-dimensional representations via attention over full context. ``if x is greater than 5'' (Korean NL), \texttt{if x > 5:} (Python), \texttt{(> x 5)} (Lisp) all map to nearby points (Semantic Hub Hypothesis). Language identity is encoded via sparse dimensions orthogonal to semantic content~\citep{zhong2025sparse}. The Chomsky hierarchy describes parsing complexity of surface forms---it says nothing about representing meaning.
 
 \paragraph{Surface-form boundaries.}
-Between NL and $Z$ exists a spectrum of representational directness: NL (linguistic, culturally mediated) $\to$ emoji/pictographs (iconic, semi-universal) $\to$ mathematical symbols (formal, universal) $\to$ code operators $\to$ $Z$ (continuous). Emoji are natural experiments in $\Zsem$---near-universal yet exhibiting cultural variation that mirrors $Z$ stratification (e.g., the prayer/gratitude/high-five emoji). See Appendix~\ref{app:emoji}. Tokenization introduces a bottleneck: spacing conventions (Korean \emph{ttieo-sseugi}, Chinese segmentation) leak through tokenizers into $Z$, and a ``token tax'' (Petrov et al., 2024)~\cite{petrov2024tokenizers} means non-Latin languages require 2--15$\times$ more tokens for the same content. See Appendix~\ref{app:tokenization}.
+Between NL and $Z$ exists a spectrum of representational directness: NL (linguistic, culturally mediated) $\to$ emoji/pictographs (iconic, semi-universal) $\to$ mathematical symbols (formal, universal) $\to$ code operators $\to$ $Z$ (continuous). Emoji are natural experiments in $\Zsem$---near-universal yet exhibiting cultural variation that mirrors $Z$ stratification (e.g., the prayer/gratitude/high-five emoji). See Appendix~\ref{app:emoji}. Tokenization introduces a bottleneck: spacing conventions (Korean \emph{ttieo-sseugi}, Chinese segmentation) leak through tokenizers into $Z$, and a ``token tax'' (Petrov et al., 2024)~\citep{petrov2024tokenizers} means non-Latin languages require 2--15$\times$ more tokens for the same content. See Appendix~\ref{app:tokenization}.
 
 \subsection{Disambiguation Migration}\label{sec:disambiguation}
 
@@ -357,14 +355,14 @@ For task $T$ with unique behavior $B(T)$, the specification complexity $K(T)$ is
 \begin{equation}\label{eq:conservation}
 K(T) \leq H(S) + H(T|S) + O(1)
 \end{equation}
-where $H(S)$ is surface-form entropy and $H(T|S)$ is residual ambiguity. Type-2 interfaces maximize $H(S)$ (syntactic precision) and minimize $H(T|S)$. NL interfaces minimize $H(S)$ but face $H(T|S) > 0$---remaining bits must be provided through disambiguation. This connects to Piantadosi et al.\ (2012)~\cite{piantadosi2012ambiguity}, who argue ambiguity is a feature of efficient NL communication---but resolution cost cannot be avoided when exact computation is required. Via Rate-Distortion Theory~\cite{shannon1959coding}: there is a minimum specification rate below which semantic error exceeds acceptable thresholds. Type-2 operates at zero distortion with high rate; NL operates at lower rate with nonzero distortion corrected downstream.
+where $H(S)$ is surface-form entropy and $H(T|S)$ is residual ambiguity. Type-2 interfaces maximize $H(S)$ (syntactic precision) and minimize $H(T|S)$. NL interfaces minimize $H(S)$ but face $H(T|S) > 0$---remaining bits must be provided through disambiguation. This connects to Piantadosi et al.\ (2012)~\citep{piantadosi2012ambiguity}, who argue ambiguity is a feature of efficient NL communication---but resolution cost cannot be avoided when exact computation is required. Via Rate-Distortion Theory~\citep{shannon1959coding}: there is a minimum specification rate below which semantic error exceeds acceptable thresholds. Type-2 operates at zero distortion with high rate; NL operates at lower rate with nonzero distortion corrected downstream.
 
 \paragraph{Implication.}
 Representation-level systems do not reduce total specification information---they redistribute it: less from the user upfront (lower syntactic cognitive load), more from the system at $Z$ (higher inference/verification cost).
 
 \subsection{Why Translation Fails but Representation Might Work}
 
-Wave~3 accepts NL (Type-1), translates to code (Type-2), executes. The translation step is non-deterministic and does not preserve semantics~\cite{cheung2025translation}. A representation-level approach instead: (1)~accept NL, (2)~map to $Z$, (3)~execute from $Z$ directly or project to code deterministically via constrained decoding.
+Wave~3 accepts NL (Type-1), translates to code (Type-2), executes. The translation step is non-deterministic and does not preserve semantics~\citep{cheung2025translation}. A representation-level approach instead: (1)~accept NL, (2)~map to $Z$, (3)~execute from $Z$ directly or project to code deterministically via constrained decoding.
 
 %% ============================================================
 %% 5. TOWARD REPRESENTATION-LEVEL EXECUTION
@@ -372,7 +370,7 @@ Wave~3 accepts NL (Type-1), translates to code (Type-2), executes. The translati
 
 \section{Toward Representation-Level Execution}\label{sec:toward}
 
-A representation-level system would: (1)~accept any surface form, (2)~normalize (spacing, OCR, ASR), (3)~encode to $Z$, (4)~verify and disambiguate at $Z$, (5)~execute at $Z$ or project to Type-2. Several pieces exist: constrained decoding (Outlines, LMQL) makes $Z \to$ Type-2 deterministic; Large Concept Models~\cite{meta2024lcm} operate on SONAR sentence embeddings; LPN~\cite{macfarlane2025lpn} and COCONUT~\cite{hao2024coconut} demonstrate latent execution; neuro-symbolic systems (Scallop~\cite{li2023scallop}, Lobster~\cite{huang2026lobster}) bridge continuous representations and discrete logic. The gap is unifying these with PRH-predicted convergence.
+A representation-level system would: (1)~accept any surface form, (2)~normalize (spacing, OCR, ASR), (3)~encode to $Z$, (4)~verify and disambiguate at $Z$, (5)~execute at $Z$ or project to Type-2. Several pieces exist: constrained decoding (Outlines, LMQL) makes $Z \to$ Type-2 deterministic; Large Concept Models~\citep{meta2024lcm} operate on SONAR sentence embeddings; LPN~\citep{macfarlane2025lpn} and COCONUT~\citep{hao2024coconut} demonstrate latent execution; neuro-symbolic systems (Scallop~\citep{li2023scallop}, Lobster~\citep{huang2026lobster}) bridge continuous representations and discrete logic. The gap is unifying these with PRH-predicted convergence.
 
 Key open problems include: determinism at $Z$ (convergence $\neq$ identity), verification without Type-2 projection, compositionality (NL composes loosely; code composes strictly), and cultural invariance (when $\Zsem$ carries cultural inflection, the ideal is a family $Z(c)$, not a single $Z$).
 
@@ -390,10 +388,10 @@ Judgment operations show \emph{higher} cross-lingual invariance than computation
 The P2 prediction was wrong. We present two competing interpretations of the $R_J > R_C$ finding, which we regard as \emph{equally viable} given the current evidence.
 
 \paragraph{Interpretation A: Convergence is real but the test cannot reach it.}
-Three complementary hypotheses support this reading. \emph{(i) English-pivot alignment}: Multilingual transformers process non-English input through intermediate English-like representations~\cite{wendler2024llamas}. Judgment operations use abstract vocabulary (``evaluate,'' ``prioritize'') whose English glosses are near-identical across languages, yielding high $R_J$; computational operations use domain-specific terminology that maps to diverse English surface forms, lowering $R_C$. \emph{(ii) Description vs.\ execution semantics}: Following SemCoder's~\cite{wan2024semcoder} three-level distinction (description, execution, behavior), our embedding-based $R$ operates at the description level---surface glosses may diverge even when execution semantics converge. \emph{(iii) $\Dtrain$ mediation}: English-dominant training causes computational operations, with more domain-specific vocabulary, to accumulate larger $\Dtrain$-dependent bias~\cite{wu2025semantichub}. Under Interpretation~A, P2 tests the NL-to-$Z$ encoding interface rather than $Z$ itself.
+Three complementary hypotheses support this reading. \emph{(i) English-pivot alignment}: Multilingual transformers process non-English input through intermediate English-like representations~\citep{wendler2024llamas}. Judgment operations use abstract vocabulary (``evaluate,'' ``prioritize'') whose English glosses are near-identical across languages, yielding high $R_J$; computational operations use domain-specific terminology that maps to diverse English surface forms, lowering $R_C$. \emph{(ii) Description vs.\ execution semantics}: Following SemCoder's~\citep{wan2024semcoder} three-level distinction (description, execution, behavior), our embedding-based $R$ operates at the description level---surface glosses may diverge even when execution semantics converge. \emph{(iii) $\Dtrain$ mediation}: English-dominant training causes computational operations, with more domain-specific vocabulary, to accumulate larger $\Dtrain$-dependent bias~\citep{wu2025semantichub}. Under Interpretation~A, P2 tests the NL-to-$Z$ encoding interface rather than $Z$ itself.
 
 \paragraph{Interpretation B: Computational semantics may not converge uniformly.}
-An equally plausible reading is that $\Zsem$ itself does not converge for computational operations. Computational semantics carry genuinely culture-dependent conventions: collation orders (ascending = alphabetical in English, stroke-count in CJK, JIS code in Japanese), null handling (SQL \texttt{NULL} $\neq$ Python \texttt{None} $\neq$ Go explicit error), date format conventions (\S\ref{sec:framework}), and directionality assumptions. Judgment operations, by contrast, draw on vocabulary already cross-lingually calibrated through international business, diplomacy, and academic discourse---their higher $R_J$ may reflect genuine cross-cultural semantic alignment rather than measurement artifact. If computational $\Zsem$ does not converge uniformly, then PRH's single-convergence-point prediction must be qualified by operation type, and the $\Zsem$/$\Zproc$/$\Zprag$ stratification may not carve $Z$ at its joints---the three-layer model may be an over-specification, or the layers may interact in ways that prevent clean empirical separation.
+An equally plausible reading is that $\Zsem$ itself does not converge for computational operations. Computational semantics carry genuinely culture-dependent conventions: collation orders (ascending = alphabetical in English, stroke-count in CJK, JIS code in Japanese), null handling (SQL \texttt{NULL} $\neq$ Python \texttt{None} $\neq$ Go explicit error), date format conventions (\S\ref{sec:intro}), and directionality assumptions. Judgment operations, by contrast, draw on vocabulary already cross-lingually calibrated through international business, diplomacy, and academic discourse---their higher $R_J$ may reflect genuine cross-cultural semantic alignment rather than measurement artifact. If computational $\Zsem$ does not converge uniformly, then PRH's single-convergence-point prediction must be qualified by operation type, and the $\Zsem$/$\Zproc$/$\Zprag$ stratification may not carve $Z$ at its joints---the three-layer model may be an over-specification, or the layers may interact in ways that prevent clean empirical separation.
 
 We cannot distinguish Interpretation~A from Interpretation~B with the current pilot; doing so requires execution-level probing (embedding code behavior rather than NL descriptions). The $R_J > R_C$ asymmetry is, however, a result in its own right---one that constrains future Z-level system design regardless of which interpretation proves correct.
 
@@ -406,7 +404,7 @@ Korean spacing variants cluster ${\sim}3\times$ closer than semantically differe
 Embedding NL descriptions alongside Python code through UniXcoder yields $R_{\text{code}} = 1.043$ (95\% CI: $[1.021, 1.066]$, $p < 0.0001$ by permutation test, $n = 10{,}000$; Cohen's $d = 0.33$). MiniLM shows a larger effect: $R_{\text{code}} = 1.182$ (95\% CI: $[1.147, 1.219]$, $p < 0.0001$, $d = 0.94$). NL maps closer to its corresponding code than to other code, though the UniXcoder effect is small in absolute terms. This resolves the P2 ambiguity---NL descriptions diverge across languages (P2 fails), yet each maps closer to its code equivalent (NL-code alignment holds). \textbf{Description-level invariance and execution-level convergence are distinct phenomena}---the central empirical finding.
 
 \paragraph{P3 (Stratification Separability): Supported, with caveats.}
-Linear probes trained on English embeddings achieve 90\% mean accuracy on category transfer and 85.8\% on 100-way operation ID across non-English languages (chance: 50\% and 1\%). Korean transfers worst (80\%/66\%), consistent with $\Dtrain$ effects. However, these results must be interpreted alongside the English-pivot concern raised in Interpretation~A.i: if multilingual transformers route non-English inputs through English-like intermediate representations~\cite{wendler2024llamas}, then high cross-lingual probe transfer may partly reflect this architectural property rather than genuine $\Zsem$ generalization. Distinguishing these accounts requires testing with monolingual models that lack English-pivot architecture. We therefore report P3 as \emph{consistent with} $\Zsem$ generalization but not conclusive evidence for it.
+Linear probes trained on English embeddings achieve 90\% mean accuracy on category transfer and 85.8\% on 100-way operation ID across non-English languages (chance: 50\% and 1\%). Korean transfers worst (80\%/66\%), consistent with $\Dtrain$ effects. However, these results must be interpreted alongside the English-pivot concern raised in Interpretation~A.i: if multilingual transformers route non-English inputs through English-like intermediate representations~\citep{wendler2024llamas}, then high cross-lingual probe transfer may partly reflect this architectural property rather than genuine $\Zsem$ generalization. Distinguishing these accounts requires testing with monolingual models that lack English-pivot architecture. We therefore report P3 as \emph{consistent with} $\Zsem$ generalization but not conclusive evidence for it.
 
 %% ============================================================
 %% 6. DISCUSSION
@@ -419,7 +417,7 @@ Linear probes trained on English embeddings achieve 90\% mean accuracy on catego
 If verification requires formal methods, and formal methods require Type-2 input, the system must project from $Z$ to Type-2 for verification---reintroducing the Chomsky wall at the verification stage. The wall is dissolved at input but reassembled at verification. Near-term systems will use a hybrid: $Z$ provides expressiveness; Type-2 projection provides verifiability. The paradox is not fatal but constrains the deployment path: the wall retreats inward, from the user-facing boundary to the system-internal verification layer.
 
 \paragraph{The AI-AI communication corollary.}
-A revealing special case: when agents communicate \emph{with each other} rather than with humans, the NL-to-$Z$ encoding path is eliminated entirely. Agent~A's output is already in $Z$; Agent~B consumes $Z$ directly. If the communicability gap resides in the NL-to-$Z$ interface rather than in $Z$ itself, then $Z$-to-$Z$ communication should exhibit no gap---convergence \emph{would} imply communicability within the latent space. Precedents include Facebook's negotiation bots~\cite{lewis2017negotiation}, which spontaneously developed abbreviated language incomprehensible to humans but efficient between agents, and COCONUT~\cite{hao2024coconut}, which performs reasoning in continuous latent space without decoding to NL tokens. This yields a three-way trade-off:
+A revealing special case: when agents communicate \emph{with each other} rather than with humans, the NL-to-$Z$ encoding path is eliminated entirely. Agent~A's output is already in $Z$; Agent~B consumes $Z$ directly. If the communicability gap resides in the NL-to-$Z$ interface rather than in $Z$ itself, then $Z$-to-$Z$ communication should exhibit no gap---convergence \emph{would} imply communicability within the latent space. Precedents include Facebook's negotiation bots~\citep{lewis2017negotiation}, which spontaneously developed abbreviated language incomprehensible to humans but efficient between agents, and COCONUT~\citep{hao2024coconut}, which performs reasoning in continuous latent space without decoding to NL tokens. This yields a three-way trade-off:
 
 \begin{center}
 \footnotesize
@@ -440,9 +438,9 @@ Notably, agent-to-agent NL communication represents a \emph{regression} in compu
 
 \subsection{Cultural Boundary}
 
-$\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultural inflection for judgment-involving domains---requiring $Z(c)$ rather than $Z$. This inflection is amplified in high-context cultures~\cite{hall1976beyond}, where meaning relies on non-verbal channels---subject omission, social register, embodied reference---that text-only models cannot capture~\cite{park2024pragmatic}. The modality incompleteness of NL thus varies across cultures, making the communicability gap a function of both $\Dtrain$ and the source culture's context dependence. Furthermore, the gap is not categorical but \emph{continuous}: dialectal variants within a language occupy intermediate positions, as shown by dialect-aware embedding benchmarks~\cite{faisal2025swan} and evidence that LLMs treat dialects as stigmatized deviations rather than points on a continuum~\cite{bui2025dialect}. $\Dtrain$ dependence creates ethical risks: computational colonialism (English-derived norms as ``neutral'' $Z$), consent opacity, and cultural feedback loops ($Z$-projected outputs re-enter $\Dtrain$). Korean programmers face a double translation: thought (Korean) $\to$ code (English syntax) $\to$ execution; representation-level systems could eliminate both steps~\cite{li2026reasoning}. The biological precedents in \S\ref{sec:whydoes} suggest this boundary is not unique to AI: convergent signaling without communicability is the norm across biological systems, from bacterial quorum sensing to primate alarm calls. The NL-code communicability gap may be an instance of a more general principle: convergent representations arise readily under shared environmental pressure, but communicability requires additional alignment that convergence alone does not provide. See Appendix~\ref{app:ethics} for full analysis.
+$\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultural inflection for judgment-involving domains---requiring $Z(c)$ rather than $Z$. This inflection is amplified in high-context cultures~\citep{hall1976beyond}, where meaning relies on non-verbal channels---subject omission, social register, embodied reference---that text-only models cannot capture~\citep{park2024pragmatic}. The modality incompleteness of NL thus varies across cultures, making the communicability gap a function of both $\Dtrain$ and the source culture's context dependence. Furthermore, the gap is not categorical but \emph{continuous}: dialectal variants within a language occupy intermediate positions, as shown by dialect-aware embedding benchmarks~\citep{faisal2025swan} and evidence that LLMs treat dialects as stigmatized deviations rather than points on a continuum~\citep{bui2025dialect}. $\Dtrain$ dependence creates ethical risks: computational colonialism (English-derived norms as ``neutral'' $Z$), consent opacity, and cultural feedback loops ($Z$-projected outputs re-enter $\Dtrain$). Korean programmers face a double translation: thought (Korean) $\to$ code (English syntax) $\to$ execution; representation-level systems could eliminate both steps~\citep{li2026reasoning}. The biological precedents in \S\ref{sec:whydoes} suggest this boundary is not unique to AI: convergent signaling without communicability is the norm across biological systems, from bacterial quorum sensing to primate alarm calls. The NL-code communicability gap may be an instance of a more general principle: convergent representations arise readily under shared environmental pressure, but communicability requires additional alignment that convergence alone does not provide. See Appendix~\ref{app:ethics} for full analysis.
 
-% Limitations moved to standalone section after Conclusion (EMNLP requirement)
+% Limitations in standalone section after Conclusion
 
 %% ============================================================
 %% 7. RELATED WORK
@@ -451,22 +449,22 @@ $\Zsem$ is culture-invariant for purely computational domains; $Z$ carries cultu
 \section{Related Work}\label{sec:related}
 
 \paragraph{PRH and convergence.}
-Huh et al.\ (ICML 2024)~\cite{huh2024platonic} established convergence; Ziyin et al.\ (2025)~\cite{ziyin2025proof} proved it for deep linear networks; Gr\"{o}ger et al.\ (2026)~\cite{groger2026aristotelian} showed global convergence is confounded but local topology persists. We contribute a biological/anthropological critique (\S\ref{sec:whydoes}): convergence may reflect species-level cognitive homogeneity---Homo sapiens' unusually low genetic diversity~\cite{pradomartinez2013apes,hu2023bottleneck}---rather than a Platonic structure of reality. Biology provides ample precedent for convergent signals without communicability~\cite{waters2005quorum,seyfarth1980vervet,magrath2015eavesdropping}.
+Huh et al.\ (ICML 2024)~\citep{huh2024platonic} established convergence; Ziyin et al.\ (2025)~\citep{ziyin2025proof} proved it for deep linear networks; Gr\"{o}ger et al.\ (2026)~\citep{groger2026aristotelian} showed global convergence is confounded but local topology persists. We contribute a biological/anthropological critique (\S\ref{sec:whydoes}): convergence may reflect species-level cognitive homogeneity---Homo sapiens' unusually low genetic diversity~\citep{pradomartinez2013apes,hu2023bottleneck}---rather than a Platonic structure of reality. Biology provides ample precedent for convergent signals without communicability~\citep{waters2005quorum,seyfarth1980vervet,magrath2015eavesdropping}.
 
 \paragraph{Multilingual representations.}
-The Semantic Hub Hypothesis~\cite{wu2025semantichub} demonstrates shared representations; middle-layer alignment is strongest across 1,000+ language pairs~\cite{middlelayer2025}. However, multilingual $\neq$ multicultural (Rystr{\o}m et al., 2025)~\cite{rystrom2025multicultural}: LLMs produce different moral judgments across languages, reflect creator ideology~\cite{buyl2025ideology}, and Sapir-Whorf effects are measurable in LLM outputs across 13 languages~\cite{ray2025sapirwhorf}.
+The Semantic Hub Hypothesis~\citep{wu2025semantichub} demonstrates shared representations; middle-layer alignment is strongest across 1,000+ language pairs~\citep{middlelayer2025}. However, multilingual $\neq$ multicultural (Rystr{\o}m et al., 2025)~\citep{rystrom2025multicultural}: LLMs produce different moral judgments across languages, reflect creator ideology~\citep{buyl2025ideology}, and Sapir-Whorf effects are measurable in LLM outputs across 13 languages~\citep{ray2025sapirwhorf}.
 
 \paragraph{NL programming and vibe coding.}
-Wave~3's non-determinism is fundamentally intractable (ICSE 2026)~\cite{icse2026reproducibility}. The Moltbook incident (2026) exposed 1.5M API keys through vibe-coded services.
+Wave~3's non-determinism is fundamentally intractable (ICSE 2026)~\citep{icse2026reproducibility}. The Moltbook incident (2026) exposed 1.5M API keys through vibe-coded services.
 
 \paragraph{Latent execution.}
-LPN (NeurIPS 2025)~\cite{macfarlane2025lpn}, COCONUT (Meta, 2024)~\cite{hao2024coconut}, LaSynth (NeurIPS 2021)~\cite{chen2021lasynth} demonstrate execution in representation space. ``Beyond Syntax'' (ICSE 2025)~\cite{beyondsyntax2025} shows LLMs develop language-independent code semantics. CWM (Meta, 2025)~\cite{metafair2025cwm} models code execution at token level.
+LPN (NeurIPS 2025)~\citep{macfarlane2025lpn}, COCONUT (Meta, 2024)~\citep{hao2024coconut}, LaSynth (NeurIPS 2021)~\citep{chen2021lasynth} demonstrate execution in representation space. ``Beyond Syntax'' (ICSE 2025)~\citep{beyondsyntax2025} shows LLMs develop language-independent code semantics. CWM (Meta, 2025)~\citep{metafair2025cwm} models code execution at token level.
 
 \paragraph{Tokenization, naturalness, and dialects.}
-Tokenizers introduce up to 15$\times$ cost unfairness across languages~\cite{petrov2024tokenizers}, with dialectal varieties suffering 10--15$\times$ tokenization premiums~\cite{tokenbiases2025}. Software is ``natural''---statistically predictable like NL~\cite{hindle2012naturalness}. Dialect-aware benchmarks~\cite{faisal2025swan} and studies of dialect bias in LLMs~\cite{bui2025dialect} reveal that the communicability gap extends within languages, not just across them.
+Tokenizers introduce up to 15$\times$ cost unfairness across languages~\citep{petrov2024tokenizers}, with dialectal varieties suffering 10--15$\times$ tokenization premiums~\citep{tokenbiases2025}. Software is ``natural''---statistically predictable like NL~\citep{hindle2012naturalness}. Dialect-aware benchmarks~\citep{faisal2025swan} and studies of dialect bias in LLMs~\citep{bui2025dialect} reveal that the communicability gap extends within languages, not just across them.
 
 \paragraph{Neuroscience and philosophy.}
-Hyperalignment~\cite{haxby2011hyperalignment} and RSA~\cite{kriegeskorte2008rsa} show cross-brain representational convergence---the biological analogue of PRH---yet shared geometry does not resolve the private language problem~\cite{wittgenstein1953}. Mahowald et al.\ (2024)~\cite{mahowald2024dissociating} dissociate formal from functional linguistic competence in LLMs, paralleling our $\Zsem$/$\Zproc$ stratification. The modality gap in contrastive learning~\cite{liang2022modalitygap} persists even after alignment; closing it helps group-level but not instance-level tasks~\cite{grassucci2026modgap}, consistent with our prediction that $\Zsem$ converges while $\Zprag$ does not.
+Hyperalignment~\citep{haxby2011hyperalignment} and RSA~\citep{kriegeskorte2008rsa} show cross-brain representational convergence---the biological analogue of PRH---yet shared geometry does not resolve the private language problem~\citep{wittgenstein1953}. Mahowald et al.\ (2024)~\citep{mahowald2024dissociating} dissociate formal from functional linguistic competence in LLMs, paralleling our $\Zsem$/$\Zproc$ stratification. The modality gap in contrastive learning~\citep{liang2022modalitygap} persists even after alignment; closing it helps group-level but not instance-level tasks~\citep{grassucci2026modgap}, consistent with our prediction that $\Zsem$ converges while $\Zprag$ does not.
 
 %% ============================================================
 %% 8. CONCLUSION
@@ -481,12 +479,12 @@ Mathematics is often presented as evidence that communicability is achievable: P
 This parallels challenges in neuroscience (representational similarity $\neq$ shared experience), philosophy (universals $\neq$ intersubjective access), and denotational semantics (shared denotation $\neq$ shared specification). Three practical consequences follow: disambiguation cost is conserved, the Chomsky wall retreats inward to verification, and $\Dtrain$ dependence requires explicit cultural parameterization. Mathematics achieved communicability for abstract reasoning---not by transcending human interpretation, but by socially disciplining it. Whether computation can achieve the same discipline for executable intent, and whether agent-to-agent $Z$-space communication can bypass the human interpretation bottleneck entirely, remain open questions with immediate architectural consequences for multi-agent system design.
 
 %% ============================================================
-%% LIMITATIONS (required by EMNLP — does not count toward page limit)
+%% LIMITATIONS (does not count toward page limit)
 %% ============================================================
 
 \section*{Limitations}
 
-\textbf{PRH is a hypothesis, not a theorem.} PRH for code as a modality remains a conjecture. Our contribution is not to prove it but to derive consequences and provide initial tests. Recent evidence (language-independent code semantics~\cite{beyondsyntax2025}, cross-model transferability~\cite{chen2025crossmodel}) is consistent with convergence but not proof.
+\textbf{PRH is a hypothesis, not a theorem.} PRH for code as a modality remains a conjecture. Our contribution is not to prove it but to derive consequences and provide initial tests. Recent evidence (language-independent code semantics~\citep{beyondsyntax2025}, cross-model transferability~\citep{chen2025crossmodel}) is consistent with convergence but not proof.
 
 \textbf{Pilot measures description-level, not execution-level, convergence.} The P2 failure highlights this gap: NL embedding similarity is a proxy, not a direct test, of $\Zsem$ convergence. A stronger test would embed code alongside NL descriptions and measure alignment in code-trained representation spaces. We have begun this with the NL-code alignment experiment (UniXcoder), but a full-scale study across model families and scales is needed.
 
@@ -506,11 +504,11 @@ This parallels challenges in neuroscience (representational similarity $\neq$ sh
 
 This work identifies ethical risks inherent in representation-level computing systems that we believe the community should address proactively:
 
-\textbf{Cultural bias in $Z$.} If shared representations are shaped by English-dominant training data, they may encode Anglo-American computational norms as ``neutral'' defaults (Appendix~\ref{app:ethics}). This constitutes a form of computational colonialism~\cite{phillipson1992} that affects non-English-speaking users disproportionately.
+\textbf{Cultural bias in $Z$.} If shared representations are shaped by English-dominant training data, they may encode Anglo-American computational norms as ``neutral'' defaults (Appendix~\ref{app:ethics}). This constitutes a form of computational colonialism~\citep{phillipson1992} that affects non-English-speaking users disproportionately.
 
 \textbf{Consent and opacity.} Users interacting with representation-level systems cannot inspect which cultural assumptions shaped the interpretation of their input. We advocate for cultural provenance tracking and explicit cultural parameterization (Appendix~\ref{app:ethics}, mitigations M1--M5).
 
-\textbf{Feedback loops.} $Z$-projected outputs re-enter training distributions, potentially amplifying cultural biases through recursive training~\cite{shumailov2024collapse}.
+\textbf{Feedback loops.} $Z$-projected outputs re-enter training distributions, potentially amplifying cultural biases through recursive training~\citep{shumailov2024collapse}.
 
 Our pilot experiment uses publicly available multilingual sentence-transformer models and does not involve human subjects. All stimuli were created by the authors.
 
@@ -519,6 +517,7 @@ Our pilot experiment uses publicly available multilingual sentence-transformer m
 %% ============================================================
 
 \bibliography{references}
+\bibliographystyle{colm2026_conference}
 
 %% ============================================================
 %% APPENDICES
@@ -530,7 +529,7 @@ Our pilot experiment uses publicly available multilingual sentence-transformer m
 
 \subsection{Wave 1: Keyword Substitution (Han --- Korean Rust)}
 
-Han~\cite{han2025} maps Korean keywords to Rust syntax. The grammar remains Type-2; only terminal symbols change:
+Han~\citep{han2025} maps Korean keywords to Rust syntax. The grammar remains Type-2; only terminal symbols change:
 
 \begin{lstlisting}[language=Python,escapeinside={(*}{*)}]
 func top_set(list: array<int>) -> array<int> {
@@ -542,7 +541,7 @@ The parse tree is identical to its English-syntax equivalent. The programmer mus
 
 \subsection{Wave 2: Structured NL (CoRE-style)}
 
-CoRE~\cite{core2025} constrains NL into a parseable template format:
+CoRE~\citep{core2025} constrains NL into a parseable template format:
 
 \begin{lstlisting}
 TASK: Find three largest values
@@ -647,7 +646,7 @@ All four carry identical computational intent. A Korean speaker processes all fo
 
 \subsection{Token Tax}
 
-Petrov et al.\ (2024)~\cite{petrov2024tokenizers} document that non-Latin languages require 2--15$\times$ more tokens for the same semantic content. This ``token tax'' means: higher API cost for non-English users, reduced effective context window, and---most relevant to PRH---longer paths through the model, potentially affecting where in $Z$ the input lands.
+Petrov et al.\ (2024)~\citep{petrov2024tokenizers} document that non-Latin languages require 2--15$\times$ more tokens for the same semantic content. This ``token tax'' means: higher API cost for non-English users, reduced effective context window, and---most relevant to PRH---longer paths through the model, potentially affecting where in $Z$ the input lands.
 
 \subsection{Prediction 7 Protocol}
 
@@ -658,7 +657,7 @@ P7 (Spacing Robustness) can be tested by measuring:
 where variants $i,j$ are spacing variants of the same sentence and sentences $1,2$ are semantically different. The ratio should be $> 10\times$ for a robust encoder.
 
 \paragraph{The ideal encoder behaves like a Korean speaker.}
-A Korean speaker maps all four spacing variants to the same meaning effortlessly. The ideal encoder should do the same---collapsing surface variation while preserving semantic distinction. Current tokenizers do not; character-level models (ByT5~\cite{xue2022byt5}, CANINE~\cite{clark2022canine}) partially address this but sacrifice other capabilities.
+A Korean speaker maps all four spacing variants to the same meaning effortlessly. The ideal encoder should do the same---collapsing surface variation while preserving semantic distinction. Current tokenizers do not; character-level models (ByT5~\citep{xue2022byt5}, CANINE~\citep{clark2022canine}) partially address this but sacrifice other capabilities.
 
 \section{Symbols, Emoji, and the Spectrum of Representational Directness}\label{app:emoji}
 
@@ -693,7 +692,7 @@ Emoji are natural experiments in cross-cultural semantic convergence:
   \item Composition parallels: emoji sequences compose meaning (face + heart = love), but compositionality is loose---paralleling NL rather than code.
 \end{itemize}
 
-Lu et al.\ (2016)~\cite{lu2016emoji} document usage patterns; Barbieri et al.\ (2016)~\cite{barbieri2016emoji} measure cross-cultural variation. The pattern matches $Z$ stratification: $\Zsem$ (core meaning) converges while $\Zprag$ (contextual usage) remains culturally specific.
+Lu et al.\ (2016)~\citep{lu2016emoji} document usage patterns; Barbieri et al.\ (2016)~\citep{barbieri2016emoji} measure cross-cultural variation. The pattern matches $Z$ stratification: $\Zsem$ (core meaning) converges while $\Zprag$ (contextual usage) remains culturally specific.
 
 \subsection{Mathematical Symbols: Pre-Neural $\Zsem$ Convergence}
 
@@ -704,15 +703,15 @@ Mathematical notation achieved $\Zsem$ convergence before neural networks existe
 \subsection{Five Dimensions of Risk}
 
 \begin{enumerate}[nosep]
-  \item \textbf{Computational colonialism.} If $Z$ is trained predominantly on English data, English-derived computational norms become the ``neutral'' baseline. Non-English users must conform to Anglo-American defaults---sort order, error handling, null semantics---or accept degraded performance. This is Phillipson's (1992)~\cite{phillipson1992} linguistic imperialism extended to computational semantics.
+  \item \textbf{Computational colonialism.} If $Z$ is trained predominantly on English data, English-derived computational norms become the ``neutral'' baseline. Non-English users must conform to Anglo-American defaults---sort order, error handling, null semantics---or accept degraded performance. This is Phillipson's (1992)~\citep{phillipson1992} linguistic imperialism extended to computational semantics.
 
   \item \textbf{The ``purely computational'' boundary.} The distinction between ``purely computational'' ($\Zsem$) and ``culturally inflected'' ($\Zproc$, $\Zprag$) is itself a cultural construction. What counts as ``purely computational'' depends on who draws the boundary. Risk assessment, prioritization, and scheduling all involve implicit value judgments that may appear ``computational'' from within one cultural framework.
 
   \item \textbf{Consent and transparency.} Users interacting with representation-level systems cannot see which cultural assumptions shaped the interpretation of their input. If ``find the largest value'' is interpreted using English-derived defaults for comparison and ordering, the Korean user has no visibility into this cultural translation.
 
-  \item \textbf{Accountability gap.} When a representation-level system misinterprets culturally-mediated intent, who is responsible? The user (who expressed intent in NL)? The system (which mapped to $Z$)? The training data (which shaped $Z$)? The $\Dtrain$ dependence creates a ``responsibility gap''~\cite{matthias2004} where no single actor controls the cultural mapping.
+  \item \textbf{Accountability gap.} When a representation-level system misinterprets culturally-mediated intent, who is responsible? The user (who expressed intent in NL)? The system (which mapped to $Z$)? The training data (which shaped $Z$)? The $\Dtrain$ dependence creates a ``responsibility gap''~\citep{matthias2004} where no single actor controls the cultural mapping.
 
-  \item \textbf{Feedback loop risks.} $Z$-projected outputs re-enter the training distribution when users interact with and build upon system outputs. If $Z$ carries cultural bias, this bias is amplified through recursive training~\cite{shumailov2024collapse}, creating a feedback loop where dominant cultural norms become increasingly entrenched in $Z$.
+  \item \textbf{Feedback loop risks.} $Z$-projected outputs re-enter the training distribution when users interact with and build upon system outputs. If $Z$ carries cultural bias, this bias is amplified through recursive training~\citep{shumailov2024collapse}, creating a feedback loop where dominant cultural norms become increasingly entrenched in $Z$.
 \end{enumerate}
 
 \subsection{Mitigation Paths}
@@ -720,7 +719,7 @@ Mathematical notation achieved $\Zsem$ convergence before neural networks existe
 \begin{description}[nosep]
   \item[M1: Cultural provenance tracking.] Annotate $Z$ projections with cultural assumptions: ``This interpretation assumes ascending sort order (Western convention).''
   \item[M2: Explicit cultural parameterization.] Make cultural defaults configurable: $Z(c)$ where $c$ specifies cultural context, rather than a single ``universal'' $Z$.
-  \item[M3: Diverse $\Dtrain$ requirements.] Mandate training data cultural diversity metrics, analogous to demographic diversity requirements in dataset documentation~\cite{durmus2023opinions}.
+  \item[M3: Diverse $\Dtrain$ requirements.] Mandate training data cultural diversity metrics, analogous to demographic diversity requirements in dataset documentation~\citep{durmus2023opinions}.
   \item[M4: Cross-cultural validation.] Test representation-level systems across cultural contexts, not just languages---measuring whether the system's defaults align with each culture's expectations.
   \item[M5: User-inspectable cultural mapping.] Develop tools that allow users to see how their NL input was interpreted---which cultural defaults were applied, and how to override them.
 \end{description}
@@ -838,43 +837,11 @@ Test speech input via SONAR's speech encoder---spacing is absent in speech, so t
 Each operation is described in English, Korean, Chinese, Arabic, and Spanish by native-speaker computational linguists ($100 \times 5 = 500$ base stimuli). Dialectal variants add up to 4 variants per language (${\sim}1{,}800$ total stimuli including dialect extensions). Full multilingual descriptions are available in the experiment repository.
 
 %% ============================================================
-%% RESPONSIBLE NLP RESEARCH CHECKLIST (ARR requirement)
+%% REPRODUCIBILITY STATEMENT (COLM requirement, does not count toward page limit)
 %% ============================================================
 
-\section*{Responsible NLP Research Checklist}
+\section*{Reproducibility Statement}
 
-This checklist follows the ARR Responsible NLP Research requirements.
-
-\subsection*{A. Limitations}
-See the Limitations section above. Key limitations: PRH for code is a conjecture, not a theorem; the pilot measures description-level rather than execution-level convergence; the $Z$ stratification is a conceptual framework with initial but not definitive evidence; and the disambiguation bound is a design heuristic, not a formal theorem.
-
-\subsection*{B. Potential Risks}
-See the Ethics Statement above. Key risks include cultural bias in learned representations ($\Dtrain$-dependent $Z$ encoding Anglo-American defaults as ``neutral''), consent opacity in representation-level systems, and cultural feedback loops through recursive training on $Z$-projected outputs.
-
-\subsection*{C. Models and Data}
-
-\paragraph{Models used in the pilot experiment.}
-\begin{itemize}[nosep]
-  \item \textbf{paraphrase-multilingual-MiniLM-L12-v2} (sentence-transformers): 118M parameters, multilingual sentence embedding model, Apache 2.0 license. Intended use: sentence similarity and semantic search. Used for P2, P7, and NL-code alignment experiments.
-  \item \textbf{multilingual-e5-large-instruct} (Microsoft): 560M parameters, multilingual text embedding model, MIT license. Intended use: text retrieval and semantic similarity. Used for P2 and P3 probing experiments.
-  \item \textbf{UniXcoder-base} (Microsoft): 125M parameters, unified cross-modal pre-trained model for code representation, MIT license. Intended use: code search, code generation, and code-NL alignment. Used for NL-code alignment experiments.
-\end{itemize}
-
-\paragraph{Data.}
-All stimuli (100 operations $\times$ 5 languages = 500 base descriptions, plus dialectal variants totaling approximately 1,800 stimuli) were created by the authors. No existing datasets were used. No personally identifiable information is included. Stimuli are available in the experiment repository.
-
-\subsection*{D. Computational Budget and Reproducibility}
-
-\paragraph{Compute.}
-All embedding experiments were run on macOS with Apple Silicon (M-series), using CPU inference via the \texttt{sentence-transformers} library. No GPU was used. Total compute time: approximately 4 hours for all embedding computations across all models and stimuli. Estimated electricity cost: negligible (consumer laptop). No large-scale training was performed; all models were used in inference mode only with pre-trained weights.
-
-\paragraph{Hyperparameters.}
-Models were used with default inference settings. For sentence-transformers (MiniLM, E5-large): default pooling (mean), maximum sequence length 512 tokens, cosine similarity metric. For UniXcoder: default settings with maximum sequence length 512 tokens. No hyperparameter tuning was performed, as all experiments use pre-trained models in a zero-shot evaluation setting.
-
-\paragraph{Results reporting.}
-All reported results (discriminability ratios $R$, probing accuracies, drift values) are from single runs. The embedding computation is deterministic (no sampling or temperature parameters), so re-running produces identical results. Statistical significance tests (permutation tests) use 10,000 permutations. Probing classifier results (P3) use 5-fold cross-validation with mean accuracy reported.
-
-\subsection*{E. AI Assistant Disclosure}
-An AI assistant (Claude, Anthropic) was used during manuscript preparation for writing assistance, literature survey support, and LaTeX formatting. All scientific claims, experimental design, analysis, and interpretations are the authors' own. The AI assistant did not design experiments, run analyses, or generate results.
+All embedding experiments use publicly available pre-trained models (MiniLM-L12, E5-small/base/large, BGE-M3) in inference mode with default settings. The embedding computation is deterministic (no sampling or temperature parameters). Statistical significance tests use 10,000-permutation tests. Probing classifier results use 5-fold cross-validation with mean accuracy reported. All stimuli (100 operations $\times$ 5 languages = 500 base descriptions, plus dialectal variants totaling approximately 1,800 stimuli) were created by the authors and are available in the experiment repository. Total compute time: approximately 4 hours on macOS with Apple Silicon (M-series), CPU inference only.
 
 \end{document}
