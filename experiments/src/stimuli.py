@@ -27,9 +27,9 @@ class Operation:
     id: str
     category: str  # "computational" or "judgment"
     descriptions: dict[str, str] = field(default_factory=dict)  # lang -> description
-    dialect_descriptions: dict[str, dict[str, str]] = field(default_factory=dict)  # lang -> {dialect -> description}
     tags: list[str] = field(default_factory=list)
     has_implicit_criteria: bool = False  # for P6: operations where "correct" depends on context
+    dialect_descriptions: dict[str, dict[str, str]] = field(default_factory=dict)  # lang -> {dialect -> description}
 
 
 # --- Initial 10 computational operations (expand to 50) ---
