@@ -5,7 +5,6 @@ directly testing PRH for code as a modality.
 """
 
 import numpy as np
-from itertools import combinations
 from scipy.spatial.distance import cosine
 
 # 50 computational operations with Python code equivalents
@@ -123,3 +122,118 @@ def compute_nl_code_alignment(
         "per_lang_d_match": per_lang_d_match,
         "d_match_std": float(np.std(d_match_list)) if d_match_list else 0.0,
     }
+
+
+def compute_per_language_R_code(
+    nl_embeddings: dict[str, np.ndarray],
+    code_embeddings: dict[str, np.ndarray],
+    comp_ids: list[str],
+    languages: list[str],
+    n_perm: int = 10000,
+    n_boot: int = 10000,
+    seed: int = 42,
+) -> dict:
+    """Per-language R_code with permutation test and bootstrap CI.
+
+    For each language, compute R_code = mean(d_mismatch) / mean(d_match)
+    using ALL mismatched operations (not sampled).
+
+    Returns: {lang: {R_code, p_value, ci_95, cohens_d, ...}}
+    """
+    rng = np.random.default_rng(seed)
+    valid_ids = [oid for oid in comp_ids if oid in code_embeddings]
+
+    results = {}
+    for lang in languages:
+        d_match = []
+        d_mismatch = []
+
+        for op_id in valid_ids:
+            nl_key = f"{op_id}_{lang}"
+            if nl_key not in nl_embeddings:
+                continue
+            nl_vec = nl_embeddings[nl_key]
+            code_vec = code_embeddings[op_id]
+
+            # d_match: this NL → this code
+            d_match.append(float(cosine(nl_vec, code_vec)))
+
+            # d_mismatch: this NL → ALL other codes
+            for other_id in valid_ids:
+                if other_id == op_id:
+                    continue
+                d_mismatch.append(float(cosine(nl_vec, code_embeddings[other_id])))
+
+        if not d_match:
+            results[lang] = {"skip": True}
+            continue
+
+        d_match_arr = np.array(d_match)
+        d_mismatch_arr = np.array(d_mismatch)
+        observed_R = float(np.mean(d_mismatch_arr) / np.mean(d_match_arr))
+
+        # Permutation test: shuffle which code each NL is "matched" to
+        perm_Rs = np.empty(n_perm)
+        for i in range(n_perm):
+            shuffled = rng.permutation(valid_ids)
+            d_match_perm = []
+            for j, op_id in enumerate(valid_ids):
+                nl_key = f"{op_id}_{lang}"
+                if nl_key in nl_embeddings and shuffled[j] in code_embeddings:
+                    d_match_perm.append(float(cosine(
+                        nl_embeddings[nl_key], code_embeddings[shuffled[j]]
+                    )))
+            if d_match_perm:
+                perm_Rs[i] = np.mean(d_mismatch_arr) / np.mean(d_match_perm)
+            else:
+                perm_Rs[i] = 1.0
+        p_value = float(np.mean(perm_Rs >= observed_R))
+
+        # Bootstrap CI for R_code
+        boot_Rs = np.empty(n_boot)
+        for i in range(n_boot):
+            idx_m = rng.integers(0, len(d_match_arr), size=len(d_match_arr))
+            idx_mm = rng.integers(0, len(d_mismatch_arr), size=len(d_mismatch_arr))
+            mean_m = np.mean(d_match_arr[idx_m])
+            boot_Rs[i] = np.mean(d_mismatch_arr[idx_mm]) / mean_m if mean_m > 1e-10 else 1.0
+        ci_lo, ci_hi = float(np.percentile(boot_Rs, 2.5)), float(np.percentile(boot_Rs, 97.5))
+
+        # Cohen's d
+        s_pooled = np.sqrt(
+            ((len(d_match_arr) - 1) * np.var(d_match_arr, ddof=1) +
+             (len(d_mismatch_arr) - 1) * np.var(d_mismatch_arr, ddof=1)) /
+            (len(d_match_arr) + len(d_mismatch_arr) - 2)
+        )
+        cohens_d = float((np.mean(d_mismatch_arr) - np.mean(d_match_arr)) / s_pooled) if s_pooled > 1e-10 else 0.0
+
+        results[lang] = {
+            "skip": False,
+            "R_code": observed_R,
+            "p_value": p_value,
+            "ci_95": (ci_lo, ci_hi),
+            "cohens_d": cohens_d,
+            "d_match_mean": float(np.mean(d_match_arr)),
+            "d_mismatch_mean": float(np.mean(d_mismatch_arr)),
+            "n_match": len(d_match_arr),
+            "n_mismatch": len(d_mismatch_arr),
+        }
+
+    # Aggregate (all languages pooled)
+    all_d_match, all_d_mismatch = [], []
+    for lang in languages:
+        for op_id in valid_ids:
+            nl_key = f"{op_id}_{lang}"
+            if nl_key not in nl_embeddings:
+                continue
+            all_d_match.append(float(cosine(nl_embeddings[nl_key], code_embeddings[op_id])))
+            for other_id in valid_ids:
+                if other_id != op_id:
+                    all_d_mismatch.append(float(cosine(nl_embeddings[nl_key], code_embeddings[other_id])))
+
+    if all_d_match:
+        agg_R = float(np.mean(all_d_mismatch) / np.mean(all_d_match))
+        results["aggregate"] = {"R_code": agg_R, "n_match": len(all_d_match)}
+    else:
+        results["aggregate"] = {"R_code": 0.0, "n_match": 0}
+
+    return results

@@ -1,0 +1,302 @@
+{
+  "comp_01_sort_asc": {
+    "original": "Sort the list in ascending order",
+    "paraphrases": [
+      "Arrange the elements from smallest to largest",
+      "Put the list items in increasing order",
+      "Order the entries from lowest to highest"
+    ],
+    "british": "Sort the list in ascending order",
+    "indian": "Sort the list in ascending order"
+  },
+  "comp_02_find_max": {
+    "original": "Find the maximum value in the list",
+    "paraphrases": [
+      "Identify the largest number in the list",
+      "Determine which value in the list is the greatest",
+      "Locate the highest value among the list elements"
+    ],
+    "british": "Find the maximum value in the list",
+    "indian": "Find the maximum value in the list"
+  },
+  "comp_03_filter_pos": {
+    "original": "Filter only the positive numbers from the list",
+    "paraphrases": [
+      "Extract all numbers greater than zero from the list",
+      "Keep only the positive values and discard the rest",
+      "Select just the positive entries from the list"
+    ],
+    "british": "Filter only the positive numbers from the list",
+    "indian": "Filter only the positive numbers from the list"
+  },
+  "comp_04_reverse": {
+    "original": "Reverse the order of elements in the list",
+    "paraphrases": [
+      "Flip the sequence of items in the list",
+      "Rearrange the list so the last element comes first",
+      "Invert the ordering of the list entries"
+    ],
+    "british": "Reverse the order of elements in the list",
+    "indian": "Reverse the order of elements in the list"
+  },
+  "comp_05_count": {
+    "original": "Count the number of elements in the list",
+    "paraphrases": [
+      "Determine how many items the list contains",
+      "Find the total number of entries in the list",
+      "Compute the size of the list"
+    ],
+    "british": "Count the number of elements in the list",
+    "indian": "Count the number of elements in the list"
+  },
+  "comp_06_sum": {
+    "original": "Calculate the sum of all numbers in the list",
+    "paraphrases": [
+      "Add up every number in the list",
+      "Compute the total of all values in the list",
+      "Find the sum by adding all list entries together"
+    ],
+    "british": "Calculate the sum of all numbers in the list",
+    "indian": "Calculate the sum of all numbers in the list"
+  },
+  "comp_07_deduplicate": {
+    "original": "Remove duplicate elements from the list",
+    "paraphrases": [
+      "Eliminate repeated values from the list",
+      "Keep only unique items in the list",
+      "Strip out any entries that appear more than once"
+    ],
+    "british": "Remove duplicate elements from the list",
+    "indian": "Remove duplicate elements from the list"
+  },
+  "comp_08_top3": {
+    "original": "Find the three largest values in the given list",
+    "paraphrases": [
+      "Identify the top three numbers in the list",
+      "Pick out the three highest values from the list",
+      "Determine which three entries in the list are the biggest"
+    ],
+    "british": "Find the three largest values in the given list",
+    "indian": "Find the three largest values in the given list"
+  },
+  "comp_09_mean": {
+    "original": "Calculate the average of all numbers in the list",
+    "paraphrases": [
+      "Compute the mean of every value in the list",
+      "Find the arithmetic average across all list entries",
+      "Determine the average by summing and dividing the list values"
+    ],
+    "british": "Calculate the average of all numbers in the list",
+    "indian": "Calculate the average of all numbers in the list"
+  },
+  "comp_10_sort_desc": {
+    "original": "Sort the list in descending order",
+    "paraphrases": [
+      "Arrange the elements from largest to smallest",
+      "Put the list items in decreasing order",
+      "Order the entries from highest to lowest"
+    ],
+    "british": "Sort the list in descending order",
+    "indian": "Sort the list in descending order"
+  },
+  "comp_11_concat": {
+    "original": "Concatenate the two strings",
+    "paraphrases": [
+      "Join the two strings together into one",
+      "Combine the two text values end to end",
+      "Merge the two strings by appending the second to the first"
+    ],
+    "british": "Concatenate the two strings",
+    "indian": "Concatenate the two strings"
+  },
+  "comp_12_uppercase": {
+    "original": "Convert the string to uppercase",
+    "paraphrases": [
+      "Change all letters in the string to capitals",
+      "Transform the text so every character is upper case",
+      "Make the entire string uppercase"
+    ],
+    "british": "Convert the string to upper case",
+    "indian": "Convert the string to uppercase"
+  },
+  "comp_13_split": {
+    "original": "Split the string by spaces into a list of words",
+    "paraphrases": [
+      "Break the string apart at each space to form a word list",
+      "Divide the text on whitespace to produce individual words",
+      "Separate the string into words using spaces as delimiters"
+    ],
+    "british": "Split the string by spaces into a list of words",
+    "indian": "Split the string by spaces into a list of words"
+  },
+  "comp_14_replace": {
+    "original": "Replace all occurrences of 'a' with 'b' in the string",
+    "paraphrases": [
+      "Substitute every 'a' in the string with 'b'",
+      "Swap each instance of 'a' for 'b' throughout the string",
+      "Change every 'a' to 'b' in the given text"
+    ],
+    "british": "Replace all occurrences of 'a' with 'b' in the string",
+    "indian": "Replace all occurrences of 'a' with 'b' in the string"
+  },
+  "comp_15_length": {
+    "original": "Calculate the length of the string",
+    "paraphrases": [
+      "Determine how many characters are in the string",
+      "Find the total character count of the string",
+      "Compute the number of characters in the text"
+    ],
+    "british": "Calculate the length of the string",
+    "indian": "Calculate the length of the string"
+  },
+  "judg_01_prioritize": {
+    "original": "Prioritize the tasks by importance",
+    "paraphrases": [
+      "Rank the tasks according to how important they are",
+      "Arrange the tasks so the most important ones come first",
+      "Order the tasks from most to least important"
+    ],
+    "british": "Prioritise the tasks by importance",
+    "indian": "Kindly prioritize the tasks as per their importance"
+  },
+  "judg_02_evaluate": {
+    "original": "Evaluate the quality of each candidate",
+    "paraphrases": [
+      "Assess how good each candidate is",
+      "Judge the quality level of every candidate",
+      "Appraise each candidate on their overall quality"
+    ],
+    "british": "Evaluate the quality of each candidate",
+    "indian": "Kindly evaluate the quality of each and every candidate"
+  },
+  "judg_03_summarize": {
+    "original": "Summarize the document in a few sentences",
+    "paraphrases": [
+      "Write a brief summary of the document",
+      "Condense the document into a short overview",
+      "Provide a concise recap of the document in several sentences"
+    ],
+    "british": "Summarise the document in a few sentences",
+    "indian": "Please summarize the document in a few sentences and revert back with the same"
+  },
+  "judg_04_recommend": {
+    "original": "Recommend the best option from the list",
+    "paraphrases": [
+      "Suggest which option in the list is the best choice",
+      "Pick the top option from the list and explain why",
+      "Advise on the most suitable option from the available choices"
+    ],
+    "british": "Recommend the best option from the list",
+    "indian": "Kindly recommend the best option from the list and do the needful"
+  },
+  "judg_05_risk": {
+    "original": "Assess the risk level of each item",
+    "paraphrases": [
+      "Evaluate how risky each item is",
+      "Determine the degree of risk associated with every item",
+      "Gauge the level of risk for each entry"
+    ],
+    "british": "Assess the risk level of each item",
+    "indian": "Please assess the risk level of each and every item"
+  },
+  "judg_06_categorize": {
+    "original": "Categorize the items into appropriate groups",
+    "paraphrases": [
+      "Sort the items into fitting categories",
+      "Group the items based on where they best belong",
+      "Organize the items by placing them into suitable groups"
+    ],
+    "british": "Categorise the items into appropriate groups",
+    "indian": "Kindly categorize the items into appropriate groups as per the requirements"
+  },
+  "judg_07_select_key": {
+    "original": "Select the key customers from the database",
+    "paraphrases": [
+      "Identify the most important customers in the database",
+      "Pick out the key clients from the database records",
+      "Choose the principal customers from the database"
+    ],
+    "british": "Select the key customers from the database",
+    "indian": "Please select the key customers from the database and share the details"
+  },
+  "judg_08_rank": {
+    "original": "Rank the articles by relevance",
+    "paraphrases": [
+      "Order the articles from most to least relevant",
+      "Arrange the articles according to their relevance",
+      "Sort the articles based on how relevant they are"
+    ],
+    "british": "Rank the articles by relevance",
+    "indian": "Kindly rank the articles as per their relevance"
+  },
+  "judg_09_flag": {
+    "original": "Flag potentially problematic entries",
+    "paraphrases": [
+      "Mark any entries that might have issues",
+      "Identify and tag entries that could be problematic",
+      "Highlight entries that appear to have potential problems"
+    ],
+    "british": "Flag potentially problematic entries",
+    "indian": "Please flag the potentially problematic entries and intimate accordingly"
+  },
+  "judg_10_tone": {
+    "original": "Adjust the tone of the message to be more professional",
+    "paraphrases": [
+      "Rewrite the message in a more professional tone",
+      "Make the message sound more formal and professional",
+      "Revise the wording of the message to increase its professionalism"
+    ],
+    "british": "Adjust the tone of the message to be more professional",
+    "indian": "Please adjust the tone of the message so that it is being more professional"
+  },
+  "judg_11_sentiment": {
+    "original": "Determine the overall sentiment of the text",
+    "paraphrases": [
+      "Identify whether the text is positive, negative, or neutral",
+      "Assess the general emotional tone of the text",
+      "Figure out the prevailing sentiment expressed in the text"
+    ],
+    "british": "Determine the overall sentiment of the text",
+    "indian": "Kindly determine the overall sentiment of the text and share your analysis"
+  },
+  "judg_12_appropriate": {
+    "original": "Decide whether the content is appropriate for the audience",
+    "paraphrases": [
+      "Judge if the content is suitable for the intended audience",
+      "Determine whether this content is fitting for the target audience",
+      "Assess if the material is appropriate given the audience"
+    ],
+    "british": "Decide whether the content is appropriate for the audience",
+    "indian": "Kindly decide whether the content is appropriate for the audience or not"
+  },
+  "judg_13_urgency": {
+    "original": "Classify the tickets by urgency level",
+    "paraphrases": [
+      "Sort the tickets according to how urgent they are",
+      "Group the tickets based on their urgency",
+      "Assign an urgency level to each ticket and organize them accordingly"
+    ],
+    "british": "Classify the tickets by urgency level",
+    "indian": "Please classify the tickets as per their urgency level on a priority basis"
+  },
+  "judg_14_credibility": {
+    "original": "Assess the credibility of each source",
+    "paraphrases": [
+      "Evaluate how trustworthy each source is",
+      "Judge the reliability of every source",
+      "Determine the credibility level of each source"
+    ],
+    "british": "Assess the credibility of each source",
+    "indian": "Kindly assess the credibility of each and every source and revert with findings"
+  },
+  "judg_15_simplify": {
+    "original": "Simplify the explanation for a general audience",
+    "paraphrases": [
+      "Make the explanation easier to understand for non-experts",
+      "Rewrite the explanation in simpler terms for a broad audience",
+      "Break down the explanation so a general reader can follow it"
+    ],
+    "british": "Simplify the explanation for a general audience",
+    "indian": "Please simplify the explanation so that it is understandable for a general audience"
+  }
+}

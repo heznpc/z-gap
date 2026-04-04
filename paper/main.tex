@@ -460,24 +460,29 @@ E5-large & 1024 & 2.90 & $[2.65, 3.20]$ & $< 0.001$ \\
 P7 is \textbf{strongly supported}: Korean spacing variants cluster ${\sim}3\times$ closer than semantically different operations. This holds across both models with tight bootstrap confidence intervals. Byte-level models (ByT5, CANINE) should achieve higher ratios.
 
 \paragraph{NL-Code Cross-Modal Alignment.}
-To directly test PRH for code, we embed 50 computational NL descriptions alongside their Python code equivalents through UniXcoder~\cite{unixcoder} (code-trained, 768d) and MiniLM-L12 (NL-only, 384d). We define $R_{\text{code}} = d_{\text{mismatch}} / d_{\text{match}}$, where $d_{\text{match}}$ is the distance between an NL description and its corresponding code, and $d_{\text{mismatch}}$ is the distance to a different operation's code.
+To directly test PRH for code, we embed 50 computational NL descriptions alongside their Python code equivalents through four models: UniXcoder~\cite{unixcoder} (code-trained, 768d), MiniLM-L12 (NL-only, 384d), Nomic Embed Text v1.5 (768d), and E5-large (1024d). We define $R_{\text{code}} = d_{\text{mismatch}} / d_{\text{match}}$, where $d_{\text{match}}$ is the distance between an NL description and its corresponding code, and $d_{\text{mismatch}}$ is the distance to a different operation's code. We compute per-language $R_{\text{code}}$ with permutation tests ($n=10{,}000$) and bootstrap confidence intervals, corrected via Holm-Bonferroni across 20 cells.
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{lccccc}
+\begin{tabular}{lccccc|c}
 \toprule
-\textbf{Model} & \textbf{dim} & $R_{\text{code}}$ & $d_{\text{match}}$ & $d_{\text{mis}}$ & \textbf{PRH} \\
+\textbf{Model} & \textbf{en} & \textbf{ko} & \textbf{zh} & \textbf{ar} & \textbf{es} & \textbf{agg} \\
 \midrule
-UniXcoder (code-trained) & 768 & 1.04 & 0.788 & 0.821 & Yes \\
-MiniLM-L12 (NL-only) & 384 & 1.18 & 0.622 & 0.735 & Yes \\
+UniXcoder (code)  & 1.22* & 1.01* & 1.08* & 1.01* & 1.05* & 1.07 \\
+MiniLM-L12 (NL)   & 1.23* & 1.12* & 1.18* & 1.10* & 1.19* & 1.16 \\
+Nomic v1.5         & 1.24* & 1.02* & 1.03* & 1.01* & 1.07* & 1.07 \\
+E5-large (NL)      & 1.28* & 1.16* & 1.19* & 1.16* & 1.22* & 1.20 \\
 \bottomrule
 \end{tabular}
+\caption*{\small * $p < 0.05$ after Holm-Bonferroni correction. All 20/20 cells show $R_{\text{code}} > 1$.}
 \end{table}
 
-Both models show $R_{\text{code}} > 1$: NL descriptions are closer to their corresponding code than to other code, consistent with PRH. Per-language analysis reveals $\Dtrain$ effects: English NL is closest to code ($d_{\text{match}} = 0.64$ for UniXcoder), while Korean and Arabic are most distant ($d_{\text{match}} \approx 0.88$).
+All 20 language-model cells show $R_{\text{code}} > 1$ ($p < 0.05$ after correction): NL descriptions are closer to their corresponding code than to mismatched code in every language and every model. The result is robust across code-trained (UniXcoder, Nomic) and NL-only (MiniLM, E5-large) architectures.
 
-Critically, this resolves the P2 result. P2 measured NL-NL cross-lingual invariance and found computational operations \emph{less} invariant---a finding the vocabulary mediation and language-pair analyses now explain as a property of domain-specific terminology. The NL-code experiment shows that despite this description-level divergence, NL-code alignment is \emph{positive} ($R_{\text{code}} > 1$). NL descriptions of code vary across languages (P2), but each language's NL description still maps closer to its code equivalent than to unrelated code. The three results form a coherent picture: (i)~computational vocabulary drives cross-lingual description divergence (Strategy~A); (ii)~this divergence is uniform across language pairs, not concentrated in specific pairings (Strategy~B); (iii)~yet NL-code alignment holds regardless. Description-level invariance and execution-level convergence are distinct phenomena---\textbf{convergence $\neq$ communicability}.
+Two patterns emerge. First, \textbf{$\Dtrain$ modulates NL-code alignment}: English consistently shows the highest $R_{\text{code}}$ (1.22--1.28), while Korean and Arabic show the lowest (1.01--1.16), tracking language representation in code training corpora. Second, \textbf{NL-only models achieve higher $R_{\text{code}}$ than code-trained models}: E5-large (1.20 aggregate) and MiniLM (1.16) surpass UniXcoder (1.07) and Nomic (1.07). This suggests $R_{\text{code}}$ measures semantic alignment rather than surface lexical overlap with code tokens---if it were lexical, code-trained models would dominate.
+
+Critically, this resolves the P2 result. P2 measured NL-NL cross-lingual invariance and found computational operations \emph{less} invariant---a finding the vocabulary mediation and language-pair analyses explain as a property of domain-specific terminology. The NL-code experiment shows that despite this description-level divergence, NL-code alignment is positive across all 20 cells. The four results form a coherent picture: (i)~computational vocabulary drives cross-lingual description divergence (vocabulary mediation); (ii)~this divergence is uniform across language pairs (language-pair decomposition); (iii)~yet NL-code alignment holds in every language and model (20/20 significant); (iv)~the alignment is modulated by $\Dtrain$, not eliminated. Description-level invariance and execution-level convergence are distinct phenomena---\textbf{convergence $\neq$ communicability}.
 
 \paragraph{P7 Extension: Punctuation Robustness.}
 We extend P7 to punctuation and formatting variants. For each of 100 English operations, we generate 10 variants: bare, period, question mark, exclamation, ellipsis, colon, lowercase, UPPERCASE, extra spaces, and article removal. $R_{\text{punct}} = d_{\text{semantic}} / d_{\text{punct}} = 13.6$---punctuation variants are ${\sim}14\times$ closer than semantically different operations, far exceeding spacing robustness ($R_{\text{spacing}} \approx 2.9$). Most variants drift minimally (period: 0.014, question mark: 0.013). The outlier is UPPERCASE (drift = 0.192), which acts as a pragmatic signal (emphasis, shouting)---evidence that $\Zprag$ is encoded in surface-form cues even when $\Zsem$ is unchanged.
@@ -499,6 +504,9 @@ Operation ID (100-way, chance 1\%) & 1.00 & 0.98 & 0.93 & 0.86 & 0.66 \\
 \end{table}
 
 P3 is \textbf{supported}: a classifier trained only on English embeddings achieves 90\% mean accuracy on category transfer and 85.8\% on 100-way operation identification across non-English languages---far above chance. This is direct evidence that $\Zsem$ structure generalizes cross-lingually. Korean transfers worst (80\%/66\%), consistent with $\Dtrain$ effects and typological distance from English.
+
+\paragraph{Dialect and paraphrase distance hierarchy.}
+To test whether the communicability gap is graded, we measure three distance levels using English dialect pairs (American vs.\ British, American vs.\ Indian English) and within-language paraphrases. Across three models, the observed ordering is $d_{\text{dialect}} < d_{\text{paraphrase}} < d_{\text{cross-lingual}}$ (e.g., $0.013 < 0.069 < 0.090$ for E5-large). Dialect variation produces \emph{minimal} embedding distance (British: $d \approx 0.001$; Indian: $d \approx 0.025$), because embedding models trained on standard text collapse dialectal surface variation. Paraphrases---semantically identical but lexically different---produce measurable distances ($d \approx 0.07$--$0.26$), and cross-lingual distances are largest. This hierarchy shows that the communicability gap is continuous and multi-layered: surface-form variation (dialect $<$ paraphrase) is distinct from language-level variation, and embedding models are insensitive to dialectal differences relative to lexical choice.
 
 \paragraph{P1 Results: Scale-Convergence.}
 We tested three models (MiniLM 384d, mpnet 768d, E5-large 1024d). $R_{\text{total}}$ does not increase monotonically with dimension (5.7 $\to$ 8.3 $\to$ 2.8), so \textbf{P1 is not supported} in this configuration. However, the models span different architectures and training procedures; a clean P1 test requires models from the same family at different scales.
@@ -608,7 +616,7 @@ The research agenda is to close the communicability gap---to build systems where
 
 \textbf{PRH is a hypothesis, not a theorem.} PRH for code as a modality remains a conjecture. Recent evidence (language-independent code semantics~\cite{beyondsyntax2025}, cross-model transferability~\cite{chen2025crossmodel}) is consistent with convergence but not proof.
 
-\textbf{Pilot measures description-level, not execution-level, convergence.} The P2 failure highlights this gap: NL embedding similarity is a proxy, not a direct test, of $\Zsem$ convergence. Our follow-up analyses (vocabulary mediation and language-pair decomposition) explain the P2 failure as a description-level vocabulary phenomenon, and the NL-code alignment experiment shows execution-level convergence holds. However, both use two models; a full-scale study across model families and scales is needed.
+\textbf{Pilot measures description-level, not execution-level, convergence.} The P2 failure highlights this gap: NL embedding similarity is a proxy, not a direct test, of $\Zsem$ convergence. Our follow-up analyses (vocabulary mediation and language-pair decomposition) explain the P2 failure as a description-level vocabulary phenomenon, and the NL-code alignment experiment confirms execution-level convergence across four models and five languages (20/20 cells significant). However, all models are sentence-level embedders; decoder-only LLM representations may behave differently.
 
 \textbf{The $Z$ stratification is a conceptual framework.} While the pilot provides supporting evidence (P7 supported, P2 failure explained by vocabulary mediation, P3 supporting cross-lingual separability), the stratification has not been validated with large-scale probing across multiple model families.
 

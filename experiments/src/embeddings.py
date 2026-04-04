@@ -24,10 +24,10 @@ class EmbeddingModel(ABC):
 class SentenceTransformerEmbedder(EmbeddingModel):
     """Multilingual sentence embeddings via sentence-transformers."""
 
-    def __init__(self, model_name: str = "paraphrase-multilingual-MiniLM-L12-v2"):
+    def __init__(self, model_name: str = "paraphrase-multilingual-MiniLM-L12-v2", **kwargs):
         from sentence_transformers import SentenceTransformer
         self._model_name = model_name
-        self._model = SentenceTransformer(model_name)
+        self._model = SentenceTransformer(model_name, **kwargs)
 
     def encode(self, texts: list[str]) -> np.ndarray:
         return self._model.encode(texts, show_progress_bar=True, normalize_embeddings=True)
