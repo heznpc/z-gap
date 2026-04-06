@@ -1,0 +1,21 @@
+{
+  "title": "Beyond the Chomsky Wall: Platonic Representations as the Convergence Point of Natural Language and Code",
+  "description": "Position paper arguing that the gap between natural language and programming language is not a barrier but a measurable, shrinking quantity—the Z-Gap—predicted to converge under the Platonic Representation Hypothesis.",
+  "creators": [
+    {
+      "name": "heznpc"
+    }
+  ],
+  "keywords": [
+    "representation learning",
+    "Platonic Representation Hypothesis",
+    "natural language",
+    "programming language",
+    "cross-lingual invariance",
+    "disambiguation cost"
+  ],
+  "license": "CC-BY-4.0",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "access_right": "open"
+}
