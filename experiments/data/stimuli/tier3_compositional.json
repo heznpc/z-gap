@@ -1,0 +1,302 @@
+[
+  {
+    "id": "comp3_01_bellman_ford",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find shortest path distances from a source vertex in a graph that may contain negative-weight edges, using the Bellman-Ford algorithm. Detect negative cycles and report if one exists.",
+      "ko": "벨만-포드 알고리즘을 사용하여 음의 가중치 간선이 있을 수 있는 그래프에서 출발 정점으로부터의 최단 경로 거리를 구하라. 음의 순환을 탐지하여 존재하면 보고하라.",
+      "zh": "使用Bellman-Ford算法，在可能含有负权边的图中求从源顶点出发的最短路径距离。检测负环，若存在则报告。",
+      "ar": "أوجد أقصر مسافات المسار من رأس المصدر في رسم بياني قد يحتوي على أضلاع بأوزان سالبة، باستخدام خوارزمية بيلمان-فورد. اكتشف الدورات السالبة وأبلغ عنها إن وُجدت.",
+      "es": "Encuentra las distancias de camino más corto desde un vértice fuente en un grafo que puede contener aristas con peso negativo, usando el algoritmo de Bellman-Ford. Detecta ciclos negativos y reporta si existe alguno."
+    },
+    "code": "def bellman_ford(n, edges, src):\n    dist = [float('inf')] * n\n    dist[src] = 0\n    for _ in range(n - 1):\n        for u, v, w in edges:\n            if dist[u] != float('inf') and dist[u] + w < dist[v]:\n                dist[v] = dist[u] + w\n    for u, v, w in edges:\n        if dist[u] != float('inf') and dist[u] + w < dist[v]:\n            return None  # negative cycle\n    return dist",
+    "tags": ["graph", "shortest-path", "negative-weight"],
+    "complexity": "O(VE)"
+  },
+  {
+    "id": "comp3_02_word_freq_topk",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Given a text, tokenize it into words, count the frequency of each word, and return the top-k most frequent words using a min-heap.",
+      "ko": "텍스트를 단어로 토큰화하고, 각 단어의 빈도를 세고, 최소 힙을 사용하여 빈도가 가장 높은 상위 k개 단어를 반환하라.",
+      "zh": "将文本分词，统计每个词的频率，用最小堆返回频率最高的前k个词。",
+      "ar": "قسّم النص إلى كلمات، واحسب تكرار كل كلمة، وأعد أكثر k كلمات تكرارًا باستخدام كومة صغرى.",
+      "es": "Dado un texto, tokenízalo en palabras, cuenta la frecuencia de cada una y devuelve las k palabras más frecuentes usando un min-heap."
+    },
+    "code": "import heapq\nfrom collections import Counter\n\ndef top_k_words(text, k):\n    words = text.lower().split()\n    counts = Counter(words)\n    return heapq.nlargest(k, counts.keys(), key=counts.get)",
+    "tags": ["string", "heap", "counting"],
+    "complexity": "O(n + m log k)"
+  },
+  {
+    "id": "comp3_03_expression_eval",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Evaluate an arithmetic expression string containing integers, +, -, *, / and parentheses. Parse tokens, respect operator precedence, and compute the final result using a stack-based evaluator.",
+      "ko": "정수, +, -, *, / 및 괄호를 포함하는 산술 표현식 문자열을 평가하라. 토큰을 파싱하고, 연산자 우선순위를 지키고, 스택 기반 평가기로 최종 결과를 계산하라.",
+      "zh": "计算包含整数、+、-、*、/ 和括号的算术表达式字符串。解析标记，遵守运算符优先级，用基于栈的求值器计算最终结果。",
+      "ar": "قيّم سلسلة تعبير حسابي تحتوي على أعداد صحيحة و+، -، *، / وأقواس. حلل الرموز، واحترم أسبقية العوامل، واحسب النتيجة النهائية باستخدام مُقيّم قائم على المكدس.",
+      "es": "Evalúa una cadena de expresión aritmética que contiene enteros, +, -, *, / y paréntesis. Analiza los tokens, respeta la precedencia de operadores y calcula el resultado final usando un evaluador basado en pila."
+    },
+    "code": "def evaluate(expr):\n    def calc(ops, vals):\n        b, a = vals.pop(), vals.pop()\n        op = ops.pop()\n        if op == '+': vals.append(a + b)\n        elif op == '-': vals.append(a - b)\n        elif op == '*': vals.append(a * b)\n        elif op == '/': vals.append(int(a / b))\n    prec = {'+': 1, '-': 1, '*': 2, '/': 2}\n    ops, vals = [], []\n    i = 0\n    while i < len(expr):\n        if expr[i].isdigit():\n            j = i\n            while j < len(expr) and expr[j].isdigit():\n                j += 1\n            vals.append(int(expr[i:j]))\n            i = j\n        elif expr[i] == '(':\n            ops.append('(')\n            i += 1\n        elif expr[i] == ')':\n            while ops[-1] != '(':\n                calc(ops, vals)\n            ops.pop()\n            i += 1\n        elif expr[i] in prec:\n            while ops and ops[-1] != '(' and prec.get(ops[-1], 0) >= prec[expr[i]]:\n                calc(ops, vals)\n            ops.append(expr[i])\n            i += 1\n        else:\n            i += 1\n    while ops:\n        calc(ops, vals)\n    return vals[0]",
+    "tags": ["stack", "parsing", "expression", "arithmetic"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "comp3_04_csv_parser",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Parse a CSV string that supports quoted fields containing commas and newlines. Use a state machine to track whether the parser is inside or outside a quoted field, and produce a list of rows.",
+      "ko": "쉼표와 줄바꿈을 포함하는 인용 필드를 지원하는 CSV 문자열을 파싱하라. 상태 기계로 파서가 인용 필드 내부인지 외부인지 추적하여 행 목록을 생성하라.",
+      "zh": "解析支持包含逗号和换行符的带引号字段的CSV字符串。使用状态机追踪解析器是在引号字段内部还是外部，生成行列表。",
+      "ar": "حلل سلسلة CSV تدعم الحقول المقتبسة التي تحتوي على فواصل وأسطر جديدة. استخدم آلة حالة لتتبع ما إذا كان المحلل داخل حقل مقتبس أو خارجه، وأنتج قائمة صفوف.",
+      "es": "Analiza una cadena CSV que soporta campos entrecomillados que contienen comas y saltos de línea. Usa una máquina de estados para rastrear si el parser está dentro o fuera de un campo entrecomillado, y produce una lista de filas."
+    },
+    "code": "def parse_csv(text):\n    rows, row, field = [], [], []\n    in_quotes = False\n    i = 0\n    while i < len(text):\n        ch = text[i]\n        if in_quotes:\n            if ch == '\"' and i + 1 < len(text) and text[i + 1] == '\"':\n                field.append('\"')\n                i += 2\n                continue\n            elif ch == '\"':\n                in_quotes = False\n            else:\n                field.append(ch)\n        else:\n            if ch == '\"':\n                in_quotes = True\n            elif ch == ',':\n                row.append(''.join(field))\n                field = []\n            elif ch == '\\n':\n                row.append(''.join(field))\n                rows.append(row)\n                row, field = [], []\n            else:\n                field.append(ch)\n        i += 1\n    row.append(''.join(field))\n    if row:\n        rows.append(row)\n    return rows",
+    "tags": ["parsing", "state-machine", "string"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "comp3_05_regex_matcher",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a simple regular expression matcher supporting '.' (any character) and '*' (zero or more of the preceding element). Use recursive matching with memoization.",
+      "ko": "'.'(임의 문자)과 '*'(앞 요소의 0회 이상 반복)을 지원하는 간단한 정규 표현식 매처를 구현하라. 메모이제이션을 활용한 재귀 매칭을 사용하라.",
+      "zh": "实现一个支持'.'（任意字符）和'*'（前一元素的零次或多次重复）的简单正则表达式匹配器。使用带记忆化的递归匹配。",
+      "ar": "نفّذ مطابق تعبيرات نمطية بسيط يدعم '.' (أي حرف) و '*' (صفر أو أكثر من العنصر السابق). استخدم المطابقة التراجعية مع التذكر.",
+      "es": "Implementa un emparejador de expresiones regulares simple que soporte '.' (cualquier carácter) y '*' (cero o más del elemento anterior). Usa emparejamiento recursivo con memoización."
+    },
+    "code": "def is_match(s, p):\n    memo = {}\n    def dp(i, j):\n        if (i, j) in memo:\n            return memo[(i, j)]\n        if j == len(p):\n            ans = i == len(s)\n        elif j + 1 < len(p) and p[j + 1] == '*':\n            ans = dp(i, j + 2)  # skip *\n            if i < len(s) and (p[j] == '.' or p[j] == s[i]):\n                ans = ans or dp(i + 1, j)  # use *\n        elif i < len(s) and (p[j] == '.' or p[j] == s[i]):\n            ans = dp(i + 1, j + 1)\n        else:\n            ans = False\n        memo[(i, j)] = ans\n        return ans\n    return dp(0, 0)",
+    "tags": ["dynamic-programming", "string", "recursive"],
+    "complexity": "O(mn)"
+  },
+  {
+    "id": "comp3_06_task_scheduler",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Build a task scheduler that executes tasks respecting their dependency constraints. Each task may depend on other tasks that must complete first. The scheduler should detect circular dependencies and execute independent tasks in priority order.",
+      "ko": "의존성 제약을 지키며 작업을 실행하는 작업 스케줄러를 구축하라. 각 작업은 먼저 완료되어야 하는 다른 작업에 의존할 수 있다. 스케줄러는 순환 의존성을 감지하고 독립적인 작업을 우선순위 순서로 실행해야 한다.",
+      "zh": "构建一个任务调度器，在满足依赖约束的前提下执行任务。每个任务可能依赖于必须先完成的其他任务。调度器应检测循环依赖，并按优先级顺序执行独立任务。",
+      "ar": "ابنِ جدولة مهام تنفّذ المهام مع احترام قيود التبعية. قد تعتمد كل مهمة على مهام أخرى يجب إكمالها أولًا. يجب أن يكتشف المجدول التبعيات الدائرية وينفذ المهام المستقلة بترتيب الأولوية.",
+      "es": "Construye un planificador de tareas que ejecute tareas respetando sus restricciones de dependencia. Cada tarea puede depender de otras que deben completarse primero. El planificador debe detectar dependencias circulares y ejecutar tareas independientes en orden de prioridad."
+    },
+    "code": "import heapq\nfrom collections import defaultdict\n\ndef schedule_tasks(tasks, deps):\n    graph = defaultdict(list)\n    in_deg = defaultdict(int)\n    for t in tasks:\n        in_deg.setdefault(t, 0)\n    for before, after in deps:\n        graph[before].append(after)\n        in_deg[after] += 1\n    heap = [t for t in tasks if in_deg[t] == 0]\n    heapq.heapify(heap)\n    order = []\n    while heap:\n        t = heapq.heappop(heap)\n        order.append(t)\n        for nxt in graph[t]:\n            in_deg[nxt] -= 1\n            if in_deg[nxt] == 0:\n                heapq.heappush(heap, nxt)\n    if len(order) != len(tasks):\n        return None  # circular dependency\n    return order",
+    "tags": ["graph", "topological-sort", "heap", "scheduler"],
+    "complexity": "O(V log V + E)"
+  },
+  {
+    "id": "comp3_07_kv_store_ttl",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement an in-memory key-value store where each entry has a time-to-live. Use a dictionary for storage and a heap to track expiry times, lazily removing expired entries on access.",
+      "ko": "각 항목에 유효 기간이 있는 인메모리 키-값 저장소를 구현하라. 저장에는 사전을, 만료 시간 추적에는 힙을 사용하며, 접근 시 만료된 항목을 지연 제거하라.",
+      "zh": "实现一个内存键值存储，每个条目有生存时间。使用字典存储、堆追踪过期时间，在访问时惰性删除过期条目。",
+      "ar": "نفّذ مخزن مفاتيح-قيم في الذاكرة حيث يكون لكل مُدخل وقت حياة. استخدم قاموسًا للتخزين وكومة لتتبع أوقات الانتهاء، مع إزالة المُدخلات المنتهية بشكل كسول عند الوصول.",
+      "es": "Implementa un almacén clave-valor en memoria donde cada entrada tiene un tiempo de vida. Usa un diccionario para el almacenamiento y un heap para rastrear tiempos de expiración, eliminando perezosamente las entradas expiradas al acceder."
+    },
+    "code": "import heapq\nimport time\n\nclass TTLStore:\n    def __init__(self):\n        self.store = {}\n        self.expiry_heap = []\n\n    def put(self, key, value, ttl_seconds):\n        expire_at = time.time() + ttl_seconds\n        self.store[key] = (value, expire_at)\n        heapq.heappush(self.expiry_heap, (expire_at, key))\n\n    def get(self, key):\n        self._cleanup()\n        if key in self.store:\n            val, exp = self.store[key]\n            if time.time() < exp:\n                return val\n            del self.store[key]\n        return None\n\n    def _cleanup(self):\n        now = time.time()\n        while self.expiry_heap and self.expiry_heap[0][0] <= now:\n            exp, key = heapq.heappop(self.expiry_heap)\n            if key in self.store and self.store[key][1] <= now:\n                del self.store[key]",
+    "tags": ["data-structure", "hash", "heap", "cache"],
+    "complexity": "O(log n) amortized"
+  },
+  {
+    "id": "comp3_08_edit_distance",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Compute the minimum edit distance between two strings using dynamic programming. Support insert, delete, and replace operations, and optionally backtrack to reconstruct the sequence of edits.",
+      "ko": "동적 프로그래밍으로 두 문자열 사이의 최소 편집 거리를 계산하라. 삽입, 삭제, 교체 연산을 지원하고, 선택적으로 역추적하여 편집 순서를 복원하라.",
+      "zh": "使用动态规划计算两个字符串之间的最小编辑距离。支持插入、删除和替换操作，并可选择性地回溯重建编辑序列。",
+      "ar": "احسب أقل مسافة تحرير بين سلسلتين نصيتين باستخدام البرمجة الديناميكية. ادعم عمليات الإدراج والحذف والاستبدال، واختياريًا تتبع رجوعيًا لإعادة بناء تسلسل التعديلات.",
+      "es": "Calcula la distancia de edición mínima entre dos cadenas usando programación dinámica. Soporta operaciones de inserción, eliminación y reemplazo, y opcionalmente retrocede para reconstruir la secuencia de ediciones."
+    },
+    "code": "def edit_distance(s1, s2):\n    m, n = len(s1), len(s2)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    for i in range(m + 1):\n        dp[i][0] = i\n    for j in range(n + 1):\n        dp[0][j] = j\n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            if s1[i-1] == s2[j-1]:\n                dp[i][j] = dp[i-1][j-1]\n            else:\n                dp[i][j] = 1 + min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1])\n    return dp[m][n]",
+    "tags": ["dynamic-programming", "string"],
+    "complexity": "O(mn)"
+  },
+  {
+    "id": "comp3_09_json_path",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Query a nested dictionary/list structure with a dot-separated path supporting array indexing. Traverse the structure recursively and return the value at the given path, or None if the path is invalid.",
+      "ko": "배열 인덱싱을 지원하는 점 구분 경로로 중첩된 사전/리스트 구조를 쿼리하라. 구조를 재귀적으로 순회하고 주어진 경로의 값을 반환하되, 경로가 유효하지 않으면 None을 반환하라.",
+      "zh": "用支持数组索引的点分隔路径查询嵌套的字典/列表结构。递归遍历结构并返回给定路径处的值，若路径无效则返回None。",
+      "ar": "استعلم عن بنية قاموس/قائمة متداخلة بمسار مفصول بنقاط يدعم فهرسة المصفوفات. اجتَز البنية بشكل تراجعي وأعد القيمة في المسار المعطى، أو None إذا كان المسار غير صالح.",
+      "es": "Consulta una estructura anidada de diccionarios/listas con una ruta separada por puntos que soporta indexación de arreglos. Recorre la estructura recursivamente y devuelve el valor en la ruta dada, o None si la ruta es inválida."
+    },
+    "code": "def json_path(data, path):\n    keys = path.split('.')\n    current = data\n    for key in keys:\n        if not key:\n            continue\n        if key.startswith('[') and key.endswith(']'):\n            idx = int(key[1:-1])\n            if isinstance(current, list) and 0 <= idx < len(current):\n                current = current[idx]\n            else:\n                return None\n        elif isinstance(current, dict) and key in current:\n            current = current[key]\n        elif isinstance(current, list):\n            try:\n                current = current[int(key)]\n            except (ValueError, IndexError):\n                return None\n        else:\n            return None\n    return current",
+    "tags": ["tree", "parsing", "recursive"],
+    "complexity": "O(d) where d = path depth"
+  },
+  {
+    "id": "comp3_10_rate_limiter",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a token bucket rate limiter that controls the rate of requests. The bucket refills at a fixed rate and each request consumes one token. Deny requests when the bucket is empty.",
+      "ko": "요청 속도를 제어하는 토큰 버킷 속도 제한기를 구현하라. 버킷은 고정 속도로 리필되며 각 요청은 토큰 하나를 소비한다. 버킷이 비면 요청을 거부하라.",
+      "zh": "实现一个控制请求速率的令牌桶限流器。桶以固定速率填充，每个请求消耗一个令牌。桶空时拒绝请求。",
+      "ar": "نفّذ محدد معدل بنظام دلو الرموز يتحكم في معدل الطلبات. يُعاد ملء الدلو بمعدل ثابت ويستهلك كل طلب رمزًا واحدًا. ارفض الطلبات عندما يكون الدلو فارغًا.",
+      "es": "Implementa un limitador de tasa con token bucket que controla la velocidad de las solicitudes. El cubo se rellena a una tasa fija y cada solicitud consume un token. Rechaza solicitudes cuando el cubo está vacío."
+    },
+    "code": "import time\n\nclass TokenBucketLimiter:\n    def __init__(self, capacity, refill_rate):\n        self.capacity = capacity\n        self.tokens = capacity\n        self.refill_rate = refill_rate\n        self.last_refill = time.time()\n\n    def allow(self):\n        self._refill()\n        if self.tokens >= 1:\n            self.tokens -= 1\n            return True\n        return False\n\n    def _refill(self):\n        now = time.time()\n        elapsed = now - self.last_refill\n        self.tokens = min(self.capacity, self.tokens + elapsed * self.refill_rate)\n        self.last_refill = now",
+    "tags": ["rate-limiting", "time", "design"],
+    "complexity": "O(1)"
+  },
+  {
+    "id": "comp3_11_avl_tree",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement AVL tree insertion that maintains balance by performing rotations when the height difference between subtrees exceeds one. Support left, right, left-right, and right-left rotations.",
+      "ko": "하위 트리 간 높이 차이가 1을 초과할 때 회전을 수행하여 균형을 유지하는 AVL 트리 삽입을 구현하라. 좌회전, 우회전, 좌-우 회전, 우-좌 회전을 지원하라.",
+      "zh": "实现AVL树插入，当子树高度差超过1时通过旋转维持平衡。支持左旋、右旋、左右旋和右左旋。",
+      "ar": "نفّذ إدراج شجرة AVL التي تحافظ على التوازن بإجراء دورانات عندما يتجاوز فرق الارتفاع بين الأشجار الفرعية واحدًا. ادعم الدورانات اليسارية واليمينية واليسارية-اليمينية واليمينية-اليسارية.",
+      "es": "Implementa la inserción en un árbol AVL que mantiene el balance realizando rotaciones cuando la diferencia de altura entre subárboles excede uno. Soporta rotaciones izquierda, derecha, izquierda-derecha y derecha-izquierda."
+    },
+    "code": "class AVLNode:\n    def __init__(self, key):\n        self.key = key\n        self.left = self.right = None\n        self.height = 1\n\ndef height(node):\n    return node.height if node else 0\n\ndef rotate_right(y):\n    x = y.left\n    y.left = x.right\n    x.right = y\n    y.height = 1 + max(height(y.left), height(y.right))\n    x.height = 1 + max(height(x.left), height(x.right))\n    return x\n\ndef rotate_left(x):\n    y = x.right\n    x.right = y.left\n    y.left = x\n    x.height = 1 + max(height(x.left), height(x.right))\n    y.height = 1 + max(height(y.left), height(y.right))\n    return y\n\ndef avl_insert(root, key):\n    if not root:\n        return AVLNode(key)\n    if key < root.key:\n        root.left = avl_insert(root.left, key)\n    else:\n        root.right = avl_insert(root.right, key)\n    root.height = 1 + max(height(root.left), height(root.right))\n    balance = height(root.left) - height(root.right)\n    if balance > 1 and key < root.left.key:\n        return rotate_right(root)\n    if balance < -1 and key > root.right.key:\n        return rotate_left(root)\n    if balance > 1 and key > root.left.key:\n        root.left = rotate_left(root.left)\n        return rotate_right(root)\n    if balance < -1 and key < root.right.key:\n        root.right = rotate_right(root.right)\n        return rotate_left(root)\n    return root",
+    "tags": ["tree", "balanced-bst", "rotation"],
+    "complexity": "O(log n)"
+  },
+  {
+    "id": "comp3_12_producer_consumer",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a thread-safe bounded producer-consumer queue using locks and condition variables. Producers block when the queue is full, and consumers block when it is empty.",
+      "ko": "잠금과 조건 변수를 사용하여 스레드 안전한 유한 생산자-소비자 큐를 구현하라. 큐가 가득 차면 생산자가 차단되고, 비어 있으면 소비자가 차단된다.",
+      "zh": "使用锁和条件变量实现线程安全的有界生产者-消费者队列。队列满时生产者阻塞，空时消费者阻塞。",
+      "ar": "نفّذ طابور منتج-مستهلك محدود آمن للخيوط باستخدام أقفال ومتغيرات شرطية. يُحظر المنتجون عندما يكون الطابور ممتلئًا، والمستهلكون عندما يكون فارغًا.",
+      "es": "Implementa una cola productor-consumidor acotada y thread-safe usando locks y variables de condición. Los productores se bloquean cuando la cola está llena y los consumidores cuando está vacía."
+    },
+    "code": "import threading\nfrom collections import deque\n\nclass BoundedQueue:\n    def __init__(self, capacity):\n        self.queue = deque()\n        self.capacity = capacity\n        self.lock = threading.Lock()\n        self.not_full = threading.Condition(self.lock)\n        self.not_empty = threading.Condition(self.lock)\n\n    def put(self, item):\n        with self.not_full:\n            while len(self.queue) >= self.capacity:\n                self.not_full.wait()\n            self.queue.append(item)\n            self.not_empty.notify()\n\n    def get(self):\n        with self.not_empty:\n            while not self.queue:\n                self.not_empty.wait()\n            item = self.queue.popleft()\n            self.not_full.notify()\n            return item",
+    "tags": ["concurrency", "threading", "queue"],
+    "complexity": "O(1) per op"
+  },
+  {
+    "id": "comp3_13_filesystem_tree",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement an in-memory file system supporting mkdir, ls, and cd operations. Represent the directory tree using nested dictionaries, and handle path parsing for both absolute and relative paths.",
+      "ko": "mkdir, ls, cd 연산을 지원하는 인메모리 파일 시스템을 구현하라. 중첩 사전으로 디렉터리 트리를 표현하고, 절대 경로와 상대 경로 모두의 경로 파싱을 처리하라.",
+      "zh": "实现支持mkdir、ls和cd操作的内存文件系统。用嵌套字典表示目录树，处理绝对路径和相对路径的路径解析。",
+      "ar": "نفّذ نظام ملفات في الذاكرة يدعم عمليات mkdir و ls و cd. مثّل شجرة الأدلة باستخدام قواميس متداخلة، وعالج تحليل المسارات للمسارات المطلقة والنسبية.",
+      "es": "Implementa un sistema de archivos en memoria que soporte operaciones mkdir, ls y cd. Representa el árbol de directorios usando diccionarios anidados y maneja el análisis de rutas tanto absolutas como relativas."
+    },
+    "code": "class FileSystem:\n    def __init__(self):\n        self.root = {}\n        self.cwd = self.root\n        self.path_stack = []\n\n    def _resolve(self, path):\n        if path.startswith('/'):\n            node = self.root\n            parts = [p for p in path.split('/') if p and p != '.']\n        else:\n            node = self.cwd\n            parts = [p for p in path.split('/') if p and p != '.']\n        for part in parts:\n            if part == '..':\n                return None  # simplified\n            if part not in node:\n                return None\n            node = node[part]\n        return node\n\n    def mkdir(self, path):\n        parts = [p for p in path.split('/') if p]\n        node = self.root if path.startswith('/') else self.cwd\n        for part in parts:\n            if part not in node:\n                node[part] = {}\n            node = node[part]\n\n    def ls(self, path='.'):\n        node = self._resolve(path) if path != '.' else self.cwd\n        return sorted(node.keys()) if node is not None else []\n\n    def cd(self, path):\n        target = self._resolve(path)\n        if target is not None:\n            self.cwd = target",
+    "tags": ["tree", "string-parsing", "design"],
+    "complexity": "O(d) per op"
+  },
+  {
+    "id": "comp3_14_http_parser",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Parse a raw HTTP request string into its method, path, HTTP version, headers dictionary, and body. Split the request line, parse each header, and extract the body after the blank line separator.",
+      "ko": "원시 HTTP 요청 문자열을 메서드, 경로, HTTP 버전, 헤더 사전, 본문으로 파싱하라. 요청 줄을 분리하고, 각 헤더를 파싱하고, 빈 줄 구분자 이후의 본문을 추출하라.",
+      "zh": "将原始HTTP请求字符串解析为方法、路径、HTTP版本、头部字典和正文。分割请求行，解析每个头部，并提取空行分隔符后的正文。",
+      "ar": "حلل سلسلة طلب HTTP خام إلى طريقتها ومسارها وإصدار HTTP وقاموس الرؤوس والجسم. قسّم سطر الطلب، وحلل كل رأس، واستخرج الجسم بعد فاصل السطر الفارغ.",
+      "es": "Analiza una cadena de solicitud HTTP cruda en su método, ruta, versión HTTP, diccionario de cabeceras y cuerpo. Separa la línea de solicitud, analiza cada cabecera y extrae el cuerpo después del separador de línea en blanco."
+    },
+    "code": "def parse_http_request(raw):\n    parts = raw.split('\\r\\n\\r\\n', 1)\n    header_section = parts[0]\n    body = parts[1] if len(parts) > 1 else ''\n    lines = header_section.split('\\r\\n')\n    request_line = lines[0].split(' ')\n    method = request_line[0]\n    path = request_line[1] if len(request_line) > 1 else '/'\n    version = request_line[2] if len(request_line) > 2 else 'HTTP/1.1'\n    headers = {}\n    for line in lines[1:]:\n        if ':' in line:\n            key, val = line.split(':', 1)\n            headers[key.strip()] = val.strip()\n    return {'method': method, 'path': path, 'version': version,\n            'headers': headers, 'body': body}",
+    "tags": ["parsing", "string", "network"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "comp3_15_lru_decorator",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a caching decorator with LRU eviction policy. Wrap any function to cache its results, evicting the least recently used entry when capacity is exceeded. Use a closure and OrderedDict.",
+      "ko": "LRU 퇴거 정책을 가진 캐싱 데코레이터를 구현하라. 어떤 함수든 감싸서 결과를 캐시하되, 용량 초과 시 최근 최소 사용 항목을 퇴거시켜라. 클로저와 OrderedDict를 사용하라.",
+      "zh": "实现带LRU淘汰策略的缓存装饰器。包装任意函数以缓存其结果，超出容量时淘汰最近最少使用的条目。使用闭包和OrderedDict。",
+      "ar": "نفّذ مزخرف تخزين مؤقت بسياسة إزالة الأقل استخدامًا مؤخرًا. غلّف أي دالة لتخزين نتائجها مؤقتًا، مع إزالة المُدخل الأقل استخدامًا عند تجاوز السعة. استخدم إغلاقًا و OrderedDict.",
+      "es": "Implementa un decorador de caché con política de desalojo LRU. Envuelve cualquier función para cachear sus resultados, desalojando la entrada menos recientemente usada cuando se excede la capacidad. Usa un closure y OrderedDict."
+    },
+    "code": "from collections import OrderedDict\nfrom functools import wraps\n\ndef lru_cache(capacity):\n    def decorator(func):\n        cache = OrderedDict()\n        @wraps(func)\n        def wrapper(*args):\n            if args in cache:\n                cache.move_to_end(args)\n                return cache[args]\n            result = func(*args)\n            cache[args] = result\n            if len(cache) > capacity:\n                cache.popitem(last=False)\n            return result\n        wrapper.cache = cache\n        return wrapper\n    return decorator",
+    "tags": ["decorator", "cache", "closure"],
+    "complexity": "O(1) per call"
+  },
+  {
+    "id": "comp3_16_parallel_merge_sort",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement merge sort that divides the array and sorts each half concurrently using threads, then merges the results. Fall back to sequential sort below a threshold size.",
+      "ko": "배열을 나누고 각 반을 스레드로 동시에 정렬한 뒤 결과를 합치는 병합 정렬을 구현하라. 임계값 크기 이하에서는 순차 정렬로 전환하라.",
+      "zh": "实现将数组分半并使用线程并发排序各半，然后合并结果的归并排序。低于阈值大小时退回到顺序排序。",
+      "ar": "نفّذ ترتيب الدمج الذي يقسم المصفوفة ويرتب كل نصف بشكل متزامن باستخدام خيوط، ثم يدمج النتائج. ارجع إلى الترتيب المتسلسل تحت حجم عتبة.",
+      "es": "Implementa merge sort que divide el arreglo y ordena cada mitad concurrentemente usando hilos, luego fusiona los resultados. Recurre al ordenamiento secuencial por debajo de un tamaño umbral."
+    },
+    "code": "import threading\n\ndef parallel_merge_sort(arr, threshold=1000):\n    if len(arr) <= 1:\n        return arr\n    if len(arr) <= threshold:\n        return sorted(arr)\n    mid = len(arr) // 2\n    left_result = [None]\n    right_result = [None]\n    def sort_left():\n        left_result[0] = parallel_merge_sort(arr[:mid], threshold)\n    def sort_right():\n        right_result[0] = parallel_merge_sort(arr[mid:], threshold)\n    t1 = threading.Thread(target=sort_left)\n    t2 = threading.Thread(target=sort_right)\n    t1.start(); t2.start()\n    t1.join(); t2.join()\n    left, right = left_result[0], right_result[0]\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i]); i += 1\n        else:\n            result.append(right[j]); j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result",
+    "tags": ["sort", "concurrency", "threading", "divide-and-conquer"],
+    "complexity": "O(n log n)"
+  },
+  {
+    "id": "comp3_17_bloom_filter",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a Bloom filter probabilistic data structure using multiple hash functions and a bit array. Support add and membership-test operations with no false negatives but possible false positives.",
+      "ko": "여러 해시 함수와 비트 배열을 사용하는 블룸 필터 확률적 자료구조를 구현하라. 거짓 부정 없이 거짓 긍정은 가능한 추가 및 멤버십 테스트 연산을 지원하라.",
+      "zh": "使用多个哈希函数和位数组实现布隆过滤器概率数据结构。支持添加和成员测试操作——无假阴性但可能有假阳性。",
+      "ar": "نفّذ بنية بيانات مرشح بلوم الاحتمالية باستخدام عدة دوال تجزئة ومصفوفة بتات. ادعم عمليات الإضافة واختبار العضوية بدون سلبيات كاذبة مع إيجابيات كاذبة محتملة.",
+      "es": "Implementa una estructura de datos probabilística filtro de Bloom usando múltiples funciones hash y un arreglo de bits. Soporta operaciones de agregar y prueba de membresía sin falsos negativos pero con posibles falsos positivos."
+    },
+    "code": "import hashlib\n\nclass BloomFilter:\n    def __init__(self, size, num_hashes):\n        self.size = size\n        self.num_hashes = num_hashes\n        self.bits = [False] * size\n\n    def _hashes(self, item):\n        results = []\n        for i in range(self.num_hashes):\n            h = hashlib.sha256(f\"{item}:{i}\".encode()).hexdigest()\n            results.append(int(h, 16) % self.size)\n        return results\n\n    def add(self, item):\n        for idx in self._hashes(item):\n            self.bits[idx] = True\n\n    def might_contain(self, item):\n        return all(self.bits[idx] for idx in self._hashes(item))",
+    "tags": ["data-structure", "hash", "probabilistic"],
+    "complexity": "O(k) per op"
+  },
+  {
+    "id": "comp3_18_undo_redo",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement an undo/redo system using the command pattern with two stacks. Each action is encapsulated as a command object with execute and undo methods. Redo clears on new action.",
+      "ko": "두 스택을 사용하는 커맨드 패턴으로 실행 취소/다시 실행 시스템을 구현하라. 각 액션은 execute와 undo 메서드를 가진 커맨드 객체로 캡슐화된다. 새 액션 시 다시 실행 스택을 비워라.",
+      "zh": "使用命令模式和两个栈实现撤销/重做系统。每个操作封装为具有execute和undo方法的命令对象。执行新操作时清空重做栈。",
+      "ar": "نفّذ نظام تراجع/إعادة باستخدام نمط الأمر مع مكدسين. تُغلف كل عملية ككائن أمر بطريقتي execute و undo. يُمسح الإعادة عند إجراء عملية جديدة.",
+      "es": "Implementa un sistema de deshacer/rehacer usando el patrón comando con dos pilas. Cada acción se encapsula como un objeto comando con métodos execute y undo. Rehacer se limpia con una nueva acción."
+    },
+    "code": "class UndoRedoManager:\n    def __init__(self):\n        self.undo_stack = []\n        self.redo_stack = []\n\n    def execute(self, command):\n        command.execute()\n        self.undo_stack.append(command)\n        self.redo_stack.clear()\n\n    def undo(self):\n        if not self.undo_stack:\n            return\n        cmd = self.undo_stack.pop()\n        cmd.undo()\n        self.redo_stack.append(cmd)\n\n    def redo(self):\n        if not self.redo_stack:\n            return\n        cmd = self.redo_stack.pop()\n        cmd.execute()\n        self.undo_stack.append(cmd)\n\nclass SetValueCommand:\n    def __init__(self, obj, attr, new_val):\n        self.obj = obj\n        self.attr = attr\n        self.new_val = new_val\n        self.old_val = None\n\n    def execute(self):\n        self.old_val = getattr(self.obj, self.attr)\n        setattr(self.obj, self.attr, self.new_val)\n\n    def undo(self):\n        setattr(self.obj, self.attr, self.old_val)",
+    "tags": ["design-pattern", "command", "stack"],
+    "complexity": "O(1) per op"
+  },
+  {
+    "id": "comp3_19_schema_validator",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Validate a nested dictionary against a schema that specifies expected types for each key, including nested objects and lists. Recursively check types and report all validation errors with their paths.",
+      "ko": "각 키에 대한 예상 타입을 중첩 객체와 리스트를 포함하여 명시하는 스키마에 대해 중첩 사전을 검증하라. 재귀적으로 타입을 확인하고 모든 검증 오류를 경로와 함께 보고하라.",
+      "zh": "根据为每个键指定预期类型（包括嵌套对象和列表）的模式验证嵌套字典。递归检查类型并报告所有验证错误及其路径。",
+      "ar": "تحقق من صحة قاموس متداخل مقابل مخطط يحدد الأنواع المتوقعة لكل مفتاح، بما في ذلك الكائنات المتداخلة والقوائم. تحقق من الأنواع بشكل تراجعي وأبلغ عن جميع أخطاء التحقق مع مساراتها.",
+      "es": "Valida un diccionario anidado contra un esquema que especifica los tipos esperados para cada clave, incluyendo objetos anidados y listas. Verifica tipos recursivamente y reporta todos los errores de validación con sus rutas."
+    },
+    "code": "def validate(data, schema, path=''):\n    errors = []\n    if schema.get('type') == 'object':\n        if not isinstance(data, dict):\n            return [f\"{path}: expected object, got {type(data).__name__}\"]\n        for key, sub_schema in schema.get('properties', {}).items():\n            if key not in data:\n                if sub_schema.get('required', False):\n                    errors.append(f\"{path}.{key}: missing required field\")\n            else:\n                errors.extend(validate(data[key], sub_schema, f\"{path}.{key}\"))\n    elif schema.get('type') == 'array':\n        if not isinstance(data, list):\n            return [f\"{path}: expected array, got {type(data).__name__}\"]\n        item_schema = schema.get('items', {})\n        for i, item in enumerate(data):\n            errors.extend(validate(item, item_schema, f\"{path}[{i}]\"))\n    elif schema.get('type') == 'string':\n        if not isinstance(data, str):\n            errors.append(f\"{path}: expected string, got {type(data).__name__}\")\n    elif schema.get('type') == 'number':\n        if not isinstance(data, (int, float)):\n            errors.append(f\"{path}: expected number, got {type(data).__name__}\")\n    return errors",
+    "tags": ["recursive", "validation", "schema"],
+    "complexity": "O(n) where n = total fields"
+  },
+  {
+    "id": "comp3_20_event_emitter",
+    "tier": 3,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a publish-subscribe event emitter that allows registering callbacks for named events, emitting events to trigger all registered callbacks, and removing specific listeners.",
+      "ko": "명명된 이벤트에 콜백을 등록하고, 이벤트를 발행하여 등록된 모든 콜백을 실행하고, 특정 리스너를 제거할 수 있는 발행-구독 이벤트 이미터를 구현하라.",
+      "zh": "实现一个发布-订阅事件发射器，支持为命名事件注册回调、发射事件以触发所有注册的回调、以及移除特定监听器。",
+      "ar": "نفّذ باعث أحداث نشر-اشتراك يسمح بتسجيل استدعاءات راجعة لأحداث مسماة، وإطلاق الأحداث لتشغيل جميع الاستدعاءات المسجلة، وإزالة مستمعين محددين.",
+      "es": "Implementa un emisor de eventos publish-subscribe que permita registrar callbacks para eventos nombrados, emitir eventos para disparar todos los callbacks registrados y eliminar listeners específicos."
+    },
+    "code": "from collections import defaultdict\n\nclass EventEmitter:\n    def __init__(self):\n        self.listeners = defaultdict(list)\n\n    def on(self, event, callback):\n        self.listeners[event].append(callback)\n        return self\n\n    def off(self, event, callback):\n        if event in self.listeners:\n            self.listeners[event] = [\n                cb for cb in self.listeners[event] if cb != callback\n            ]\n        return self\n\n    def emit(self, event, *args, **kwargs):\n        for callback in self.listeners.get(event, []):\n            callback(*args, **kwargs)\n        return self\n\n    def once(self, event, callback):\n        def wrapper(*args, **kwargs):\n            callback(*args, **kwargs)\n            self.off(event, wrapper)\n        self.on(event, wrapper)\n        return self",
+    "tags": ["design-pattern", "pub-sub", "callback"],
+    "complexity": "O(k) per emit"
+  }
+]

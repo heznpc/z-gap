@@ -1,0 +1,452 @@
+[
+  {
+    "id": "algo_01_binary_search",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Search for a target value in a sorted array by repeatedly halving the search range. Return its index, or -1 if not found.",
+      "ko": "정렬된 배열에서 탐색 범위를 반복적으로 반으로 줄여 목표 값을 찾아라. 인덱스를 반환하되, 없으면 -1을 반환하라.",
+      "zh": "在已排序的数组中，通过反复将搜索范围减半来查找目标值。返回其索引，若未找到则返回-1。",
+      "ar": "ابحث عن قيمة مستهدفة في مصفوفة مرتبة عبر تقسيم نطاق البحث إلى نصفين بشكل متكرر. أعد فهرسها، أو -1 إذا لم تُوجد.",
+      "es": "Busca un valor objetivo en un arreglo ordenado dividiendo repetidamente el rango de búsqueda a la mitad. Devuelve su índice, o -1 si no se encuentra."
+    },
+    "code": "def binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1",
+    "tags": ["search", "divide-and-conquer"],
+    "complexity": "O(log n)"
+  },
+  {
+    "id": "algo_02_bubble_sort",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Sort an array by repeatedly swapping adjacent elements that are in the wrong order, until no more swaps are needed.",
+      "ko": "인접한 원소의 순서가 잘못되어 있으면 반복적으로 교환하여 더 이상 교환이 필요 없을 때까지 배열을 정렬하라.",
+      "zh": "通过反复交换相邻的乱序元素来排序数组，直到不再需要交换为止。",
+      "ar": "رتّب المصفوفة بتبديل العناصر المتجاورة التي في ترتيب خاطئ بشكل متكرر، حتى لا يُحتاج إلى مزيد من التبديلات.",
+      "es": "Ordena un arreglo intercambiando repetidamente elementos adyacentes que estén en orden incorrecto, hasta que no se necesiten más intercambios."
+    },
+    "code": "def bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        swapped = False\n        for j in range(n - 1 - i):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n                swapped = True\n        if not swapped:\n            break\n    return arr",
+    "tags": ["sort", "comparison"],
+    "complexity": "O(n²)"
+  },
+  {
+    "id": "algo_03_merge_sort",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Sort the array by repeatedly dividing it into halves, sorting each half, and merging the sorted halves back together.",
+      "ko": "배열을 반복적으로 반으로 나누고, 각 반을 정렬한 뒤, 정렬된 반들을 다시 합쳐서 배열을 정렬하라.",
+      "zh": "通过反复将数组分成两半、分别排序、再将已排序的两半合并来排序数组。",
+      "ar": "رتّب المصفوفة بتقسيمها بشكل متكرر إلى نصفين، وترتيب كل نصف، ثم دمج النصفين المرتبين معًا.",
+      "es": "Ordena el arreglo dividiéndolo repetidamente en mitades, ordenando cada mitad y fusionando las mitades ordenadas."
+    },
+    "code": "def merge_sort(arr):\n    if len(arr) <= 1:\n        return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    result = []\n    i = j = 0\n    while i < len(left) and j < len(right):\n        if left[i] <= right[j]:\n            result.append(left[i])\n            i += 1\n        else:\n            result.append(right[j])\n            j += 1\n    result.extend(left[i:])\n    result.extend(right[j:])\n    return result",
+    "tags": ["sort", "divide-and-conquer", "recursive"],
+    "complexity": "O(n log n)"
+  },
+  {
+    "id": "algo_04_bfs",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Traverse a graph level by level starting from a given node, visiting all neighbors before moving to the next depth level.",
+      "ko": "주어진 노드에서 시작하여 그래프를 단계별로 탐색하되, 다음 깊이로 가기 전에 모든 이웃을 방문하라.",
+      "zh": "从给定节点开始逐层遍历图，在进入下一层之前访问所有邻居。",
+      "ar": "اجتَز الرسم البياني مستوى بمستوى بدءًا من عقدة معينة، مع زيارة جميع الجيران قبل الانتقال إلى المستوى التالي.",
+      "es": "Recorre un grafo nivel por nivel desde un nodo dado, visitando todos los vecinos antes de pasar al siguiente nivel de profundidad."
+    },
+    "code": "def bfs(graph, start):\n    visited = set()\n    queue = [start]\n    visited.add(start)\n    order = []\n    while queue:\n        node = queue.pop(0)\n        order.append(node)\n        for neighbor in graph.get(node, []):\n            if neighbor not in visited:\n                visited.add(neighbor)\n                queue.append(neighbor)\n    return order",
+    "tags": ["graph", "traversal"],
+    "complexity": "O(V+E)"
+  },
+  {
+    "id": "algo_05_dfs",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Traverse a graph by exploring as deep as possible along each branch before backtracking, starting from a given node.",
+      "ko": "주어진 노드에서 시작하여 각 분기를 따라 가능한 한 깊이 탐색한 후 되돌아오는 방식으로 그래프를 순회하라.",
+      "zh": "从给定节点开始，沿每条分支尽可能深入探索，然后回溯，以此遍历图。",
+      "ar": "اجتَز الرسم البياني باستكشاف أعمق ما يمكن على طول كل فرع قبل التراجع، بدءًا من عقدة معينة.",
+      "es": "Recorre un grafo explorando lo más profundo posible a lo largo de cada rama antes de retroceder, partiendo de un nodo dado."
+    },
+    "code": "def dfs(graph, start):\n    visited = set()\n    order = []\n    stack = [start]\n    while stack:\n        node = stack.pop()\n        if node in visited:\n            continue\n        visited.add(node)\n        order.append(node)\n        for neighbor in reversed(graph.get(node, [])):\n            if neighbor not in visited:\n                stack.append(neighbor)\n    return order",
+    "tags": ["graph", "traversal"],
+    "complexity": "O(V+E)"
+  },
+  {
+    "id": "algo_06_fibonacci_dp",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Compute the n-th Fibonacci number using dynamic programming, building up from the base cases without redundant computation.",
+      "ko": "기저 사례부터 중복 계산 없이 쌓아 올리는 동적 프로그래밍으로 n번째 피보나치 수를 구하라.",
+      "zh": "使用动态规划从基本情况逐步构建，无冗余计算地求第n个斐波那契数。",
+      "ar": "احسب عدد فيبوناتشي رقم n باستخدام البرمجة الديناميكية، بالبناء من الحالات الأساسية دون حسابات مكررة.",
+      "es": "Calcula el n-ésimo número de Fibonacci usando programación dinámica, construyendo desde los casos base sin cálculos redundantes."
+    },
+    "code": "def fib(n):\n    if n <= 1:\n        return n\n    dp = [0] * (n + 1)\n    dp[1] = 1\n    for i in range(2, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2]\n    return dp[n]",
+    "tags": ["dynamic-programming", "math"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_07_two_sum",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find two numbers in the array that add up to a given target, using a hash map for constant-time lookups. Return their indices.",
+      "ko": "해시 맵을 사용한 상수 시간 조회로 배열에서 합이 목표 값이 되는 두 수를 찾아 인덱스를 반환하라.",
+      "zh": "利用哈希表进行常数时间查找，找出数组中两个和为目标值的数，返回它们的索引。",
+      "ar": "أوجد عددين في المصفوفة يكون مجموعهما يساوي القيمة المستهدفة، باستخدام جدول تجزئة للبحث في وقت ثابت. أعد فهرسيهما.",
+      "es": "Encuentra dos números en el arreglo que sumen un valor objetivo, usando un mapa hash para búsquedas en tiempo constante. Devuelve sus índices."
+    },
+    "code": "def two_sum(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
+    "tags": ["hash", "search"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_08_palindrome",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Check whether a string reads the same forwards and backwards, ignoring non-alphanumeric characters and case differences.",
+      "ko": "영숫자가 아닌 문자와 대소문자 차이를 무시하고, 문자열이 앞뒤로 동일하게 읽히는지 확인하라.",
+      "zh": "忽略非字母数字字符和大小写差异，检查字符串正读和反读是否相同。",
+      "ar": "تحقق مما إذا كان النص يُقرأ بنفس الطريقة من الأمام والخلف، مع تجاهل الأحرف غير الأبجدية الرقمية وفروقات الحالة.",
+      "es": "Verifica si una cadena se lee igual de adelante hacia atrás y viceversa, ignorando caracteres no alfanuméricos y diferencias de mayúsculas."
+    },
+    "code": "def is_palindrome(s):\n    cleaned = [c.lower() for c in s if c.isalnum()]\n    return cleaned == cleaned[::-1]",
+    "tags": ["string", "two-pointer"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_09_reverse_linked_list",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Reverse a singly linked list in place by redirecting each node's next pointer to point to the previous node.",
+      "ko": "각 노드의 다음 포인터를 이전 노드를 가리키도록 변경하여 단일 연결 리스트를 제자리에서 뒤집어라.",
+      "zh": "通过将每个节点的next指针重定向为指向前一个节点，就地反转单链表。",
+      "ar": "اعكس قائمة مرتبطة أحادية في مكانها بإعادة توجيه مؤشر next لكل عقدة ليشير إلى العقدة السابقة.",
+      "es": "Invierte una lista enlazada simple en su lugar redirigiendo el puntero next de cada nodo para que apunte al nodo anterior."
+    },
+    "code": "def reverse_linked_list(head):\n    prev = None\n    curr = head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev",
+    "tags": ["linked-list", "pointer"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_10_balanced_brackets",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Determine whether a string of brackets is balanced using a stack: each opening bracket must have a matching closing bracket in the correct order.",
+      "ko": "스택을 사용하여 괄호 문자열이 균형 잡혀 있는지 판단하라: 각 여는 괄호는 올바른 순서로 닫는 괄호와 짝이 맞아야 한다.",
+      "zh": "使用栈判断括号字符串是否平衡：每个左括号必须有正确顺序的右括号与之匹配。",
+      "ar": "حدد ما إذا كانت سلسلة الأقواس متوازنة باستخدام مكدس: يجب أن يكون لكل قوس فتح قوس إغلاق مطابق بالترتيب الصحيح.",
+      "es": "Determina si una cadena de paréntesis está balanceada usando una pila: cada paréntesis de apertura debe tener uno de cierre correspondiente en el orden correcto."
+    },
+    "code": "def is_balanced(s):\n    stack = []\n    pairs = {')': '(', ']': '[', '}': '{'}\n    for ch in s:\n        if ch in '([{':\n            stack.append(ch)\n        elif ch in pairs:\n            if not stack or stack[-1] != pairs[ch]:\n                return False\n            stack.pop()\n    return len(stack) == 0",
+    "tags": ["stack", "string"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_11_counting_sort",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Sort an array of non-negative integers by counting the frequency of each value and reconstructing the sorted array from the counts.",
+      "ko": "각 값의 빈도를 세고 그 빈도로부터 정렬된 배열을 재구성하여 비음수 정수 배열을 정렬하라.",
+      "zh": "通过统计每个值的出现频率，再根据频率重建排序后的数组，来排序非负整数数组。",
+      "ar": "رتّب مصفوفة من الأعداد الصحيحة غير السالبة بحساب تكرار كل قيمة وإعادة بناء المصفوفة المرتبة من التكرارات.",
+      "es": "Ordena un arreglo de enteros no negativos contando la frecuencia de cada valor y reconstruyendo el arreglo ordenado a partir de los conteos."
+    },
+    "code": "def counting_sort(arr):\n    if not arr:\n        return arr\n    max_val = max(arr)\n    count = [0] * (max_val + 1)\n    for x in arr:\n        count[x] += 1\n    result = []\n    for val, cnt in enumerate(count):\n        result.extend([val] * cnt)\n    return result",
+    "tags": ["sort", "counting"],
+    "complexity": "O(n+k)"
+  },
+  {
+    "id": "algo_12_rotate_matrix",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Rotate a square matrix 90 degrees clockwise in place by first transposing it and then reversing each row.",
+      "ko": "정방 행렬을 먼저 전치한 다음 각 행을 뒤집어 시계 방향으로 90도 제자리 회전시켜라.",
+      "zh": "先转置正方矩阵，再反转每一行，从而将其就地顺时针旋转90度。",
+      "ar": "قم بتدوير مصفوفة مربعة 90 درجة في اتجاه عقارب الساعة في مكانها عبر قلبها أولًا ثم عكس كل صف.",
+      "es": "Rota una matriz cuadrada 90 grados en sentido horario en su lugar, primero transponiéndola y luego invirtiendo cada fila."
+    },
+    "code": "def rotate_matrix(matrix):\n    n = len(matrix)\n    for i in range(n):\n        for j in range(i + 1, n):\n            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]\n    for row in matrix:\n        row.reverse()\n    return matrix",
+    "tags": ["matrix", "in-place"],
+    "complexity": "O(n²)"
+  },
+  {
+    "id": "algo_13_lru_cache",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a least-recently-used cache with O(1) get and put operations using a dictionary and a doubly linked list.",
+      "ko": "사전과 이중 연결 리스트를 사용하여 O(1) get과 put 연산을 지원하는 최근 최소 사용 캐시를 구현하라.",
+      "zh": "使用字典和双向链表实现一个最近最少使用缓存，使get和put操作均为O(1)。",
+      "ar": "نفّذ ذاكرة تخزين مؤقت بمبدأ الأقل استخدامًا مؤخرًا مع عمليات get و put بتعقيد O(1) باستخدام قاموس وقائمة مرتبطة مزدوجة.",
+      "es": "Implementa una caché de uso menos reciente con operaciones get y put en O(1) usando un diccionario y una lista doblemente enlazada."
+    },
+    "code": "from collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n\n    def get(self, key):\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key, value):\n        if key in self.cache:\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)",
+    "tags": ["data-structure", "hash", "linked-list"],
+    "complexity": "O(1) per op"
+  },
+  {
+    "id": "algo_14_topological_sort",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Produce a linear ordering of vertices in a directed acyclic graph such that every edge goes from earlier to later in the ordering, using Kahn's algorithm.",
+      "ko": "칸 알고리즘을 사용하여 유향 비순환 그래프의 정점들을 모든 간선이 앞에서 뒤로 향하도록 선형 순서로 나열하라.",
+      "zh": "使用Kahn算法，对有向无环图的顶点进行线性排序，使每条边都从排序中的前面指向后面。",
+      "ar": "أنتج ترتيبًا خطيًا لرؤوس رسم بياني موجه غير دوري بحيث يتجه كل ضلع من الأقدم إلى الأحدث في الترتيب، باستخدام خوارزمية كان.",
+      "es": "Produce un ordenamiento lineal de los vértices de un grafo dirigido acíclico tal que cada arista vaya de antes a después en el orden, usando el algoritmo de Kahn."
+    },
+    "code": "from collections import deque\n\ndef topo_sort(graph, n_vertices):\n    in_degree = [0] * n_vertices\n    for u in range(n_vertices):\n        for v in graph.get(u, []):\n            in_degree[v] += 1\n    queue = deque(v for v in range(n_vertices) if in_degree[v] == 0)\n    order = []\n    while queue:\n        u = queue.popleft()\n        order.append(u)\n        for v in graph.get(u, []):\n            in_degree[v] -= 1\n            if in_degree[v] == 0:\n                queue.append(v)\n    return order if len(order) == n_vertices else []",
+    "tags": ["graph", "sort", "dag"],
+    "complexity": "O(V+E)"
+  },
+  {
+    "id": "algo_15_dijkstra",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find the shortest path distances from a source vertex to all other vertices in a weighted graph with non-negative edges, using a priority queue.",
+      "ko": "우선순위 큐를 사용하여 음이 아닌 가중치 그래프에서 출발 정점으로부터 모든 다른 정점까지의 최단 경로 거리를 구하라.",
+      "zh": "使用优先队列，在边权非负的加权图中求从源顶点到所有其他顶点的最短路径距离。",
+      "ar": "أوجد أقصر مسافات المسار من رأس المصدر إلى جميع الرؤوس الأخرى في رسم بياني موزون بأضلاع غير سالبة، باستخدام طابور أولويات.",
+      "es": "Encuentra las distancias de camino más corto desde un vértice fuente a todos los demás en un grafo ponderado con aristas no negativas, usando una cola de prioridad."
+    },
+    "code": "import heapq\n\ndef dijkstra(graph, src):\n    dist = {src: 0}\n    heap = [(0, src)]\n    while heap:\n        d, u = heapq.heappop(heap)\n        if d > dist.get(u, float('inf')):\n            continue\n        for v, w in graph.get(u, []):\n            nd = d + w\n            if nd < dist.get(v, float('inf')):\n                dist[v] = nd\n                heapq.heappush(heap, (nd, v))\n    return dist",
+    "tags": ["graph", "shortest-path", "heap"],
+    "complexity": "O(E log V)"
+  },
+  {
+    "id": "algo_16_lcs",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find the length of the longest common subsequence between two strings using a dynamic programming table.",
+      "ko": "동적 프로그래밍 테이블을 사용하여 두 문자열 사이의 최장 공통 부분 수열의 길이를 구하라.",
+      "zh": "使用动态规划表求两个字符串之间最长公共子序列的长度。",
+      "ar": "أوجد طول أطول سلسلة فرعية مشتركة بين سلسلتين نصيتين باستخدام جدول برمجة ديناميكية.",
+      "es": "Encuentra la longitud de la subsecuencia común más larga entre dos cadenas usando una tabla de programación dinámica."
+    },
+    "code": "def lcs(s1, s2):\n    m, n = len(s1), len(s2)\n    dp = [[0] * (n + 1) for _ in range(m + 1)]\n    for i in range(1, m + 1):\n        for j in range(1, n + 1):\n            if s1[i - 1] == s2[j - 1]:\n                dp[i][j] = dp[i - 1][j - 1] + 1\n            else:\n                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])\n    return dp[m][n]",
+    "tags": ["dynamic-programming", "string"],
+    "complexity": "O(mn)"
+  },
+  {
+    "id": "algo_17_knapsack",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Solve the 0/1 knapsack problem: maximize the total value of items that fit within a weight capacity, where each item is either taken or left.",
+      "ko": "0/1 배낭 문제를 풀어라: 각 물건을 넣거나 빼는 방식으로 무게 용량 내에서 총 가치를 최대화하라.",
+      "zh": "解决0/1背包问题：在重量容量内最大化物品的总价值，每个物品要么取要么不取。",
+      "ar": "حل مسألة حقيبة الظهر 0/1: عظّم القيمة الإجمالية للأشياء التي تتسع ضمن سعة الوزن، حيث يُؤخذ كل شيء أو يُترك.",
+      "es": "Resuelve el problema de la mochila 0/1: maximiza el valor total de objetos que quepan dentro de una capacidad de peso, donde cada objeto se toma o se deja."
+    },
+    "code": "def knapsack(W, weights, values):\n    n = len(values)\n    dp = [[0] * (W + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(W + 1):\n            dp[i][w] = dp[i - 1][w]\n            if weights[i - 1] <= w:\n                dp[i][w] = max(dp[i][w], dp[i - 1][w - weights[i - 1]] + values[i - 1])\n    return dp[n][W]",
+    "tags": ["dynamic-programming", "optimization"],
+    "complexity": "O(nW)"
+  },
+  {
+    "id": "algo_18_quick_select",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find the k-th smallest element in an unsorted array using the quickselect algorithm, which partitions around a pivot like quicksort but only recurses into one side.",
+      "ko": "퀵소트처럼 피벗 기준으로 분할하되 한쪽만 재귀하는 퀵셀렉트 알고리즘으로 비정렬 배열에서 k번째로 작은 원소를 찾아라.",
+      "zh": "使用快速选择算法在未排序数组中找到第k小的元素——像快速排序一样围绕枢轴分区，但只递归一侧。",
+      "ar": "أوجد العنصر الأصغر رقم k في مصفوفة غير مرتبة باستخدام خوارزمية الاختيار السريع، التي تُقسّم حول محور كالترتيب السريع لكنها تتراجع في جانب واحد فقط.",
+      "es": "Encuentra el k-ésimo elemento más pequeño en un arreglo desordenado usando el algoritmo quickselect, que particiona alrededor de un pivote como quicksort pero solo recurre en un lado."
+    },
+    "code": "def quick_select(arr, k):\n    if len(arr) == 1:\n        return arr[0]\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    mid = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    if k <= len(left):\n        return quick_select(left, k)\n    elif k <= len(left) + len(mid):\n        return pivot\n    else:\n        return quick_select(right, k - len(left) - len(mid))",
+    "tags": ["selection", "divide-and-conquer"],
+    "complexity": "O(n) avg"
+  },
+  {
+    "id": "algo_19_infix_to_postfix",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Convert an infix arithmetic expression to postfix notation using the shunting-yard algorithm with an operator stack.",
+      "ko": "연산자 스택을 사용하는 차량 기지 알고리즘으로 중위 산술 표현식을 후위 표기법으로 변환하라.",
+      "zh": "使用带运算符栈的调度场算法，将中缀算术表达式转换为后缀表示法。",
+      "ar": "حوّل تعبيرًا حسابيًا بالصيغة الوسطية إلى صيغة لاحقة باستخدام خوارزمية ساحة التحويل مع مكدس عوامل.",
+      "es": "Convierte una expresión aritmética infija a notación postfija usando el algoritmo shunting-yard con una pila de operadores."
+    },
+    "code": "def infix_to_postfix(expr):\n    prec = {'+': 1, '-': 1, '*': 2, '/': 2}\n    output = []\n    ops = []\n    for token in expr.split():\n        if token.isdigit():\n            output.append(token)\n        elif token in prec:\n            while ops and ops[-1] != '(' and prec.get(ops[-1], 0) >= prec[token]:\n                output.append(ops.pop())\n            ops.append(token)\n        elif token == '(':\n            ops.append(token)\n        elif token == ')':\n            while ops and ops[-1] != '(':\n                output.append(ops.pop())\n            ops.pop()\n    while ops:\n        output.append(ops.pop())\n    return output",
+    "tags": ["stack", "parsing", "expression"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_20_trie",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a trie data structure that supports inserting words and searching for exact matches or prefixes character by character.",
+      "ko": "단어 삽입과 문자별 정확한 일치 또는 접두사 검색을 지원하는 트라이 자료구조를 구현하라.",
+      "zh": "实现一个字典树数据结构，支持逐字符插入单词和搜索精确匹配或前缀。",
+      "ar": "نفّذ بنية بيانات تراي تدعم إدراج الكلمات والبحث عن تطابقات دقيقة أو بادئات حرفًا بحرف.",
+      "es": "Implementa una estructura de datos trie que soporte insertar palabras y buscar coincidencias exactas o prefijos carácter por carácter."
+    },
+    "code": "class TrieNode:\n    def __init__(self):\n        self.children = {}\n        self.is_end = False\n\nclass Trie:\n    def __init__(self):\n        self.root = TrieNode()\n\n    def insert(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                node.children[ch] = TrieNode()\n            node = node.children[ch]\n        node.is_end = True\n\n    def search(self, word):\n        node = self.root\n        for ch in word:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return node.is_end\n\n    def starts_with(self, prefix):\n        node = self.root\n        for ch in prefix:\n            if ch not in node.children:\n                return False\n            node = node.children[ch]\n        return True",
+    "tags": ["data-structure", "string", "tree"],
+    "complexity": "O(m) per op"
+  },
+  {
+    "id": "algo_21_union_find",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Implement a union-find structure with path compression and union by rank to efficiently track connected components.",
+      "ko": "경로 압축과 랭크 기반 합치기를 사용하여 연결 요소를 효율적으로 추적하는 유니온-파인드 구조를 구현하라.",
+      "zh": "实现带路径压缩和按秩合并的并查集结构，以高效追踪连通分量。",
+      "ar": "نفّذ بنية اتحاد-بحث مع ضغط المسار والاتحاد بالرتبة لتتبع المكونات المتصلة بكفاءة.",
+      "es": "Implementa una estructura union-find con compresión de caminos y unión por rango para rastrear eficientemente componentes conexos."
+    },
+    "code": "class UnionFind:\n    def __init__(self, n):\n        self.parent = list(range(n))\n        self.rank = [0] * n\n\n    def find(self, x):\n        if self.parent[x] != x:\n            self.parent[x] = self.find(self.parent[x])\n        return self.parent[x]\n\n    def union(self, x, y):\n        rx, ry = self.find(x), self.find(y)\n        if rx == ry:\n            return False\n        if self.rank[rx] < self.rank[ry]:\n            rx, ry = ry, rx\n        self.parent[ry] = rx\n        if self.rank[rx] == self.rank[ry]:\n            self.rank[rx] += 1\n        return True",
+    "tags": ["data-structure", "graph"],
+    "complexity": "O(α(n))"
+  },
+  {
+    "id": "algo_22_sliding_window_max",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find the maximum value in every contiguous window of size k as it slides across the array, using a monotonic deque.",
+      "ko": "단조 덱을 사용하여 크기 k의 연속 윈도우가 배열을 이동할 때 각 윈도우의 최댓값을 구하라.",
+      "zh": "使用单调双端队列，找出大小为k的滑动窗口在数组上移动时每个窗口的最大值。",
+      "ar": "أوجد القيمة القصوى في كل نافذة متجاورة بحجم k أثناء انزلاقها عبر المصفوفة، باستخدام طابور مزدوج رتيب.",
+      "es": "Encuentra el valor máximo en cada ventana contigua de tamaño k mientras se desliza por el arreglo, usando una deque monótona."
+    },
+    "code": "from collections import deque\n\ndef max_sliding_window(arr, k):\n    dq = deque()\n    result = []\n    for i, val in enumerate(arr):\n        while dq and dq[0] <= i - k:\n            dq.popleft()\n        while dq and arr[dq[-1]] <= val:\n            dq.pop()\n        dq.append(i)\n        if i >= k - 1:\n            result.append(arr[dq[0]])\n    return result",
+    "tags": ["deque", "sliding-window"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_23_merge_intervals",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Merge all overlapping intervals from a list of intervals. Sort by start time, then combine intervals that overlap or touch.",
+      "ko": "구간 목록에서 겹치는 모든 구간을 병합하라. 시작 시간으로 정렬한 뒤 겹치거나 맞닿는 구간을 합쳐라.",
+      "zh": "合并区间列表中所有重叠的区间。按起始时间排序，然后合并重叠或相邻的区间。",
+      "ar": "ادمج جميع الفترات المتداخلة من قائمة فترات. رتّب حسب وقت البداية، ثم ادمج الفترات المتداخلة أو المتلامسة.",
+      "es": "Fusiona todos los intervalos superpuestos de una lista de intervalos. Ordena por tiempo de inicio y luego combina los intervalos que se solapan o tocan."
+    },
+    "code": "def merge_intervals(intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    for start, end in intervals[1:]:\n        if start <= merged[-1][1]:\n            merged[-1] = [merged[-1][0], max(merged[-1][1], end)]\n        else:\n            merged.append([start, end])\n    return merged",
+    "tags": ["sort", "interval"],
+    "complexity": "O(n log n)"
+  },
+  {
+    "id": "algo_24_rle",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Encode a string using run-length encoding: replace consecutive identical characters with the character followed by its count.",
+      "ko": "런렝스 부호화로 문자열을 인코딩하라: 연속으로 동일한 문자를 해당 문자와 횟수로 치환하라.",
+      "zh": "使用游程编码对字符串进行编码：将连续相同的字符替换为该字符加其计数。",
+      "ar": "شفّر سلسلة نصية باستخدام ترميز طول التشغيل: استبدل الأحرف المتتالية المتماثلة بالحرف متبوعًا بعدده.",
+      "es": "Codifica una cadena usando codificación por longitud de ejecución: reemplaza caracteres idénticos consecutivos con el carácter seguido de su conteo."
+    },
+    "code": "def rle_encode(s):\n    if not s:\n        return ''\n    result = []\n    count = 1\n    for i in range(1, len(s)):\n        if s[i] == s[i - 1]:\n            count += 1\n        else:\n            result.append(f'{s[i - 1]}{count}')\n            count = 1\n    result.append(f'{s[-1]}{count}')\n    return ''.join(result)",
+    "tags": ["string", "encoding"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_25_kadane",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Find the contiguous subarray with the largest sum using Kadane's algorithm, which tracks the best sum ending at each position.",
+      "ko": "각 위치에서 끝나는 최선의 합을 추적하는 카데인 알고리즘으로 합이 가장 큰 연속 부분 배열을 찾아라.",
+      "zh": "使用Kadane算法找到具有最大和的连续子数组——该算法跟踪在每个位置结束的最佳和。",
+      "ar": "أوجد المصفوفة الفرعية المتجاورة ذات أكبر مجموع باستخدام خوارزمية كادين، التي تتتبع أفضل مجموع ينتهي عند كل موضع.",
+      "es": "Encuentra el subarreglo contiguo con la mayor suma usando el algoritmo de Kadane, que rastrea la mejor suma que termina en cada posición."
+    },
+    "code": "def max_subarray(arr):\n    best = current = arr[0]\n    for x in arr[1:]:\n        current = max(x, current + x)\n        best = max(best, current)\n    return best",
+    "tags": ["dynamic-programming", "array"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_26_flood_fill",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Fill all connected cells of the same color in a 2D grid starting from a given cell, replacing them with a new color.",
+      "ko": "주어진 셀에서 시작하여 2D 격자에서 같은 색의 연결된 모든 셀을 새 색으로 채워라.",
+      "zh": "从给定单元格开始，将二维网格中所有颜色相同的连通单元格替换为新颜色。",
+      "ar": "املأ جميع الخلايا المتصلة بنفس اللون في شبكة ثنائية الأبعاد بدءًا من خلية معينة، مع استبدالها بلون جديد.",
+      "es": "Rellena todas las celdas conectadas del mismo color en una cuadrícula 2D a partir de una celda dada, reemplazándolas con un nuevo color."
+    },
+    "code": "def flood_fill(image, sr, sc, new_color):\n    orig = image[sr][sc]\n    if orig == new_color:\n        return image\n    rows, cols = len(image), len(image[0])\n    stack = [(sr, sc)]\n    while stack:\n        r, c = stack.pop()\n        if 0 <= r < rows and 0 <= c < cols and image[r][c] == orig:\n            image[r][c] = new_color\n            stack.extend([(r+1,c),(r-1,c),(r,c+1),(r,c-1)])\n    return image",
+    "tags": ["graph", "grid", "dfs"],
+    "complexity": "O(mn)"
+  },
+  {
+    "id": "algo_27_cycle_detection",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Detect whether a linked list contains a cycle using Floyd's tortoise and hare algorithm with two pointers moving at different speeds.",
+      "ko": "서로 다른 속도로 이동하는 두 포인터를 사용하는 플로이드의 토끼와 거북이 알고리즘으로 연결 리스트에 순환이 있는지 탐지하라.",
+      "zh": "使用Floyd的龟兔算法，通过两个以不同速度移动的指针检测链表中是否存在环。",
+      "ar": "اكتشف ما إذا كانت القائمة المرتبطة تحتوي على دورة باستخدام خوارزمية فلويد للسلحفاة والأرنب بمؤشرين يتحركان بسرعتين مختلفتين.",
+      "es": "Detecta si una lista enlazada contiene un ciclo usando el algoritmo de la tortuga y la liebre de Floyd con dos punteros que se mueven a diferentes velocidades."
+    },
+    "code": "def has_cycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow is fast:\n            return True\n    return False",
+    "tags": ["linked-list", "two-pointer"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_28_heap_sort",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Sort an array by first building a max-heap, then repeatedly extracting the maximum element and placing it at the end.",
+      "ko": "먼저 최대 힙을 구성한 다음 최대 원소를 반복적으로 꺼내어 끝에 배치하여 배열을 정렬하라.",
+      "zh": "先构建最大堆，然后反复提取最大元素并放到末尾，以此排序数组。",
+      "ar": "رتّب المصفوفة ببناء كومة قصوى أولًا، ثم استخراج العنصر الأقصى بشكل متكرر ووضعه في النهاية.",
+      "es": "Ordena un arreglo construyendo primero un max-heap y luego extrayendo repetidamente el elemento máximo y colocándolo al final."
+    },
+    "code": "def heap_sort(arr):\n    def sift_down(arr, n, i):\n        largest = i\n        left, right = 2 * i + 1, 2 * i + 2\n        if left < n and arr[left] > arr[largest]:\n            largest = left\n        if right < n and arr[right] > arr[largest]:\n            largest = right\n        if largest != i:\n            arr[i], arr[largest] = arr[largest], arr[i]\n            sift_down(arr, n, largest)\n    n = len(arr)\n    for i in range(n // 2 - 1, -1, -1):\n        sift_down(arr, n, i)\n    for i in range(n - 1, 0, -1):\n        arr[0], arr[i] = arr[i], arr[0]\n        sift_down(arr, i, 0)\n    return arr",
+    "tags": ["sort", "heap"],
+    "complexity": "O(n log n)"
+  },
+  {
+    "id": "algo_29_inorder_traversal",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Perform an inorder traversal of a binary tree iteratively using a stack, visiting left subtree, then root, then right subtree.",
+      "ko": "스택을 사용하여 이진 트리를 반복적으로 중위 순회하되, 왼쪽 하위 트리, 루트, 오른쪽 하위 트리 순으로 방문하라.",
+      "zh": "使用栈迭代地对二叉树进行中序遍历——先访问左子树，再访问根，再访问右子树。",
+      "ar": "نفّذ اجتيازًا وسطيًا لشجرة ثنائية بشكل تكراري باستخدام مكدس، بزيارة الشجرة الفرعية اليسرى ثم الجذر ثم الشجرة الفرعية اليمنى.",
+      "es": "Realiza un recorrido inorden de un árbol binario de forma iterativa usando una pila, visitando el subárbol izquierdo, luego la raíz, luego el subárbol derecho."
+    },
+    "code": "def inorder(root):\n    result = []\n    stack = []\n    curr = root\n    while curr or stack:\n        while curr:\n            stack.append(curr)\n            curr = curr.left\n        curr = stack.pop()\n        result.append(curr.val)\n        curr = curr.right\n    return result",
+    "tags": ["tree", "traversal", "stack"],
+    "complexity": "O(n)"
+  },
+  {
+    "id": "algo_30_permutations",
+    "tier": 2,
+    "category": "computational",
+    "descriptions": {
+      "en": "Generate all permutations of a list using backtracking, exploring every possible ordering by swapping elements at each position.",
+      "ko": "각 위치에서 원소를 교환하며 가능한 모든 순서를 탐색하는 백트래킹으로 리스트의 모든 순열을 생성하라.",
+      "zh": "使用回溯法生成列表的所有排列——通过在每个位置交换元素来探索所有可能的排序。",
+      "ar": "ولّد جميع التباديل لقائمة باستخدام التتبع الرجعي، باستكشاف كل ترتيب ممكن عبر تبديل العناصر في كل موضع.",
+      "es": "Genera todas las permutaciones de una lista usando backtracking, explorando cada posible ordenamiento intercambiando elementos en cada posición."
+    },
+    "code": "def permutations(arr):\n    result = []\n    def backtrack(start):\n        if start == len(arr):\n            result.append(arr[:])\n            return\n        for i in range(start, len(arr)):\n            arr[start], arr[i] = arr[i], arr[start]\n            backtrack(start + 1)\n            arr[start], arr[i] = arr[i], arr[start]\n    backtrack(0)\n    return result",
+    "tags": ["backtracking", "combinatorics"],
+    "complexity": "O(n!)"
+  }
+]
