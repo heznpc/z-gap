@@ -469,18 +469,21 @@ To directly test PRH for code, we embed 50 computational NL descriptions alongsi
 \toprule
 \textbf{Model} & \textbf{en} & \textbf{ko} & \textbf{zh} & \textbf{ar} & \textbf{es} & \textbf{agg} \\
 \midrule
-UniXcoder (code)  & 1.22* & 1.01* & 1.08* & 1.01* & 1.05* & 1.07 \\
-MiniLM-L12 (NL)   & 1.23* & 1.12* & 1.18* & 1.10* & 1.19* & 1.16 \\
+UniXcoder (code)   & 1.22* & 1.01* & 1.08* & 1.01* & 1.05* & 1.07 \\
+MiniLM-L12 (NL)    & 1.23* & 1.12* & 1.18* & 1.10* & 1.19* & 1.16 \\
 Nomic v1.5         & 1.24* & 1.02* & 1.03* & 1.01* & 1.07* & 1.07 \\
+E5-small (NL)      & 1.22* & 1.09* & 1.13* & 1.09* & 1.14* & 1.13 \\
+E5-base (NL)       & 1.22* & 1.11* & 1.13* & 1.11* & 1.16* & 1.14 \\
 E5-large (NL)      & 1.28* & 1.16* & 1.19* & 1.16* & 1.22* & 1.20 \\
+BGE-M3 (NL+code)   & 1.21* & 1.14* & 1.16* & 1.14* & 1.16* & 1.16 \\
 \bottomrule
 \end{tabular}
-\caption*{\small * $p < 0.05$ after Holm-Bonferroni correction. All 20/20 cells show $R_{\text{code}} > 1$.}
+\caption*{\small * $p < 0.05$ after Holm-Bonferroni correction. All 35/35 cells show $R_{\text{code}} > 1$. Permutation-null distribution mean: $R \in [1.000, 1.005]$ across all cells (random-matching baseline).}
 \end{table}
 
-All 20 language-model cells show $R_{\text{code}} > 1$ ($p < 0.05$ after correction): NL descriptions are closer to their corresponding code than to mismatched code in every language and every model. The result is robust across code-trained (UniXcoder, Nomic) and NL-only (MiniLM, E5-large) architectures.
+All 35 language-model cells show $R_{\text{code}} > 1$ ($p < 0.05$ after Holm-Bonferroni correction across 35 cells): NL descriptions are closer to their corresponding code than to mismatched code in every language and every model. The permutation null mean falls in $R \in [1.000, 1.005]$ across all cells, confirming the effect is not a metric artifact. The result is robust across code-trained (UniXcoder, Nomic), hybrid (BGE-M3), and NL-only (MiniLM, E5 family) architectures.
 
-Two patterns emerge. First, \textbf{$\Dtrain$ modulates NL-code alignment}: English consistently shows the highest $R_{\text{code}}$ (1.22--1.28), while Korean and Arabic show the lowest (1.01--1.16), tracking language representation in code training corpora. Second, \textbf{NL-only models achieve higher $R_{\text{code}}$ than code-trained models}: E5-large (1.20 aggregate) and MiniLM (1.16) surpass UniXcoder (1.07) and Nomic (1.07).
+Three patterns emerge. First, \textbf{$\Dtrain$ modulates NL-code alignment}: English consistently shows the highest $R_{\text{code}}$ (1.21--1.28), while Korean and Arabic show the lowest (1.01--1.16), tracking language representation in code training corpora. Second, \textbf{NL-only models achieve higher $R_{\text{code}}$ than code-trained models}: E5-large (1.20 aggregate) and BGE-M3 (1.16) surpass UniXcoder (1.07) and Nomic (1.07). Third, \textbf{the E5 family (same architecture, identical training recipe, varying dimension) shows partial scale-convergence}: aggregate $R_{\text{code}}$ rises $1.13$ (small, 384d) $\to 1.14$ (base, 768d) $\to 1.20$ (large, 1024d); the small-to-base jump is flat while base-to-large is steep, so P1's monotonic-with-scale prediction holds qualitatively but is non-linear in this regime.
 
 \paragraph{Lexical overlap control.} A potential confound: NL descriptions share tokens with their code equivalents (``sort'' appears in both ``Sort the list'' and \texttt{sorted(lst)}). Token overlap correlates with $d_{\text{match}}$ (Spearman $\rho = -0.51$, $p < 0.001$ for MiniLM), confirming a lexical component. However, $R_{\text{code}} > 1$ survives two controls. First, for the 32/50 operations with \emph{zero} token overlap (after stemming), $R_{\text{code}}$ remains above 1 in all three models (1.06--1.18). Second, obfuscating variable names in code (\texttt{lst}$\to$\texttt{v0}, \texttt{s}$\to$\texttt{v0}) reduces $R_{\text{code}}$ by only 1.6--5.4\%, and all models retain $R_{\text{code}} > 1$. Lexical overlap inflates the effect but does not create it: the alignment is primarily semantic.
 
