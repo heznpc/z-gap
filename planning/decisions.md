@@ -81,3 +81,23 @@ Format: `## YYYY-MM-DD -- <short title>` with **Context**, **Decision**, **Why**
   - The pretraining contamination caveat (C1) added in PR #3 stays unchanged — adding more models does not address contamination, only cross-model robustness.
 
 **Why**: The 7-model extension was the empirical contribution this session aimed to land. Catching einops as a soft-dep blocker (rather than as a paper-level claim error) preserved the cross-model robustness claim. The E5-family scale-convergence finding is a side effect of the extension that strengthens P1 in a way the previous mixed-family P1 test (MiniLM/mpnet/E5-large) could not.
+
+---
+
+## 2026-05-21 -- Strategy E: multi-model P3 cross-lingual probing (closes M5)
+
+**Context**: The 2026-05-21 pre-experiment review classified M5 (P3 multi-model probing) as a deferred Major: the paper's original P3 claim (90% category, 86% operation transfer) was supported by linear probes trained on MiniLM-L12 embeddings only. This left the "Z_sem stratifies and is cross-lingually accessible" claim resting on a single model.
+
+**Decisions**:
+
+  - Added `experiments/scripts/run_strategy_e_multimodel_probing.py` running P3 (category 2-way + operation 100-way LogisticRegression probes) on the same 7-model set as Strategy D. Per-cell statistics: accuracy + one-sided binomial test against chance. Includes run_meta block, per-model try/except, and heatmap figure outputs in the Strategy D pattern.
+
+  - Result (paper §5.5 P3 Results table now 7 rows): P3 is **supported in multilingual NL models but is model-class dependent**. Multilingual NL family (MiniLM, E5 small/base/large, BGE-M3): category transfer 0.86–0.99, operation transfer 0.86–0.98. Code-trained (UniXcoder: 0.67 / 0.18) and mixed NL+code (Nomic: 0.62 / 0.23) show near-perfect English training but collapse on cross-lingual transfer.
+
+  - Side finding (P1 echo within P3): the E5 family alone shows clean scale-convergence in operation transfer: 0.89 (384d) → 0.96 (768d) → 0.98 (1024d), under fixed architecture and training recipe. This mirrors the NL-code alignment scale-convergence reported in the Strategy D table.
+
+  - Paper interpretation refined: cross-lingual Z_sem separability is a property of the multilingual NL training distribution, not an intrinsic property of every embedding space with $R_{\text{code}} > 1$. The original P3 claim is preserved for multilingual NL but no longer generalized across model classes.
+
+  - Limitations bullet on "Z stratification" updated: "not validated across model families" replaced with "supported on 7 models with model-class dependence"; remaining work narrowed to decoder-only LLM hidden states + tier2/tier3 OOD stimuli.
+
+**Why**: M5 was the highest-leverage of the deferred items because the single-model P3 weakness was a reviewer attack surface and the cache of NL embeddings from Strategy D made the 7-model probing run almost free (~3 min). Discovering the model-class dependence (Nomic / UniXcoder collapse) is a genuine new finding that the original MiniLM-only P3 could not have produced.

@@ -494,23 +494,30 @@ Critically, this resolves the P2 result. P2 measured NL-NL cross-lingual invaria
 \paragraph{P7 Extension: Punctuation Robustness.}
 We extend P7 to punctuation and formatting variants. For each of 100 English operations, we generate 10 variants: bare, period, question mark, exclamation, ellipsis, colon, lowercase, UPPERCASE, extra spaces, and article removal. $R_{\text{punct}} = d_{\text{semantic}} / d_{\text{punct}} = 13.6$---punctuation variants are ${\sim}14\times$ closer than semantically different operations, far exceeding spacing robustness ($R_{\text{spacing}} \approx 2.9$). Most variants drift minimally (period: 0.014, question mark: 0.013). The outlier is UPPERCASE (drift = 0.192), which acts as a pragmatic signal (emphasis, shouting)---evidence that $\Zprag$ is encoded in surface-form cues even when $\Zsem$ is unchanged.
 
-\paragraph{P3 Results: Stratification Separability.}
-We train linear probes on English embeddings (MiniLM-L12) and test cross-lingual transfer, directly testing whether $\Zsem$ is separable across languages.
+\paragraph{P3 Results: Stratification Separability (7-model).}
+We train linear probes on English embeddings and test cross-lingual transfer across the same 7-model set used in the NL-code alignment experiment, directly testing whether $\Zsem$ is separable across languages and whether the separability is model-dependent.
 
 \begin{table}[h]
 \centering
 \small
-\begin{tabular}{lccccc}
+\begin{tabular}{lcc|cc}
 \toprule
-\textbf{Probe task} & \textbf{en} & \textbf{es} & \textbf{zh} & \textbf{ar} & \textbf{ko} \\
+& \multicolumn{2}{c|}{\textbf{Category} (chance $0.50$)} & \multicolumn{2}{c}{\textbf{Operation} (chance $0.01$)} \\
+\textbf{Model} & en (train) & non-en mean & en (train) & non-en mean \\
 \midrule
-Category (comp/judg, chance 50\%) & 1.00 & 0.97 & 0.96 & 0.87 & 0.80 \\
-Operation ID (100-way, chance 1\%) & 1.00 & 0.98 & 0.93 & 0.86 & 0.66 \\
+UniXcoder (code)   & 0.99 & 0.67 & 1.00 & 0.18 \\
+MiniLM-L12 (NL)    & 1.00 & 0.90 & 1.00 & 0.86 \\
+Nomic v1.5         & 1.00 & 0.62 & 1.00 & 0.23 \\
+E5-small (NL)      & 1.00 & 0.98 & 1.00 & 0.89 \\
+E5-base (NL)       & 1.00 & 0.98 & 1.00 & 0.96 \\
+E5-large (NL)      & 1.00 & 0.99 & 1.00 & 0.98 \\
+BGE-M3 (NL+code)   & 1.00 & 0.99 & 1.00 & 0.98 \\
 \bottomrule
 \end{tabular}
+\caption*{\small Every non-en cell with accuracy $> 0.5$ satisfies a one-sided binomial test against chance with $p < 10^{-25}$. Mean transfer is averaged over the 4 non-English languages (ko, zh, ar, es). Strategy E (\texttt{experiments/scripts/run\_strategy\_e\_multimodel\_probing.py}).}
 \end{table}
 
-P3 is \textbf{supported}: a classifier trained only on English embeddings achieves 90\% mean accuracy on category transfer and 85.8\% on 100-way operation identification across non-English languages---far above chance. This is direct evidence that $\Zsem$ structure generalizes cross-lingually. Korean transfers worst (80\%/66\%), consistent with $\Dtrain$ effects and typological distance from English.
+P3 is \textbf{supported in multilingual NL models but is model-class dependent}. The multilingual NL family (MiniLM, E5 small/base/large, BGE-M3) achieves $0.86$--$0.99$ category transfer and $0.86$--$0.98$ operation transfer---direct evidence that $\Zsem$ structure generalizes cross-lingually for models trained on multilingual NL. Code-trained (UniXcoder: $0.67$ / $0.18$) and mixed NL+code (Nomic v1.5: $0.62$ / $0.23$) models show much weaker cross-lingual operation transfer despite near-perfect English training accuracy, indicating their NL representations do not align cross-lingually even when within-English performance is adequate. The E5 family alone exhibits a clean P3 scale-convergence echo of the NL-code alignment pattern: operation transfer rises $0.89$ (small, 384d) $\to 0.96$ (base, 768d) $\to 0.98$ (large, 1024d), under fixed architecture and training recipe. This refines the original P3 claim: cross-lingual $\Zsem$ separability is a property of the multilingual NL training distribution, not an intrinsic property of all embedding spaces with $R_{\text{code}} > 1$.
 
 \paragraph{Dialect and paraphrase distance hierarchy.}
 To test whether the communicability gap is graded, we measure three distance levels using English dialect pairs (American vs.\ British, American vs.\ Indian English) and within-language paraphrases. Across three models, the observed ordering is $d_{\text{dialect}} < d_{\text{paraphrase}} < d_{\text{cross-lingual}}$ (e.g., $0.013 < 0.069 < 0.090$ for E5-large). Dialect variation produces \emph{minimal} embedding distance (British: $d \approx 0.001$; Indian: $d \approx 0.025$), because embedding models trained on standard text collapse dialectal surface variation. Paraphrases---semantically identical but lexically different---produce measurable distances ($d \approx 0.07$--$0.26$), and cross-lingual distances are largest. This hierarchy shows that the communicability gap is continuous and multi-layered: surface-form variation (dialect $<$ paraphrase) is distinct from language-level variation, and embedding models are insensitive to dialectal differences relative to lexical choice.
@@ -631,7 +638,7 @@ The research agenda is to close the communicability gap---to build systems where
 
 \textbf{Pilot measures description-level, not execution-level, convergence.} The P2 failure highlights this gap: NL embedding similarity is a proxy, not a direct test, of $\Zsem$ convergence. Our follow-up analyses (vocabulary mediation and language-pair decomposition) explain the P2 failure as a description-level vocabulary phenomenon, and the NL-code alignment experiment confirms execution-level convergence across four models and five languages (20/20 cells significant). However, all models are sentence-level embedders; decoder-only LLM representations may behave differently.
 
-\textbf{The $Z$ stratification is a conceptual framework.} While the pilot provides supporting evidence (P7 supported, P2 failure explained by vocabulary mediation, P3 supporting cross-lingual separability), the stratification has not been validated with large-scale probing across multiple model families.
+\textbf{The $Z$ stratification is a conceptual framework.} While the pilot provides supporting evidence (P7 supported, P2 failure explained by vocabulary mediation, P3 supported on 7 models with model-class dependence---multilingual NL strong, code-trained / NL+code mixed weak), large-scale probing across decoder-only LLM families (e.g., Llama 3.1 hidden states) and operation-level OOD stimuli (\texttt{tier2\_multistep.json}, \texttt{tier3\_compositional.json} in the experiment repository) remains future work.
 
 \textbf{Vocabulary mediation analysis has limited power.} With $n=50$ operations per category and Bonferroni correction across 8 features, the minimum detectable effect is $|\rho| \geq 0.35$ (pooled) or $|\rho| \geq 0.48$ (within-category). Moderate effects may be missed. The language-pair decomposition uses ordinal typological ranks assigned by the authors, not an independent typological distance metric.
 
