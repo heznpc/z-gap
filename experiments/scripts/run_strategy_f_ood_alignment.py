@@ -47,6 +47,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.embeddings import SentenceTransformerEmbedder, EmbeddingCache
 from src.code_alignment import compute_per_language_R_code
+from src.model_registry import MODELS_7_FROZEN, registry_sha_summary
 
 ROOT = Path(__file__).parent.parent
 DATA_DIR = ROOT / "data" / "stimuli"
@@ -57,15 +58,9 @@ CACHE_DIR = RESULTS_DIR / "embeddings"
 LANGUAGES = ["en", "ko", "zh", "ar", "es"]
 SEED = 42
 
-MODELS = [
-    ("microsoft/unixcoder-base", "UniXcoder (code)", {}),
-    ("paraphrase-multilingual-MiniLM-L12-v2", "MiniLM-L12 (NL)", {}),
-    ("nomic-ai/nomic-embed-text-v1.5", "Nomic v1.5 (NL+code)", {"trust_remote_code": True}),
-    ("intfloat/multilingual-e5-small", "E5-small (NL)", {}),
-    ("intfloat/multilingual-e5-base", "E5-base (NL)", {}),
-    ("intfloat/multilingual-e5-large", "E5-large (NL)", {}),
-    ("BAAI/bge-m3", "BGE-M3 (NL+code)", {}),
-]
+# Frozen 7-model set with HuggingFace revision SHAs pinned at 2026-05-21.
+# See experiments/src/model_registry.py.
+MODELS = MODELS_7_FROZEN
 
 
 def load_ood_stimuli() -> tuple[list[dict], dict[str, str]]:
@@ -214,6 +209,7 @@ def _build_run_meta() -> dict:
         "n_boot": 10000,
         "review_id": "review-2026-05-21",
         "closes": "C1 deferred portion (contamination via OOD stimuli)",
+        "model_revisions": registry_sha_summary(),
     }
 
 

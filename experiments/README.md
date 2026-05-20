@@ -10,6 +10,7 @@ Tests predictions P1–P7 from the paper: cross-lingual semantic invariance (P2)
 - **Hardware**: CPU sufficient for the 100-op pilot (~3–5h end-to-end across 7 embedding models). MPS/CUDA optional and only used by `scripts/run_v2_extract.py` for 8B decoder hidden-state extraction.
 - **External APIs**: OpenAI Embeddings (`text-embedding-3-small`/`-large`) and Mistral Codestral Embed (`codestral-embed-2505`). Both calls now retry on 429/5xx with exponential backoff (`max_retries=5`).
 - **Data sent to providers**: synthetic stimuli only (`data/stimuli/*.json`). No PII.
+- **Model weights**: HuggingFace commit SHAs pinned in `src/model_registry.py` (frozen on 2026-05-21); sentence-transformers `>=5.5` honors the `revision=` kwarg. Embedding-level reproducibility is additionally guaranteed by the `.npz` cache in `results/embeddings/` keyed by `(model_name, text_hash)`. To refresh the registry, see the helper snippet at the bottom of `model_registry.py`.
 
 ## Setup
 

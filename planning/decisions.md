@@ -122,3 +122,18 @@ Format: `## YYYY-MM-DD -- <short title>` with **Context**, **Decision**, **Why**
     - Limitations "Pretraining contamination of NL-code stimuli" bullet renamed to "(partially addressed)" with summary of OOD result; residual matched-perplexity work remains future.
 
 **Why**: This was the single most important deferred item because the contamination caveat (added in PR #3 for paper integrity) explicitly predicted a directional outcome. Running the test and reporting the result---in either direction---is what distinguishes the caveat from rhetorical hedging. The observed direction (OOD effect stronger than tier-1) is the strongest empirical anchor for the paper's PRH-for-code claim that the embedding-only paradigm can produce.
+
+---
+
+## 2026-05-21 -- Model registry with frozen HuggingFace SHAs (closes C3)
+
+**Context**: The C3 fix in PR #3 accepted floating-`main` risk for the pilot and relied on the existing `EmbeddingCache` for embedding-level reproducibility. After Strategy D / E / F all landed using the same 7-model set, the cost of pinning revision SHAs became trivial (one fetch via `huggingface_hub.HfApi`) and the benefit grew (any reviewer re-running the pipeline 6 months from now would otherwise pull a moved `main`).
+
+**Decisions**:
+
+  - Added `experiments/src/model_registry.py` with `MODELS_7_FROZEN` — the 7 (model_name, label, kwargs) tuples used by Strategy D / E / F, each pinned to its `main` commit SHA observed on 2026-05-21 via `HfApi().model_info(repo).sha`. `registry_sha_summary()` returns a JSON-serializable mapping for `run_meta` blocks.
+  - sentence-transformers `>=5.5` accepts `revision=` in `SentenceTransformer.__init__`; confirmed via `inspect.signature`.
+  - Refactored Strategy D / E / F runners to `from src.model_registry import MODELS_7_FROZEN, registry_sha_summary` and replaced their inline MODELS lists. Each runner's `run_meta` now includes `model_revisions` so the SHAs are recorded in every results JSON for forensic reproducibility.
+  - `experiments/README.md` Reproducibility envelope bullet added: model-weight pinning policy + pointer to the registry's refresh snippet.
+
+**Why**: C3 was originally classified as a Minor TODO because the embedding cache covered the practical reproducibility need. Centralizing the registry now (rather than after another experiment lands) prevents future SHA drift between runners and gives reviewers a single auditable location for "which exact weights did this paper use?"

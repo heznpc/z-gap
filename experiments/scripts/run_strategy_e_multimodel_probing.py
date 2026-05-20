@@ -38,23 +38,16 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from src.stimuli import get_all_operations, LANGUAGES
 from src.embeddings import SentenceTransformerEmbedder, EmbeddingCache
+from src.model_registry import MODELS_7_FROZEN, registry_sha_summary
 
 ROOT = Path(__file__).parent.parent
 RESULTS_DIR = ROOT / "results"
 FIGURES_DIR = RESULTS_DIR / "figures"
 CACHE_DIR = RESULTS_DIR / "embeddings"
 
-# Same 7-model set as Strategy D (run_strategy_d_code_alignment.py).
-# Kept in sync manually; consider a shared model_registry.py if extended.
-MODELS = [
-    ("microsoft/unixcoder-base", "UniXcoder (code)", {}),
-    ("paraphrase-multilingual-MiniLM-L12-v2", "MiniLM-L12 (NL)", {}),
-    ("nomic-ai/nomic-embed-text-v1.5", "Nomic v1.5 (NL+code)", {"trust_remote_code": True}),
-    ("intfloat/multilingual-e5-small", "E5-small (NL)", {}),
-    ("intfloat/multilingual-e5-base", "E5-base (NL)", {}),
-    ("intfloat/multilingual-e5-large", "E5-large (NL)", {}),
-    ("BAAI/bge-m3", "BGE-M3 (NL+code)", {}),
-]
+# Frozen 7-model set with HuggingFace revision SHAs pinned at 2026-05-21.
+# See experiments/src/model_registry.py.
+MODELS = MODELS_7_FROZEN
 
 # Random seed mirrors Strategy D for cross-experiment consistency
 SEED = 42
@@ -232,6 +225,7 @@ def _build_run_meta() -> dict:
         "seed": SEED,
         "review_id": "review-2026-05-21",
         "closes": "M5 (multi-model P3 probing)",
+        "model_revisions": registry_sha_summary(),
     }
 
 

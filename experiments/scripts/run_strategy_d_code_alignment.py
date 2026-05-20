@@ -13,11 +13,11 @@ Models (review-2026-05-21 extension):
   6. E5-base (NL multilingual, 768d) — NEW, P1 scale-convergence midpoint
   7. BGE-M3 (NL+code multilingual, 1024d) — NEW, top MTEB cross-lingual
 
-NOTE(C3, review-2026-05-21): sentence-transformers pulls the model card's
-`main` branch at load time. For this pilot we accept floating-main risk and
-rely on EmbeddingCache (`.npz` keyed by (model_name, text_hash)) to freeze
-the actual computed embeddings. Explicit `revision=<sha>` pinning is a
-future TODO once the matrix lands.
+Models and their HuggingFace `revision=` SHAs are centralized in
+`src/model_registry.py` (closes C3 from the 2026-05-21 review). The
+EmbeddingCache (`.npz` keyed by (model_name, text_hash)) still provides
+embedding-level reproducibility; the SHA pin adds upstream-mutation
+protection.
 
 Usage:
     python experiments/scripts/run_strategy_d_code_alignment.py
@@ -37,22 +37,14 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from src.stimuli import get_all_operations, LANGUAGES
 from src.embeddings import SentenceTransformerEmbedder, EmbeddingCache
 from src.code_alignment import CODE_EQUIVALENTS, compute_per_language_R_code
+from src.model_registry import MODELS_7_FROZEN, registry_sha_summary
+
+MODELS = MODELS_7_FROZEN
 
 ROOT = Path(__file__).parent.parent
 RESULTS_DIR = ROOT / "results"
 FIGURES_DIR = RESULTS_DIR / "figures"
 CACHE_DIR = RESULTS_DIR / "embeddings"
-
-MODELS = [
-    ("microsoft/unixcoder-base", "UniXcoder (code)", {}),
-    ("paraphrase-multilingual-MiniLM-L12-v2", "MiniLM-L12 (NL)", {}),
-    ("nomic-ai/nomic-embed-text-v1.5", "Nomic v1.5 (NL+code)", {"trust_remote_code": True}),
-    ("intfloat/multilingual-e5-large", "E5-large (NL)", {}),
-    # review-2026-05-21 extension (M5 a-default scope: NL-code only)
-    ("intfloat/multilingual-e5-small", "E5-small (NL)", {}),
-    ("intfloat/multilingual-e5-base", "E5-base (NL)", {}),
-    ("BAAI/bge-m3", "BGE-M3 (NL+code)", {}),
-]
 
 
 def run_model(model_name: str, label: str, kwargs: dict) -> dict:
@@ -236,6 +228,7 @@ def _build_run_meta() -> dict:
         "n_perm": 10000,
         "n_boot": 10000,
         "review_id": "review-2026-05-21",
+        "model_revisions": registry_sha_summary(),
     }
 
 
