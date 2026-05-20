@@ -48,7 +48,9 @@ class OpenAIEmbedder(EmbeddingModel):
         import openai
         from dotenv import load_dotenv
         load_dotenv()
-        self._client = openai.OpenAI()
+        # max_retries=5 covers transient 429/5xx during multi-model sweeps.
+        # SDK uses exponential backoff with jitter internally.
+        self._client = openai.OpenAI(max_retries=5, timeout=60.0)
         self._model = model
         self._dim = 1536 if "small" in model else 3072
 
@@ -83,18 +85,38 @@ class MistralEmbedder(EmbeddingModel):
         self._api_key = os.environ["MISTRAL_API_KEY"]
         self._model = model
         self._dim = 1024
+        self._session = self._make_session()
+
+    @staticmethod
+    def _make_session():
+        """Session with retry/backoff for 429 + 5xx (matches OpenAI SDK behavior)."""
+        import requests
+        from requests.adapters import HTTPAdapter
+        from urllib3.util.retry import Retry
+
+        retry = Retry(
+            total=5,
+            backoff_factor=1.0,  # 1s, 2s, 4s, 8s, 16s
+            status_forcelist=(429, 500, 502, 503, 504),
+            allowed_methods=frozenset(["POST"]),
+            respect_retry_after_header=True,
+            raise_on_status=False,
+        )
+        session = requests.Session()
+        session.mount("https://", HTTPAdapter(max_retries=retry))
+        return session
 
     def encode(self, texts: list[str]) -> np.ndarray:
-        import requests
         from tqdm import tqdm
         results = []
         batch_size = 50
         for i in tqdm(range(0, len(texts), batch_size), desc=f"Mistral {self._model}"):
             batch = texts[i:i + batch_size]
-            resp = requests.post(
+            resp = self._session.post(
                 "https://api.mistral.ai/v1/embeddings",
                 headers={"Authorization": f"Bearer {self._api_key}"},
                 json={"model": self._model, "input": batch},
+                timeout=60,
             )
             resp.raise_for_status()
             data = resp.json()["data"]

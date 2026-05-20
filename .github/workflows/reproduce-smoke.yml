@@ -1,0 +1,59 @@
+name: reproduce-smoke
+
+# Lightweight CI: validates that the experimental pipeline imports cleanly
+# and that the stimuli JSON parses. Does NOT execute the pilot (would require
+# OpenAI/Mistral API keys and ~3-5h of compute). Intended to catch
+# requirements drift and JSON corruption on every push.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/**'
+      - 'pyproject.toml'
+      - '.python-version'
+      - 'Makefile'
+      - '.github/workflows/reproduce-smoke.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'experiments/**'
+      - 'pyproject.toml'
+      - '.python-version'
+      - 'Makefile'
+      - '.github/workflows/reproduce-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: '.python-version'
+          cache: 'pip'
+          cache-dependency-path: experiments/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r experiments/requirements.txt
+
+      - name: Import smoke test
+        run: |
+          python -c "import numpy, scipy, sklearn, matplotlib, seaborn, sentence_transformers, openai, requests, kiwipiepy; print('imports OK')"
+
+      - name: Validate stimuli JSON
+        run: |
+          python -c "import json, glob; files = sorted(glob.glob('experiments/data/stimuli/*.json')); [json.load(open(p)) for p in files]; print(f'{len(files)} stimuli JSON files parse OK')"
+
+      - name: Verify random seed pinning
+        run: |
+          python -c "import re, pathlib; pat = re.compile(r'default_rng\\((seed|42|RNG_SEED)'); hits = sum(1 for p in pathlib.Path('experiments').rglob('*.py') for line in p.read_text().splitlines() if pat.search(line)); print(f'seed-pinned RNG sites: {hits}'); assert hits >= 10, 'expected >=10 seeded RNG sites'"
