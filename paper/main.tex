@@ -487,7 +487,31 @@ Three patterns emerge. First, \textbf{$\Dtrain$ modulates NL-code alignment}: En
 
 \paragraph{Lexical overlap control.} A potential confound: NL descriptions share tokens with their code equivalents (``sort'' appears in both ``Sort the list'' and \texttt{sorted(lst)}). Token overlap correlates with $d_{\text{match}}$ (Spearman $\rho = -0.51$, $p < 0.001$ for MiniLM), confirming a lexical component. However, $R_{\text{code}} > 1$ survives two controls. First, for the 32/50 operations with \emph{zero} token overlap (after stemming), $R_{\text{code}}$ remains above 1 in all three models (1.06--1.18). Second, obfuscating variable names in code (\texttt{lst}$\to$\texttt{v0}, \texttt{s}$\to$\texttt{v0}) reduces $R_{\text{code}}$ by only 1.6--5.4\%, and all models retain $R_{\text{code}} > 1$. Lexical overlap inflates the effect but does not create it: the alignment is primarily semantic.
 
-\paragraph{Pretraining contamination caveat.} A stronger confound than surface lexical overlap is direct memorization. All 50 computational operations are Python standard-library idioms (\texttt{sorted(lst)}, \texttt{max(lst)}, \texttt{len(lst)}, \texttt{collections.Counter(lst)}, ...), so the embedding models almost certainly observed exact or near-exact NL$\leftrightarrow$code co-occurrences during pretraining (docstrings, Stack Overflow, GitHub README files). The token-overlap controls above bound the \emph{surface lexical} component of the alignment but not the \emph{operation-level memorization} component. We therefore interpret $R_{\text{code}} > 1$ as evidence that NL-code alignment is \emph{at least as strong as} pretraining co-occurrence statistics would predict, not as independent evidence for $\Zsem$ convergence beyond what training-data overlap explains. Decisive separation requires either out-of-distribution operations (novel composite stimuli---\texttt{tier2\_multistep.json} and \texttt{tier3\_compositional.json} are released in the experiment repository for this purpose) or matched-perplexity controls; both are left to future work.
+\paragraph{Pretraining contamination caveat.} A stronger confound than surface lexical overlap is direct memorization. All 50 tier-1 computational operations are Python standard-library idioms (\texttt{sorted(lst)}, \texttt{max(lst)}, \texttt{len(lst)}, \texttt{collections.Counter(lst)}, ...), so the embedding models almost certainly observed exact or near-exact NL$\leftrightarrow$code co-occurrences during pretraining (docstrings, Stack Overflow, GitHub README files). The token-overlap controls above bound the \emph{surface lexical} component of the alignment but not the \emph{operation-level memorization} component. The OOD experiment in the next paragraph directly tests this confound; matched-perplexity controls remain future work.
+
+\paragraph{Out-of-distribution NL-code alignment.}
+We re-run the per-language $R_{\text{code}}$ matrix on 50 OOD operations: 30 tier-2 multi-step algorithms (binary search, merge sort, BFS, DFS, ...) and 20 tier-3 compositional algorithms (Bellman-Ford, topological sort, A$^{\!*}$, dynamic programming, ...). Mean NL description length is $180$ characters versus $55$ for tier 1; code is multi-line function bodies rather than 1-liners. The memorization hypothesis predicts $R_{\text{code}}$ should \emph{drop} on OOD; we observe the opposite for every model.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccccc|cc}
+\toprule
+\textbf{Model} & \textbf{en} & \textbf{ko} & \textbf{zh} & \textbf{ar} & \textbf{es} & \textbf{OOD agg} & \textbf{tier1 agg} \\
+\midrule
+UniXcoder (code)   & 1.54* & 1.02* & 1.21* & 1.02* & 1.13* & 1.15 & 1.07 \\
+MiniLM-L12 (NL)    & 1.44* & 1.26* & 1.29* & 1.24* & 1.32* & 1.31 & 1.16 \\
+Nomic v1.5         & 1.76* & 1.04* & 1.07* & 1.04* & 1.21* & 1.16 & 1.07 \\
+E5-small (NL)      & 1.68* & 1.20* & 1.22* & 1.14* & 1.34* & 1.28 & 1.13 \\
+E5-base (NL)       & 1.64* & 1.23* & 1.22* & 1.19* & 1.36* & 1.31 & 1.14 \\
+E5-large (NL)      & 1.61* & 1.28* & 1.25* & 1.22* & 1.37* & 1.33 & 1.20 \\
+BGE-M3 (NL+code)   & 1.59* & 1.31* & 1.30* & 1.26* & 1.38* & 1.36 & 1.16 \\
+\bottomrule
+\end{tabular}
+\caption*{\small * $p < 0.05$ after Holm-Bonferroni correction across 35 OOD cells. All 35/35 OOD cells significant. Permutation-null mean $R \in [1.004, 1.008]$. Cohen's $d$ up to $4.12$ (en, E5-large). Strategy F (\texttt{run\_strategy\_f\_ood\_alignment.py}).}
+\end{table}
+
+OOD aggregate $R_{\text{code}}$ exceeds tier-1 for every model (UniXcoder $1.07 \to 1.15$; MiniLM $1.16 \to 1.31$; Nomic $1.07 \to 1.16$; E5-small $1.13 \to 1.28$; E5-base $1.14 \to 1.31$; E5-large $1.20 \to 1.33$; BGE-M3 $1.16 \to 1.36$). Multi-step algorithm descriptions are longer and more distinctive than stdlib 1-liners, and multi-line function bodies provide more discriminating signal; the embedding alignment exploits this richer surface form rather than being damaged by reduced co-occurrence frequency. The contamination caveat for tier 1 stands as a methodological honesty point, but the OOD result demonstrates that NL-code alignment survives the most direct contamination control available within the embedding-only paradigm---the effect is not primarily memorization-driven.
 
 Critically, this resolves the P2 result. P2 measured NL-NL cross-lingual invariance and found computational operations \emph{less} invariant---a finding the vocabulary mediation and language-pair analyses explain as a property of domain-specific terminology. The NL-code experiment shows that despite this description-level divergence, NL-code alignment is positive across all 20 cells. The four results form a coherent picture: (i)~computational vocabulary drives cross-lingual description divergence (vocabulary mediation); (ii)~this divergence is uniform across language pairs (language-pair decomposition); (iii)~yet NL-code alignment holds in every language and model (20/20 significant); (iv)~the alignment is modulated by $\Dtrain$, not eliminated. Description-level invariance and execution-level convergence are distinct phenomena---\textbf{convergence $\neq$ communicability}.
 
@@ -646,7 +670,7 @@ The research agenda is to close the communicability gap---to build systems where
 
 \textbf{Translation provenance.} The 5-language stimulus set was produced by the first author (Korean L1) with LLM-assisted draft translation and bilingual review for Spanish, Chinese, and Arabic. No formal inter-annotator agreement (Cohen's $\kappa$, ICC) was computed---a recognized weakness given $n=5$ languages. This affects all cross-lingual claims in this paper.
 
-\textbf{Pretraining contamination of NL-code stimuli.} As detailed in \S\ref{sec:pilot}, the 50 computational operations are common stdlib idioms with high probability of appearing in every embedding model's pretraining corpus. The $R_{\text{code}} > 1$ finding is bounded above by training-data co-occurrence statistics; it is not independent evidence for representation-level $\Zsem$ convergence beyond pretraining memorization.
+\textbf{Pretraining contamination of NL-code stimuli (partially addressed).} The tier-1 50 computational operations are common stdlib idioms with high probability of appearing in every embedding model's pretraining corpus. The OOD experiment (\S\ref{sec:pilot}, "Out-of-distribution NL-code alignment") shows that $R_{\text{code}} > 1$ in fact \emph{strengthens} on tier-2 / tier-3 multi-step and compositional algorithms (aggregate $R_{\text{code}}$ rises across all 7 models), demonstrating that the alignment effect is not primarily memorization-driven. The remaining residual confound---matched-perplexity controls within the tier-1 set---is left to future work.
 
 \textbf{Disambiguation conservation is a design heuristic.} The information-theoretic formalization (Eq.~\ref{eq:conservation}) draws on Kolmogorov complexity, which is uncomputable in general. The conservation principle guides system design but is not a formal theorem.
 

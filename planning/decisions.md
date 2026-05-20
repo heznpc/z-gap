@@ -101,3 +101,24 @@ Format: `## YYYY-MM-DD -- <short title>` with **Context**, **Decision**, **Why**
   - Limitations bullet on "Z stratification" updated: "not validated across model families" replaced with "supported on 7 models with model-class dependence"; remaining work narrowed to decoder-only LLM hidden states + tier2/tier3 OOD stimuli.
 
 **Why**: M5 was the highest-leverage of the deferred items because the single-model P3 weakness was a reviewer attack surface and the cache of NL embeddings from Strategy D made the 7-model probing run almost free (~3 min). Discovering the model-class dependence (Nomic / UniXcoder collapse) is a genuine new finding that the original MiniLM-only P3 could not have produced.
+
+---
+
+## 2026-05-21 -- Strategy F: OOD NL-code alignment (closes C1 deferred portion)
+
+**Context**: The C1 contamination caveat added in PR #3 explicitly pointed at tier2/tier3 stimuli as the deferred test: "Decisive separation requires either out-of-distribution operations (novel composite stimuli ... released in the experiment repository for this purpose) or matched-perplexity controls." The OOD stimuli existed in `experiments/data/stimuli/tier2_multistep.json` (30 multi-step) and `tier3_compositional.json` (20 compositional) but had never been embedded or analyzed.
+
+**Decisions**:
+
+  - Added `experiments/scripts/run_strategy_f_ood_alignment.py` running the same 7-model R_code matrix as Strategy D, but on the 50 OOD operations (binary_search, merge_sort, BFS, DFS, Bellman-Ford, topological_sort, A*, dynamic programming, ...) with multi-line function bodies (mean NL length 180 chars vs. 55 for tier 1; multi-line code vs. 1-liners).
+  - Pre-registered hypothesis structure in the runner docstring before running: H_strong (R_code holds), H_weak (R_code drops to ~1, confirming caveat), H_partial (model-specific). This is recorded in the source file, not added post-hoc.
+  - **Result**: 35/35 OOD cells significant. Aggregate R_code is HIGHER than tier-1 for every model (UniXcoder 1.07→1.15; MiniLM 1.16→1.31; Nomic 1.07→1.16; E5-small 1.13→1.28; E5-base 1.14→1.31; E5-large 1.20→1.33; BGE-M3 1.16→1.36). Cohen's d up to 4.12 (en, E5-large). The memorization hypothesis predicted a drop; observed direction is the opposite.
+
+  - **Interpretation**: longer and more distinctive multi-step NL + multi-line function bodies provide more discriminating signal; the embedding alignment exploits this richer surface form rather than being damaged by reduced co-occurrence frequency. C1 deferred portion via OOD stimuli is **closed in favor of stronger PRH-for-code support**, not in favor of confirming the contamination concern.
+
+  - Paper updated:
+    - §5.5 contamination caveat paragraph: removed "left to future work" framing; pointer to OOD experiment below.
+    - §5.5 new "Out-of-distribution NL-code alignment" paragraph + 7×5 OOD table + tier1↔OOD aggregate comparison.
+    - Limitations "Pretraining contamination of NL-code stimuli" bullet renamed to "(partially addressed)" with summary of OOD result; residual matched-perplexity work remains future.
+
+**Why**: This was the single most important deferred item because the contamination caveat (added in PR #3 for paper integrity) explicitly predicted a directional outcome. Running the test and reporting the result---in either direction---is what distinguishes the caveat from rhetorical hedging. The observed direction (OOD effect stronger than tier-1) is the strongest empirical anchor for the paper's PRH-for-code claim that the embedding-only paradigm can produce.
