@@ -66,3 +66,18 @@ Format: `## YYYY-MM-DD -- <short title>` with **Context**, **Decision**, **Why**
   - **M6 (Codestral Embed)**: Excluded for this session. `.env` has no `MISTRAL_API_KEY`, and the user constrained the session to Claude Code-accessible models. Sentence-transformers / open-source HF only.
 
 **Why**: The pre-experiment review caught contamination and baseline-framing issues that, if discovered after results were reported, would have required a paper revision plus a fresh experiment. Catching them before the cross-model extension lets a single PR carry the corrected framing and the new evidence simultaneously.
+
+---
+
+## 2026-05-21 -- Strategy D 7-model results + einops dependency fix
+
+**Context**: After the pre-experiment review PR (#3) merged, the Strategy D extension ran on 7 models. First run: 6/7 succeeded; Nomic v1.5 failed with `ImportError: einops` because its `trust_remote_code` module imports `einops` lazily and the package was not in `requirements.txt`. The M3 try/except wrap correctly isolated the failure so the other 6 models completed cleanly.
+
+**Decisions**:
+
+  - Added `einops>=0.7` to `experiments/requirements.txt` and `pyproject.toml` dependencies. The package is needed only by Nomic's remote-code path; pinning loosely (`>=0.7`) is sufficient because the API has been stable since 0.6.
+  - Re-ran Strategy D with einops installed. All 7 models succeeded. Final matrix: **35/35 cells with $R_{\text{code}} > 1$ and $p < 0.05$ after Holm-Bonferroni**. Permutation-null mean ∈ [1.000, 1.005] across all cells (C2 baseline framing empirically confirmed).
+  - Paper §5.5 Table updated 4-row → 7-row. Body text revised from "20/20 cells" to "35/35 cells", added "Third pattern" paragraph on the E5 family's partial scale-convergence ($1.13 \to 1.14 \to 1.20$ at $384/768/1024$d).
+  - The pretraining contamination caveat (C1) added in PR #3 stays unchanged — adding more models does not address contamination, only cross-model robustness.
+
+**Why**: The 7-model extension was the empirical contribution this session aimed to land. Catching einops as a soft-dep blocker (rather than as a paper-level claim error) preserved the cross-model robustness claim. The E5-family scale-convergence finding is a side effect of the extension that strengthens P1 in a way the previous mixed-family P1 test (MiniLM/mpnet/E5-large) could not.

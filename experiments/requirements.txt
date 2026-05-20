@@ -12,3 +12,4 @@ kiwipiepy>=0.16
 tqdm>=4.65
 click>=8.1
 python-dotenv>=1.0
+einops>=0.7

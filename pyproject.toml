@@ -47,6 +47,7 @@ dependencies = [
     "tqdm>=4.65",
     "click>=8.1",
     "python-dotenv>=1.0",
+    "einops>=0.7",  # required by nomic-ai/nomic-embed-text-v1.5 trust_remote_code module
 ]
 
 [project.urls]
