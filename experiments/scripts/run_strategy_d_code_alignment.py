@@ -2,21 +2,32 @@
 """Strategy D: Enhanced NL-Code Alignment (per-language × per-model R_code matrix).
 
 Extends the original NL-code alignment experiment from 2 models × aggregate
-to 4 models × 5 languages with per-cell statistical testing.
+to 7 models × 5 languages with per-cell statistical testing.
 
-Models:
+Models (review-2026-05-21 extension):
   1. UniXcoder (code-trained, 768d) — existing
   2. MiniLM-L12 (NL-only, 384d) — existing
-  3. Nomic Embed Text v1.5 (NL+code, 768d) — new
-  4. E5-large (NL multilingual, 1024d) — existing embedder, new for code alignment
+  3. Nomic Embed Text v1.5 (NL+code, 768d) — existing
+  4. E5-large (NL multilingual, 1024d) — existing
+  5. E5-small (NL multilingual, 384d) — NEW, P1 scale-convergence anchor
+  6. E5-base (NL multilingual, 768d) — NEW, P1 scale-convergence midpoint
+  7. BGE-M3 (NL+code multilingual, 1024d) — NEW, top MTEB cross-lingual
+
+NOTE(C3, review-2026-05-21): sentence-transformers pulls the model card's
+`main` branch at load time. For this pilot we accept floating-main risk and
+rely on EmbeddingCache (`.npz` keyed by (model_name, text_hash)) to freeze
+the actual computed embeddings. Explicit `revision=<sha>` pinning is a
+future TODO once the matrix lands.
 
 Usage:
     python experiments/scripts/run_strategy_d_code_alignment.py
 """
 
+import datetime
 import json
 import sys
 import gc
+import platform
 from pathlib import Path
 
 import numpy as np
@@ -37,6 +48,10 @@ MODELS = [
     ("paraphrase-multilingual-MiniLM-L12-v2", "MiniLM-L12 (NL)", {}),
     ("nomic-ai/nomic-embed-text-v1.5", "Nomic v1.5 (NL+code)", {"trust_remote_code": True}),
     ("intfloat/multilingual-e5-large", "E5-large (NL)", {}),
+    # review-2026-05-21 extension (M5 a-default scope: NL-code only)
+    ("intfloat/multilingual-e5-small", "E5-small (NL)", {}),
+    ("intfloat/multilingual-e5-base", "E5-base (NL)", {}),
+    ("BAAI/bge-m3", "BGE-M3 (NL+code)", {}),
 ]
 
 
@@ -198,16 +213,65 @@ def make_figures(all_results: list[dict]):
     print(f"  Figure saved: strategy_d_dmatch_bars.png")
 
 
+def _build_run_meta() -> dict:
+    """Capture environment metadata for reproducibility (Minor TODO from review-2026-05-21)."""
+    try:
+        import sentence_transformers as _st
+        st_version = _st.__version__
+    except Exception:
+        st_version = "unknown"
+    try:
+        import torch
+        torch_version = torch.__version__
+    except Exception:
+        torch_version = "unknown"
+    return {
+        "started_at_utc": datetime.datetime.utcnow().isoformat() + "Z",
+        "python": platform.python_version(),
+        "platform": platform.platform(),
+        "sentence_transformers": st_version,
+        "torch": torch_version,
+        "numpy": np.__version__,
+        "seed": 42,
+        "n_perm": 10000,
+        "n_boot": 10000,
+        "review_id": "review-2026-05-21",
+    }
+
+
 def main():
     print("=" * 60)
     print("Strategy D: Enhanced NL-Code Alignment")
-    print("Per-Language × Per-Model R_code Matrix")
+    print("Per-Language × Per-Model R_code Matrix (7-model extension)")
     print("=" * 60)
 
+    run_meta = _build_run_meta()
+    print(f"\n  started_at_utc={run_meta['started_at_utc']}")
+    print(f"  python={run_meta['python']}  sentence_transformers={run_meta['sentence_transformers']}  torch={run_meta['torch']}")
+    print(f"  seed={run_meta['seed']}  n_perm={run_meta['n_perm']}  n_boot={run_meta['n_boot']}")
+
     all_results = []
+    failed_models = []
+    # M3 (review-2026-05-21): per-model try/except so a single OOM / network /
+    # trust-remote-code failure does not abort the full 7-model sweep.
     for model_name, label, kwargs in MODELS:
-        result = run_model(model_name, label, kwargs)
-        all_results.append(result)
+        try:
+            result = run_model(model_name, label, kwargs)
+            all_results.append(result)
+        except Exception as exc:  # noqa: BLE001
+            err = {
+                "model": model_name,
+                "label": label,
+                "error_type": type(exc).__name__,
+                "error_message": str(exc),
+            }
+            failed_models.append(err)
+            print(
+                f"\n  [SKIP] {label} ({model_name}) failed: "
+                f"{err['error_type']}: {err['error_message']}",
+                file=sys.stderr,
+            )
+            gc.collect()
 
     # Holm-Bonferroni correction across all per-language p-values
     all_p = []
@@ -268,9 +332,19 @@ def main():
         if isinstance(obj, (np.bool_,)): return bool(obj)
         return obj
 
+    run_meta["finished_at_utc"] = datetime.datetime.utcnow().isoformat() + "Z"
+    run_meta["n_models_attempted"] = len(MODELS)
+    run_meta["n_models_succeeded"] = len(all_results)
+    run_meta["failed_models"] = failed_models
+
+    payload = {"_meta": run_meta, "results": all_results}
     with open(out_path, "w") as f:
-        json.dump(all_results, f, indent=2, default=_convert)
+        json.dump(payload, f, indent=2, default=_convert)
     print(f"\n  Results saved: {out_path}")
+    if failed_models:
+        print(f"  [WARN] {len(failed_models)} model(s) skipped due to errors:")
+        for err in failed_models:
+            print(f"    - {err['label']}: {err['error_type']}")
 
 
 if __name__ == "__main__":
