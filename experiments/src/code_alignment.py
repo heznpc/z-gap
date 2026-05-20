@@ -216,6 +216,14 @@ def compute_per_language_R_code(
             "d_mismatch_mean": float(np.mean(d_mismatch_arr)),
             "n_match": len(d_match_arr),
             "n_mismatch": len(d_mismatch_arr),
+            # C2 (review-2026-05-21): random-matching baseline, sourced from the
+            # permutation null distribution. Expected ≈ 1.0 if shuffled NL→code
+            # pairings produce the same mean(d_mismatch)/mean(d_match) ratio as
+            # matched pairings. Used in paper §5.5 to anchor R_code = 1 as the
+            # null line rather than as an asserted-but-unmeasured baseline.
+            "random_baseline_R_mean": float(np.mean(perm_Rs)),
+            "random_baseline_R_std": float(np.std(perm_Rs)),
+            "random_baseline_R_p95": float(np.percentile(perm_Rs, 95)),
         }
 
     # Aggregate (all languages pooled)
