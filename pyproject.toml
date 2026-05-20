@@ -1,0 +1,54 @@
+# PEP 621 metadata for the z-gap experimental pipeline.
+# This file is intentionally metadata-only — no build-system section, since
+# experiments/scripts and experiments/src are run directly (not packaged).
+# It exists so pip-audit, dependabot, and IDE tooling can read a canonical
+# dependency list and the required Python version, complementing the
+# pip-installable `experiments/requirements.txt`.
+
+[project]
+name = "z-gap"
+version = "0.2.0"
+description = "Z-Gap — Beyond the Chomsky Wall: PRH refinement, NL-code communicability pilot (Program 3 anchor)."
+requires-python = ">=3.11,<3.13"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "heznpc" }]
+keywords = [
+    "platonic-representation-hypothesis",
+    "cross-lingual",
+    "nl-code",
+    "sentence-transformers",
+    "discriminability-ratio",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+# Mirrors experiments/requirements.txt. Lower bounds chosen for ABI safety
+# with sentence-transformers/torch wheels; upper bound on numpy keeps the
+# 1.x ABI to avoid silent drift in cached .npz embeddings.
+dependencies = [
+    "numpy>=1.24,<2.3",
+    "scipy>=1.10",
+    "pandas>=2.0",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.3",
+    "matplotlib>=3.7",
+    "seaborn>=0.12",
+    "sentence-transformers>=2.2",
+    "openai>=1.0",
+    "requests>=2.32.4",
+    "kiwipiepy>=0.16",
+    "tqdm>=4.65",
+    "click>=8.1",
+    "python-dotenv>=1.0",
+]
+
+[project.urls]
+Repository = "https://github.com/heznpc/z-gap"
+Paper = "https://github.com/heznpc/z-gap/blob/main/paper/main.tex"
