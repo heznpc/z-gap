@@ -172,7 +172,10 @@ def compute_per_language_R_code(
         d_mismatch_arr = np.array(d_mismatch)
         observed_R = float(np.mean(d_mismatch_arr) / np.mean(d_match_arr))
 
-        # Permutation test: shuffle which code each NL is "matched" to
+        # Permutation test: shuffle which code each NL is "matched" to.
+        # V5 (review-2026-05-21): substitute NaN (not 1.0) when a permutation
+        # produces an empty d_match_perm, then drop NaNs before computing
+        # the p-value so the null distribution is not biased toward 1.0.
         perm_Rs = np.empty(n_perm)
         for i in range(n_perm):
             shuffled = rng.permutation(valid_ids)
@@ -186,17 +189,32 @@ def compute_per_language_R_code(
             if d_match_perm:
                 perm_Rs[i] = np.mean(d_mismatch_arr) / np.mean(d_match_perm)
             else:
-                perm_Rs[i] = 1.0
-        p_value = float(np.mean(perm_Rs >= observed_R))
+                perm_Rs[i] = np.nan
+        valid_perm = perm_Rs[~np.isnan(perm_Rs)]
+        n_extreme = int(np.sum(valid_perm >= observed_R))
+        # V6 (review-2026-05-21): use the (k+1)/(n+1) convention so the
+        # reported p_value is bounded below by 1/(n_valid+1) and is never
+        # literal 0.0 — that lower bound is what reviewers expect from a
+        # permutation test with n_perm=10,000.
+        n_valid = int(len(valid_perm))
+        p_value = float((n_extreme + 1) / (n_valid + 1)) if n_valid > 0 else float("nan")
 
-        # Bootstrap CI for R_code
+        # Bootstrap CI for R_code.
+        # V5: NaN fallback for degenerate mean_m so the bootstrap CI is not
+        # silently pulled toward 1.0.
         boot_Rs = np.empty(n_boot)
         for i in range(n_boot):
             idx_m = rng.integers(0, len(d_match_arr), size=len(d_match_arr))
             idx_mm = rng.integers(0, len(d_mismatch_arr), size=len(d_mismatch_arr))
             mean_m = np.mean(d_match_arr[idx_m])
-            boot_Rs[i] = np.mean(d_mismatch_arr[idx_mm]) / mean_m if mean_m > 1e-10 else 1.0
-        ci_lo, ci_hi = float(np.percentile(boot_Rs, 2.5)), float(np.percentile(boot_Rs, 97.5))
+            boot_Rs[i] = np.mean(d_mismatch_arr[idx_mm]) / mean_m if mean_m > 1e-10 else np.nan
+        valid_boot = boot_Rs[~np.isnan(boot_Rs)]
+        if len(valid_boot) > 0:
+            ci_lo = float(np.percentile(valid_boot, 2.5))
+            ci_hi = float(np.percentile(valid_boot, 97.5))
+        else:
+            ci_lo = float("nan")
+            ci_hi = float("nan")
 
         # Cohen's d
         s_pooled = np.sqrt(
@@ -221,9 +239,12 @@ def compute_per_language_R_code(
             # pairings produce the same mean(d_mismatch)/mean(d_match) ratio as
             # matched pairings. Used in paper §5.5 to anchor R_code = 1 as the
             # null line rather than as an asserted-but-unmeasured baseline.
-            "random_baseline_R_mean": float(np.mean(perm_Rs)),
-            "random_baseline_R_std": float(np.std(perm_Rs)),
-            "random_baseline_R_p95": float(np.percentile(perm_Rs, 95)),
+            # V5: NaN-safe aggregation across the valid permutations.
+            "random_baseline_R_mean": float(np.nanmean(perm_Rs)) if n_valid > 0 else float("nan"),
+            "random_baseline_R_std": float(np.nanstd(perm_Rs)) if n_valid > 0 else float("nan"),
+            "random_baseline_R_p95": float(np.nanpercentile(perm_Rs, 95)) if n_valid > 0 else float("nan"),
+            "n_perm_valid": n_valid,
+            "n_boot_valid": int(len(valid_boot)),
         }
 
     # Aggregate (all languages pooled)

@@ -218,7 +218,7 @@ def _build_run_meta() -> dict:
     except Exception:
         torch_version = "unknown"
     return {
-        "started_at_utc": datetime.datetime.utcnow().isoformat() + "Z",
+        "started_at_utc": datetime.datetime.now(datetime.UTC).isoformat(),
         "python": platform.python_version(),
         "platform": platform.platform(),
         "sentence_transformers": st_version,
@@ -281,6 +281,22 @@ def main():
         for (mi, lang), p_corr in zip(p_index, corrected):
             all_results[mi]["per_language"][lang]["p_corrected"] = p_corr
 
+    # V8 (review-2026-05-21): refuse to publish results if any model failed.
+    # Holm-Bonferroni's family-wise denominator depends on the full N; a
+    # partial run would silently invalidate the paper's "across 35 cells"
+    # claim. Set Z_GAP_ALLOW_PARTIAL_RESULTS=1 to override (e.g. debugging).
+    import os as _os
+    if failed_models and _os.environ.get("Z_GAP_ALLOW_PARTIAL_RESULTS") != "1":
+        print(
+            f"\n[FATAL] {len(failed_models)}/{len(MODELS)} model(s) failed; "
+            f"refusing to write partial results.\n"
+            f"        Failed: {[f['label'] for f in failed_models]}\n"
+            f"        Holm-Bonferroni denominator depends on full N.\n"
+            f"        Set Z_GAP_ALLOW_PARTIAL_RESULTS=1 to override.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
     # Summary
     print(f"\n{'='*60}")
     print("CROSS-MODEL SUMMARY (Holm-Bonferroni corrected)")
@@ -311,10 +327,8 @@ def main():
 
     print(f"\n  R_code > 1 and significant: {n_supported}/{n_total} cells")
 
-    # Figures
-    make_figures(all_results)
-
-    # Save
+    # V7 (review-2026-05-21): save JSON BEFORE generating figures so a
+    # matplotlib failure does not discard hours of compute.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     out_path = RESULTS_DIR / "strategy_d_code_alignment.json"
 
@@ -325,7 +339,7 @@ def main():
         if isinstance(obj, (np.bool_,)): return bool(obj)
         return obj
 
-    run_meta["finished_at_utc"] = datetime.datetime.utcnow().isoformat() + "Z"
+    run_meta["finished_at_utc"] = datetime.datetime.now(datetime.UTC).isoformat()
     run_meta["n_models_attempted"] = len(MODELS)
     run_meta["n_models_succeeded"] = len(all_results)
     run_meta["failed_models"] = failed_models
@@ -334,10 +348,12 @@ def main():
     with open(out_path, "w") as f:
         json.dump(payload, f, indent=2, default=_convert)
     print(f"\n  Results saved: {out_path}")
-    if failed_models:
-        print(f"  [WARN] {len(failed_models)} model(s) skipped due to errors:")
-        for err in failed_models:
-            print(f"    - {err['label']}: {err['error_type']}")
+
+    # Figures last (best-effort, isolated from results JSON).
+    try:
+        make_figures(all_results)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [WARN] make_figures failed: {type(e).__name__}: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

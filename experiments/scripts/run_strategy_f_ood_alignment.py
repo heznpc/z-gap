@@ -75,6 +75,14 @@ def load_ood_stimuli() -> tuple[list[dict], dict[str, str]]:
     with open(DATA_DIR / "tier3_compositional.json") as f:
         tier3 = json.load(f)
     ops = tier2 + tier3
+    # V12 (review-2026-05-21): assert op_id uniqueness across the two tiers
+    # so a future id collision does not silently double-count pairings in
+    # compute_per_language_R_code.
+    op_ids = [op["id"] for op in ops]
+    if len(set(op_ids)) != len(op_ids):
+        from collections import Counter
+        dups = [k for k, v in Counter(op_ids).items() if v > 1]
+        raise ValueError(f"tier2/tier3 op_id collision: {dups}")
     code_equivalents = {op["id"]: op["code"] for op in ops}
     return ops, code_equivalents
 
@@ -253,6 +261,19 @@ def main():
             )
             gc.collect()
 
+    # V8 (review-2026-05-21): refuse partial results so paper's "35/35 OOD
+    # cells" claim is never silently invalidated by a model dropout.
+    import os as _os
+    if failed and _os.environ.get("Z_GAP_ALLOW_PARTIAL_RESULTS") != "1":
+        print(
+            f"\n[FATAL] {len(failed)}/{len(MODELS)} model(s) failed; "
+            f"refusing to write partial Strategy F results.\n"
+            f"        Failed: {[f['label'] for f in failed]}\n"
+            f"        Set Z_GAP_ALLOW_PARTIAL_RESULTS=1 to override.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
     # Holm-Bonferroni across all (model, language) cells
     all_p, p_index = [], []
     for mi, res in enumerate(all_results):
@@ -298,9 +319,7 @@ def main():
     print(f"\n  OOD R_code > 1 and significant: {n_sig}/{n_total} cells")
     print(f"  (Strategy D tier1 baseline: 35/35 cells)")
 
-    make_figure(all_results)
-
-    # Save
+    # V7 (review-2026-05-21): save BEFORE figures.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     run_meta["finished_at_utc"] = datetime.datetime.now(datetime.UTC).isoformat()
     run_meta["n_models_attempted"] = len(MODELS)
@@ -323,10 +342,12 @@ def main():
     with open(out_path, "w") as f:
         json.dump(payload, f, indent=2, default=_convert)
     print(f"\n  Results saved: {out_path}")
-    if failed:
-        print(f"  [WARN] {len(failed)} model(s) skipped:")
-        for err in failed:
-            print(f"    - {err['label']}: {err['error_type']}")
+
+    # Figures last (best-effort).
+    try:
+        make_figure(all_results)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [WARN] make_figure failed: {type(e).__name__}: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

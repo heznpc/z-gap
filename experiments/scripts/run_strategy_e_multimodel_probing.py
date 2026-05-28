@@ -89,15 +89,39 @@ def run_model_probing(model_name: str, label: str, kwargs: dict) -> dict:
     embeddings = {k: embeddings_array[i] for i, k in enumerate(keys)}
     print(f"  {len(embeddings)} NL embeddings ready ({len(ops)} ops × {len(LANGUAGES)} langs)")
 
+    # V11 (review-2026-05-21): guard against missing categories. The
+    # original `categories[op_id]` raised KeyError on any op without a
+    # category field, which the outer try/except silently classified as a
+    # whole-model failure. We now skip the op explicitly and surface a
+    # warning so the failure mode is visible.
+    def _label(op_id: str) -> int | None:
+        cat = categories.get(op_id)
+        if cat is None:
+            return None
+        if cat not in ("computational", "judgment"):
+            return None
+        return 1 if cat == "computational" else 0
+
+    skipped_ops_train = []
     # --- Probe 1: category (chance 50%) ---
     X_train, y_train = [], []
     for op_id in all_ids:
         key = f"{op_id}_en"
         if key in embeddings:
+            lbl = _label(op_id)
+            if lbl is None:
+                skipped_ops_train.append(op_id)
+                continue
             X_train.append(embeddings[key])
-            y_train.append(1 if categories[op_id] == "computational" else 0)
+            y_train.append(lbl)
+    if skipped_ops_train:
+        print(f"  [WARN] skipped {len(skipped_ops_train)} train ops with unknown category: "
+              f"{skipped_ops_train[:5]}{'...' if len(skipped_ops_train) > 5 else ''}",
+              file=sys.stderr)
     X_train = np.array(X_train)
     y_train = np.array(y_train)
+    if len(X_train) == 0:
+        raise RuntimeError("no labeled training samples — every op had an unknown category")
 
     clf_cat = LogisticRegression(max_iter=2000, random_state=SEED, C=1.0)
     clf_cat.fit(X_train, y_train)
@@ -107,8 +131,21 @@ def run_model_probing(model_name: str, label: str, kwargs: dict) -> dict:
         for op_id in all_ids:
             key = f"{op_id}_{lang}"
             if key in embeddings:
+                lbl = _label(op_id)
+                if lbl is None:
+                    continue
                 X_test.append(embeddings[key])
-                y_test.append(1 if categories[op_id] == "computational" else 0)
+                y_test.append(lbl)
+        # V11: guard empty test set so the script reports it instead of
+        # crashing on `clf.predict(np.array([]))`.
+        if not X_test:
+            cat_results[lang] = {
+                "accuracy": float("nan"),
+                "n_correct": 0, "n_total": 0,
+                "p_value_vs_chance": float("nan"),
+                "skip": True,
+            }
+            continue
         X_test = np.array(X_test)
         y_test = np.array(y_test)
         preds = clf_cat.predict(X_test)
@@ -122,7 +159,9 @@ def run_model_probing(model_name: str, label: str, kwargs: dict) -> dict:
             "p_value_vs_chance": _binomial_p_vs_chance(n_correct, n_total, 0.5),
         }
 
-    cat_transfer = float(np.mean([r["accuracy"] for lang, r in cat_results.items() if lang != "en"]))
+    _non_en_cat = [r["accuracy"] for lang, r in cat_results.items()
+                   if lang != "en" and not r.get("skip")]
+    cat_transfer = float(np.nanmean(_non_en_cat)) if _non_en_cat else float("nan")
 
     # --- Probe 2: operation identity (chance 1%) ---
     op_to_idx = {op_id: i for i, op_id in enumerate(all_ids)}
@@ -146,6 +185,15 @@ def run_model_probing(model_name: str, label: str, kwargs: dict) -> dict:
             if key in embeddings:
                 X_test.append(embeddings[key])
                 y_test.append(op_to_idx[op_id])
+        # V11: guard empty test set.
+        if not X_test:
+            op_results[lang] = {
+                "accuracy": float("nan"),
+                "n_correct": 0, "n_total": 0,
+                "p_value_vs_chance": float("nan"),
+                "skip": True,
+            }
+            continue
         X_test = np.array(X_test)
         y_test = np.array(y_test)
         preds = clf_op.predict(X_test)
@@ -158,7 +206,9 @@ def run_model_probing(model_name: str, label: str, kwargs: dict) -> dict:
             "n_total": n_total,
             "p_value_vs_chance": _binomial_p_vs_chance(n_correct, n_total, chance_op),
         }
-    op_transfer = float(np.mean([r["accuracy"] for lang, r in op_results.items() if lang != "en"]))
+    _non_en_op = [r["accuracy"] for lang, r in op_results.items()
+                  if lang != "en" and not r.get("skip")]
+    op_transfer = float(np.nanmean(_non_en_op)) if _non_en_op else float("nan")
 
     # Print
     print(f"\n  Probe 1 (category, chance 50%):")
@@ -249,7 +299,11 @@ def make_heatmaps(all_results: list[dict]):
         for mi, res in enumerate(all_results):
             labels.append(res["label"])
             for li, lang in enumerate(LANGUAGES):
-                matrix[mi, li] = res[probe_key]["per_language"][lang]["accuracy"]
+                # V11: per_language may have been skipped (empty test set);
+                # fall back to NaN so seaborn shows a blank cell instead of
+                # KeyError on a missing key.
+                cell = res[probe_key]["per_language"].get(lang, {})
+                matrix[mi, li] = cell.get("accuracy", float("nan"))
         sns.heatmap(
             matrix, annot=True, fmt=".2f", cmap="YlGn",
             xticklabels=LANGUAGES, yticklabels=labels,
@@ -298,6 +352,18 @@ def main():
             )
             gc.collect()
 
+    # V8 (review-2026-05-21): same partial-success guard as Strategy D.
+    import os as _os
+    if failed_models and _os.environ.get("Z_GAP_ALLOW_PARTIAL_RESULTS") != "1":
+        print(
+            f"\n[FATAL] {len(failed_models)}/{len(MODELS)} model(s) failed; "
+            f"refusing to write partial Strategy E results.\n"
+            f"        Failed: {[f['label'] for f in failed_models]}\n"
+            f"        Set Z_GAP_ALLOW_PARTIAL_RESULTS=1 to override.",
+            file=sys.stderr,
+        )
+        sys.exit(2)
+
     # Summary
     print(f"\n{'='*60}")
     print("CROSS-MODEL P3 SUMMARY")
@@ -311,9 +377,8 @@ def main():
         op_xfer = res["operation_probe"]["mean_transfer"]
         print(f"{res['label']:<25s}  {cat_en:>7.3f}  {cat_xfer:>12.3f}  {op_en:>6.3f}  {op_xfer:>12.3f}")
 
-    make_heatmaps(all_results)
-
-    # Save
+    # V7 (review-2026-05-21): save BEFORE figures so a matplotlib failure
+    # does not lose the probing results.
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     run_meta["finished_at_utc"] = datetime.datetime.now(datetime.UTC).isoformat()
     run_meta["n_models_attempted"] = len(MODELS)
@@ -333,10 +398,11 @@ def main():
     with open(out_path, "w") as f:
         json.dump(payload, f, indent=2, default=_convert)
     print(f"\n  Results saved: {out_path}")
-    if failed_models:
-        print(f"  [WARN] {len(failed_models)} model(s) skipped:")
-        for err in failed_models:
-            print(f"    - {err['label']}: {err['error_type']}")
+
+    try:
+        make_heatmaps(all_results)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [WARN] make_heatmaps failed: {type(e).__name__}: {e}", file=sys.stderr)
 
 
 if __name__ == "__main__":

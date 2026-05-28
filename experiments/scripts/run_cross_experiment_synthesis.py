@@ -42,6 +42,17 @@ def load_json(name: str) -> dict | list:
 # Load all results
 # ────────────────────────────────────────────────────────────
 
+def _normalize_results_envelope(payload):
+    """V2 (review-2026-05-21): unwrap the {_meta, results} envelope used by
+    Strategy D / E / F so legacy consumers expecting a plain list keep working.
+    Strategy D was originally a list of model_results; PR #4+ wraps it in
+    {"_meta": ..., "results": [...]}. This shim handles both shapes.
+    """
+    if isinstance(payload, dict) and "results" in payload and "_meta" in payload:
+        return payload["results"]
+    return payload
+
+
 def load_all_results():
     return {
         "prediction": load_json("prediction_results.json"),
@@ -52,7 +63,9 @@ def load_all_results():
         "strategy_a": load_json("strategy_a_vocab_mediation.json"),
         "strategy_2": load_json("strategy2_langpair_results.json"),
         "strategy_4": load_json("strategy4_prereq_results.json"),
-        "strategy_d": load_json("strategy_d_code_alignment.json"),
+        "strategy_d": _normalize_results_envelope(load_json("strategy_d_code_alignment.json")),
+        "strategy_e": _normalize_results_envelope(load_json("strategy_e_multimodel_probing.json")),
+        "strategy_f": _normalize_results_envelope(load_json("strategy_f_ood_alignment.json")),
         "strategy_6r": load_json("strategy_6r_dialect_results.json"),
         "rcode_token": load_json("rcode_token_control.json"),
     }
@@ -98,6 +111,10 @@ def build_master_summary(results: dict) -> list[dict]:
         for model_result in strat_d:
             per_lang = model_result.get("per_language", {})
             for lang, stats in per_lang.items():
+                # V20 (review-2026-05-21): skip the "aggregate" pseudo-key
+                # written by compute_per_language_R_code; it is not a cell.
+                if lang == "aggregate":
+                    continue
                 if isinstance(stats, dict) and not stats.get("skip"):
                     total_cells += 1
                     if stats.get("p_corrected", 1.0) < 0.05:
