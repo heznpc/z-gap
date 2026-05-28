@@ -137,3 +137,45 @@ Format: `## YYYY-MM-DD -- <short title>` with **Context**, **Decision**, **Why**
   - `experiments/README.md` Reproducibility envelope bullet added: model-weight pinning policy + pointer to the registry's refresh snippet.
 
 **Why**: C3 was originally classified as a Minor TODO because the embedding cache covered the practical reproducibility need. Centralizing the registry now (rather than after another experiment lands) prevents future SHA drift between runners and gives reviewers a single auditable location for "which exact weights did this paper use?"
+
+---
+
+## 2026-05-21 -- Extra-high recall code review (15 findings, all fixed)
+
+**Context**: After PRs #1-#7 landed, `/code-review` ran at xhigh-effort recall mode (5 angles × ≤8 candidates → 1-vote verify → sweep, capped at 15 findings). Output was 15 confirmed/plausible defects spanning paper text drift, statistical method gaps, cache-poisoning vectors, and a partial-success silent-corruption hole in the FWE pipeline.
+
+**Decisions (all 15 fixed in a single review-closure PR)**:
+
+  - **V1 / V14 cache key drops revision + basename collision across orgs**: `SentenceTransformerEmbedder.name` now uses `f"st_{repo.replace('/', '__')}@{rev[:8]}"`. EmbeddingCache._key collisions across `intfloat/x` vs `sentence-transformers/x` and across SHA bumps are now distinct. C3 closure actually holds end-to-end.
+
+  - **V13 cache key delimiter collision**: `EmbeddingCache._key` switched from `f"{m}:{'|'.join(texts)}"` to a JSON-encoded payload hash so texts containing `|` (e.g. `s1 | s2` in the union stimulus) cannot collide with split variants. Verified inline: `['a|b','c']` and `['a','b|c']` now hash to distinct keys.
+
+  - **V18 dimension None for trust_remote_code modules**: `SentenceTransformerEmbedder.dimension` falls back to a one-text encode probe when the deprecated `get_sentence_embedding_dimension()` returns None. Nomic v1.5 no longer risks a silent skip from `int(None)`.
+
+  - **V9 Mistral Retry-After hang**: `respect_retry_after_header=False` on the urllib3 Retry; backoff_factor=1 bounds total wait to ~31s instead of up to 5× server-sent `Retry-After`. Eliminates the multi-hour silent stall mode.
+
+  - **V10 OpenAI timeout regression**: 60s → 300s. Legacy batch callers that need >60s server-side processing no longer hit a spurious timeout under the new client.
+
+  - **V5 perm/bootstrap fallback to 1.0**: substituted NaN instead. `random_baseline_R_mean` now uses `np.nanmean`. New result range [1.0001, 1.0046] (tier1) / [1.0005, 1.0086] (OOD), still ≈1 as the paper claims, but no longer biased by silent 1.0 imputations.
+
+  - **V6 p_value floor**: `(n_extreme + 1) / (n_valid + 1)` convention adopted. Reported p-values are now bounded below by `1/(n_perm+1) ≈ 1e-4`; no cell reports literal `0.0` (verified post-rerun: min nonzero p = 0.0001 across all 70 D+F cells). Reviewer push-back surface closed.
+
+  - **V8 partial-success FWE silent invalidation**: Strategy D/E/F main() now `sys.exit(2)` on any failed model unless `Z_GAP_ALLOW_PARTIAL_RESULTS=1` is set. The "across 35 cells" claim in the paper can no longer be silently invalidated by a single OOM / trust_remote_code drift. The Nomic einops episode from PR #4 is the exact failure mode this guards against; the previous lenient behavior would have let it slip if `failed_models` had been ignored.
+
+  - **V7 figures-before-save**: Strategy D/E/F save JSON BEFORE generating figures, with figures in a try/except. Multi-hour compute is no longer lost to a matplotlib font-cache failure.
+
+  - **V11 Strategy E `categories[op_id]` KeyError**: replaced with `categories.get()` + explicit `_label` helper that returns None for unknown categories. Empty per-language test sets also produce `{skip: true}` cells with NaN accuracy instead of crashing on `clf.predict(np.array([]))`.
+
+  - **V12 tier2/tier3 op_id uniqueness**: `load_ood_stimuli()` now asserts uniqueness with the duplicate list surfaced in the error message. Today's stimuli pass (verified inline: 50/50 unique), but a future id collision will fail loudly.
+
+  - **V2 synthesis JSON envelope shim**: `_normalize_results_envelope()` unwraps `{_meta, results}` to a plain list so `run_cross_experiment_synthesis.py` keeps working with the new D/E/F JSON shape. Also added strategy_e and strategy_f to its known-files list.
+
+  - **V20 synthesis treats `aggregate` as a 6th language**: explicit `if lang == "aggregate": continue` in the per-language counter loop. The "n_significant / total_cells" rate is now denominated against the real 5-language × 7-model = 35 grid, not 42.
+
+  - **V4 datetime.utcnow deprecation in Strategy D**: replaced with `datetime.now(datetime.UTC)` to match Strategy E/F and survive future Python ≥3.13 removal.
+
+  - **V3 paper §5.5 / Limitations "20 cells / four models / 20/20" drift (3 locations)**: updated to "35 cells / seven models / 35/35 + OOD 35/35", matching the Strategy D/E/F tables already inserted in PR #4/#5/#6.
+
+**Re-execution**: Strategies D/E/F rerun after all fixes (~5 min, 7/7 models succeeded each). Cell-level R_code values unchanged at 2-decimal precision except UniXcoder tier1 aggregate (1.0649 ≈ 1.06 vs. previously printed 1.07 — rounding). Cohen's d_max for OOD shifted from E5-large (4.12) to E5-base (4.42); paper updated. All 35/35 + 35/35 + multi-model P3 conclusions hold.
+
+**Why**: Recall-mode review surfaces real bugs at the cost of some false positives. Of the 15 confirmed findings, V8 (silent FWE invalidation) and V1 (cache key drops revision) would have been the most damaging if discovered after EMNLP submission. Closing them all in a single review-closure PR keeps the paper-evidence chain (Strategy D 35/35 tier1, P3 7-model, Strategy F 35/35 OOD) sound under reviewer push-back.
