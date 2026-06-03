@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: >-
+  If you use this work, please cite it using the metadata below.
+title: >-
+  Beyond the Chomsky Wall: Platonic Representations as the
+  Convergence Point of Natural Language and Code
+# Legal authorship credit per academic convention (Paper-layer identity
+# exception; see ~/IdeaProjects/Paper/CLAUDE.md). Public/portfolio surfaces
+# use the Heznpc identity; this academic metadata file uses the legal name.
+authors:
+  - family-names: Yoon
+    given-names: Jiyeon
+abstract: >-
+  Position paper arguing that the gap between natural language and programming
+  language is not a barrier but a measurable, shrinking quantity — the Z-Gap —
+  predicted to converge under the Platonic Representation Hypothesis. The work
+  refines PRH by distinguishing representational convergence from
+  communicability, stratifying the shared latent into semantic, procedural, and
+  pragmatic layers, and reporting a cross-lingual NL-code alignment pilot across
+  seven embedding models and five languages.
+keywords:
+  - representation learning
+  - Platonic Representation Hypothesis
+  - natural language
+  - programming language
+  - cross-lingual invariance
+  - disambiguation cost
+license: CC-BY-4.0
+type: software
+repository-code: "https://github.com/heznpc/z-gap"
+# DOI: a Zenodo record has been minted for this artifact, but the DOI string is
+# not stored in the repository. Replace the placeholder below with the actual
+# 10.5281/zenodo.<id> and uncomment the block before publishing this file.
+# identifiers:
+#   - type: doi
+#     value: 10.5281/zenodo.XXXXXXX
+#     description: Zenodo archive of the Z-Gap artifact

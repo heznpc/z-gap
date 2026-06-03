@@ -235,3 +235,33 @@ Rationale: "cheap" was the only reason CodeSage out-prioritized dialect-T1; once
 **Local cleanup**: deleted the 2.4GB CodeSage download (`~/.cache/huggingface/hub/models--codesage--codesage-large-v2` + remote-code module) at user request; zero repo dependency (no .npz was ever computed since the load failed). The 7 paper models remain cached.
 
 **Note for a future revisit**: `jinaai/jina-embeddings-v2-base-code` (a code-specialized embedder) is already in the local HF cache and could fill the code-trained robustness slot without CodeSage's legacy-environment requirement — a cleaner Option-D path if the code-trained comparison is reopened.
+
+---
+
+## 2026-06-03 -- Housekeeping: citations + submissions legacy + CITATION.cff
+
+**Citations** (`paper/references.bib` + `main.tex`): audited TODO.md against the
+actual bib. Most "highest priority" items were already integrated (Semantic Hub
+`wu2025semantichub`, Sparse Language Dimensions `zhong2025sparse`, SemCoder
+`wan2024semcoder`) — TODO.md was stale. Added 3 verified-by-title+arXiv-ID
+citations at real claim slots: OmniSONAR (`omnisonar2026`) at §5.5 NL-code
+alignment, Byte Latent Transformer (`pagnoni2024blt`) in the tokenization
+appendix, MMTEB (`enevoldsen2025mmteb`) at the dialect scope-note. Author/venue
+fields use "and others" and are flagged for camera-ready verification. Deferred
+(not cited): CLSD, Programming Language Families, e5-omni, Sergent "Convergence
+Without Correspondence" — we do not cite unread papers (TACL rigor). TODO.md
+citation section rewritten to reflect true status.
+
+**Submissions drift**: EMNLP and COLM are not pursued (TACL is the target). Per
+`Paper/CLAUDE.md` the submission copies are frozen snapshots — rather than sync
+the new results into them, added a LEGACY/FROZEN banner to both
+`submissions/*/NOTES.md` stating the venue is not pursued, the paper was never
+submitted there, `paper/main.tex` is canonical, and their numbers are stale.
+This resolves the drift honestly without a large sync.
+
+**CITATION.cff**: created (CFF 1.2.0) with the real metadata from `.zenodo.json`
+(title, legal-name author Yoon Jiyeon per the Paper-layer identity exception,
+abstract, keywords, CC-BY-4.0, repo URL). The Zenodo DOI string is NOT stored
+in the repo, so the `identifiers`/DOI block is left commented with an explicit
+instruction to paste the real `10.5281/zenodo.<id>` before publishing — no
+fabricated DOI.
