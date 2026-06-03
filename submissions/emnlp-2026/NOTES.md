@@ -1,5 +1,14 @@
 # EMNLP 2026 (ACL Rolling Review) Submission
 
+> **LEGACY / FROZEN SNAPSHOT (as of 2026-06-03).** This venue is **not being
+> pursued**. The paper was never submitted to EMNLP/ARR (the earlier "ARR May"
+> framing was an internal assumption, not a real submission). The active target
+> is **TACL** (see repo `README.md` + `planning/decisions.md` 2026-06-03).
+> `paper/main.tex` is canonical and has since gained results not reflected here
+> (7-model NL-code 35/35, OOD 35/35, multi-model P3, dialect retraction). This
+> snapshot is retained for provenance only; do **not** treat its numbers/claims
+> as current.
+
 ## Status
 - ACL Rolling Review cycle (target: EMNLP 2026)
 - Uses ACL style sheets
