@@ -1,5 +1,5 @@
 Research Program: 3 (Representation, Language, and Cultural Cognition)
-Status: Under review (EMNLP 2026, ARR May cycle) — reproducible artifact
+Status: Reproducible artifact (Zenodo DOI preprint) — not submitted to any venue; target: TACL
 Relationship to other work: Anchor of Program 3 (companions: macaronic, third-vertex-llm, habitus)
 
 # Z-Gap — Beyond the Chomsky Wall
@@ -8,18 +8,19 @@ The Platonic Representation Hypothesis (PRH) claims that networks trained on dif
 
 ## Currently implemented
 
-- `paper/main.tex` — canonical manuscript (970 lines, ACL-styled)
-- `paper/references.bib` — shared bibliography for all venue copies
-- `submissions/emnlp-2026/main.tex` — EMNLP 2026 venue snapshot (880 lines)
-- `submissions/colm-2026/main.tex` — COLM 2026 venue snapshot (847 lines)
-- `experiments/` — reproducible pilot: 100 stimuli (50 computational + 50 judgment) × 5 languages × dialectal variants (~1,800 inputs), embedded through 8 models (MiniLM, E5-small/base/large, BGE-M3, Qwen3-Embedding-8B, jina-v3, Codestral Embed). Tests P1, P2, P2-dialect, P3, P7
+- `paper/main.tex` — canonical manuscript (ACL-styled)
+- `paper/references.bib` — shared bibliography
+- `submissions/emnlp-2026/main.tex`, `submissions/colm-2026/main.tex` — legacy frozen venue snapshots (not the active target; retained for provenance)
+- `experiments/` — reproducible pilot: 100 stimuli (50 computational + 50 judgment) × 5 languages (~1,800 inputs incl. variants), embedded through **7 models** (UniXcoder, MiniLM-L12, Nomic v1.5, E5-small/base/large, BGE-M3), pinned by HuggingFace revision SHA in `experiments/src/model_registry.py`. Results: NL-code alignment 35/35 tier-1 + 35/35 OOD (tier-2/3); cross-lingual P3 probing across 7 models (model-class dependent); P7 spacing/punctuation robustness. P1/P2 honestly reported as not-supported / failed-and-reinterpreted
 - `planning/` — TODO, decisions log, review notes, P2-strategy audit
 
 ## Planned
 
-- EMNLP 2026 commitment (Aug 2, 2026) after ARR May reviews; conference Oct 24–29, Hungary
-- Scope expansion (more languages or operations) only if review responses require it
-- Reconcile content drift between `paper/main.tex` and the two `submissions/*/main.tex` snapshots manually before each venue cycle
+- Target venue: **TACL** (journal, OpenReview, rolling; not yet submitted). Rationale in `planning/decisions.md` 2026-06-03
+- CodeSage-Large-v2 as a modern code-trained robustness model (closes the single-code-trained-model gap before submission)
+- Real cross-dialect evaluation via MADAR / NADI (Arabic) + AI Hub (Korean) corpora, replacing the retracted within-English dialect probe — see `planning/decisions.md` 2026-06-03
+- Native-speaker validation of the 5-language stimulus set (camera-ready)
+- Reconcile content drift between `paper/main.tex` and the frozen `submissions/*/main.tex` snapshots manually
 
 ## Design intent
 

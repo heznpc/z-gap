@@ -179,3 +179,35 @@ Format: `## YYYY-MM-DD -- <short title>` with **Context**, **Decision**, **Why**
 **Re-execution**: Strategies D/E/F rerun after all fixes (~5 min, 7/7 models succeeded each). Cell-level R_code values unchanged at 2-decimal precision except UniXcoder tier1 aggregate (1.0649 ≈ 1.06 vs. previously printed 1.07 — rounding). Cohen's d_max for OOD shifted from E5-large (4.12) to E5-base (4.42); paper updated. All 35/35 + 35/35 + multi-model P3 conclusions hold.
 
 **Why**: Recall-mode review surfaces real bugs at the cost of some false positives. Of the 15 confirmed findings, V8 (silent FWE invalidation) and V1 (cache key drops revision) would have been the most damaging if discovered after EMNLP submission. Closing them all in a single review-closure PR keeps the paper-evidence chain (Strategy D 35/35 tier1, P3 7-model, Strategy F 35/35 OOD) sound under reviewer push-back.
+
+---
+
+## 2026-06-03 -- Venue retarget to TACL + dialect integrity (T2) + decoder-only scope
+
+**Context**: The "EMNLP 2026 ARR May" submission framing across README / submissions NOTES / registry was a prior-Claude-session assumption, NOT a user goal (user correction 2026-06-03). The paper was never submitted anywhere. arXiv is blocked (no endorser; arXiv tightened endorsement 2026-01-21). A Zenodo DOI preprint record exists. New target chosen by the user: **TACL** (journal, OpenReview, no endorsement, revise-and-resubmit fits a position+pilot paper by a single independent author; honest negative results are an asset in journal review, a liability in fast conference review).
+
+**Honest-status correction needed (pending)**: `README.md:2` "Status: Under review (EMNLP 2026, ARR May cycle)" is FALSE (never submitted) and must be corrected to "Reproducible artifact + Zenodo DOI; target: TACL". Tracked separately from this entry.
+
+**Dialect integrity (P0) — research-first redesign**:
+A literature scan (date-anchored 2026-06-03) reframed the fix. Findings:
+  - dialect-robustness has established methodology: VALUE (Ziems et al. 2022), DialectGen (arXiv:2510.14949), PTEB (arXiv:2510.06730 paraphrase axis), MMTEB (cross-lingual axis).
+  - real dialect corpora exist: **MADAR** (25 Arab-city parallel) and **NADI 2024** (Egyptian↔MSA sentence-level) for Arabic; **AI Hub Korean Dialect** corpus (Gyeongsang, Jeju) for Korean.
+  - LLM-generated dialect data is acceptable for augmentation but weak for measurement claims: "a small amount of human-annotated data beats much larger synthetic" (arXiv:2506.12158).
+
+  Audit of the current artifact confirmed the claim was unsupportable:
+  - `data/dialect_stimuli.json` (v1): `british`/`indian` are byte-identical to original English → "British d≈0.001" is an artifact of identical strings, not dialect robustness.
+  - `data/dialect_stimuli_v2.json` exists with real Gyeongsang/Egyptian dialects but is **LLM-generated (Opus 4.6)** and was **never run** (strategy_6r results == v1_english results).
+  - The `ordering` field in `strategy_6r_dialect_results.json` is mislabeled: it reads "dial < para < cross" for all 3 models, but only E5-large actually satisfies it; MiniLM and BGE-M3 show dial < cross < para (paraphrase distance EXCEEDS cross-lingual).
+
+  **Decision: T2 (honest scope-down), chosen over T1 (real-corpus integration) and T3 (LLM-probe appendix).**
+  - T1 (MADAR/NADI/AI-Hub) is the highest-rigor option but carries weeks of data-access friction for a SECONDARY result — disproportionate; deferred as a *sourced upgrade path*, not vague future work.
+  - T3 (v2 LLM-dialect in appendix) adds a new "is this Gyeongsang authentic?" attack surface + runner-rewrite work, diluting the "we don't rest on LLM data" signal — rejected.
+  - T2 retracts the continuum claim, reports only what the real data supports (embedding models collapse within-English orthographic variation; paraphrase-vs-cross-lingual ordering is model-dependent), and cites VALUE/MADAR/NADI/AI-Hub as the correct methodology + immediate next step. Converts a fabrication liability into a methodological-awareness strength.
+
+  **Applied**: rewrote `paper/main.tex` dialect paragraph (§5 pilot) to the scope-note form; added 4 bib entries (ziems2022value, bouamor2018madar, abdulmageed2024nadi, aihub2024kodialect — author lists use "and others", AI Hub year approximate, flagged for camera-ready verification). v1/v2 data + generator preserved in repo for the T1 upgrade.
+
+**Decoder-only scope cleanup**: tightened two Limitations bullets — (a) claims explicitly scoped to encoder-style sentence embedders; (b) added the frontier-closed-model unprobeability point (GPT/Claude/Gemini expose no embedding/hidden-state API → decoder-only extension is necessarily restricted to open-weight LLMs); (c) fixed a staleness bug where OOD stimuli were listed as "future work" though Strategy F already analyzed them (35/35 OOD).
+
+**CodeSage status**: NOT done this PR. Unlike dialect T1, CodeSage is cheap (open-weight, no access friction) and closes a real attack surface (the "NL-only > code-trained" claim rests on a single code-trained model, UniXcoder). Recommended as the next pre-TACL task (needs a `CodeSageEmbedder` AutoModel+mean-pool class + D/E/F rerun, ~1-2h). If skipped, the "NL-only > code-trained" claim must be scoped to "single code-trained model in our set".
+
+**Why**: TACL's rigor gate punishes exactly the two soft spots this entry addresses — an unsupportable graded-continuum claim resting on degenerate/mislabeled data, and an under-delimited decoder-only scope. Fixing both before submission (rather than after a reviewer flags them) is the disciplined-restraint signal a journal editor rewards.
