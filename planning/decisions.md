@@ -211,3 +211,27 @@ A literature scan (date-anchored 2026-06-03) reframed the fix. Findings:
 **CodeSage status**: NOT done this PR. Unlike dialect T1, CodeSage is cheap (open-weight, no access friction) and closes a real attack surface (the "NL-only > code-trained" claim rests on a single code-trained model, UniXcoder). Recommended as the next pre-TACL task (needs a `CodeSageEmbedder` AutoModel+mean-pool class + D/E/F rerun, ~1-2h). If skipped, the "NL-only > code-trained" claim must be scoped to "single code-trained model in our set".
 
 **Why**: TACL's rigor gate punishes exactly the two soft spots this entry addresses — an unsupportable graded-continuum claim resting on degenerate/mislabeled data, and an under-delimited decoder-only scope. Fixing both before submission (rather than after a reviewer flags them) is the disciplined-restraint signal a journal editor rewards.
+
+---
+
+## 2026-06-03 -- CodeSage attempt: blocked by version-rot, scoped the claim (E)
+
+**Context**: After PR #9 (dialect T2 + decoder-only), the next pre-TACL task was CodeSage-Large-v2 as a modern code-trained model to close the "single code-trained model (UniXcoder)" gap behind the "NL-only > code-trained" claim. Estimated cheap (open-weight, no access friction).
+
+**What happened**: The estimate was wrong. `codesage/codesage-large-v2` (1.3B, 2048-dim, ungated, SHA 6e5d6dc1) downloads fine but its 2024-era `trust_remote_code` module is multi-layer incompatible with the installed (2025/2026-era) transformers:
+  1. `from transformers.modeling_utils import Conv1D` — Conv1D relocated to `transformers.pytorch_utils`. Fixable with a re-export shim (tried, worked).
+  2. `'CodeSageModel' object has no attribute 'all_tied_weights_keys'` — newer transformers `from_pretrained` finalization expects a property the old custom model class does not define. Not safely fixable without reverse-engineering tied-weights (risk: wrong weight load -> subtly wrong embeddings).
+
+**Decision: Option E (scope the claim, defer the model), chosen over C (isolated legacy-transformers env, ~45min+ with its own install uncertainty + lazy-load refactor) and D (pivot to another trust_remote_code code embedder = same version-rot lottery).**
+
+Rationale: "cheap" was the only reason CodeSage out-prioritized dialect-T1; once it turned expensive + correctness-risky, the same logic that deferred dialect-T1 (disproportionate cost for a SECONDARY result) applies. Forcing a monkeypatched load would violate the rigor the TACL effort is built on. Consistency with the dialect-T2 discipline ("if real data can't support it, scope the claim") demanded the same treatment here.
+
+**Applied**:
+  - paper §5.5: "NL-only models achieve higher R_code than code-trained models" -> scoped to a within-set observation, not a categorical claim, with the broader-code-trained-set requirement stated inline.
+  - paper §5.5 P3 paragraph: added a parenthetical noting both code-oriented models are the only ones in the set.
+  - Limitations: new "Code-trained model coverage" bullet naming CodeSage-Large-v2 / Qodo-Embed as the intended additions and the CodeSage v2 remote-code/transformers incompatibility as the practical deferral reason.
+  - Reverted the embeddings.py Conv1D shim (dead code: insufficient on its own, and the main pipeline never loads CodeSage).
+
+**Local cleanup**: deleted the 2.4GB CodeSage download (`~/.cache/huggingface/hub/models--codesage--codesage-large-v2` + remote-code module) at user request; zero repo dependency (no .npz was ever computed since the load failed). The 7 paper models remain cached.
+
+**Note for a future revisit**: `jinaai/jina-embeddings-v2-base-code` (a code-specialized embedder) is already in the local HF cache and could fill the code-trained robustness slot without CodeSage's legacy-environment requirement — a cleaner Option-D path if the code-trained comparison is reopened.
